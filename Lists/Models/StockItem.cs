@@ -16,7 +16,7 @@
 //---------------------------------------------------------------------------------
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+
 
 namespace devMobile.WebAPIDapper.Lists.Model
 {
@@ -33,37 +33,26 @@ namespace devMobile.WebAPIDapper.Lists.Model
 
 	public class StockItemGetDtoV1
 	{
-		[JsonPropertyName("id")]
 		public int Id { get; set; }
 
-		[JsonPropertyName("name")]
 		public string Name { get; set; }
 
-		[JsonPropertyName("unitPrice")]
 		public decimal UnitPrice { get; set; }
 
-		[JsonPropertyName("recommendedRetailPrice")]
 		public decimal RecommendedRetailPrice { get; set; }
 
-		[JsonPropertyName("taxRate")]
 		public decimal TaxRate { get; set; }
 
-		[JsonPropertyName("quantityPerOuter")]
 		public int QuantityPerOuter { get; set; }
 
-		[JsonPropertyName("typicalWeightPerUnit")]
 		public decimal TypicalWeightPerUnit { get; set; }
 
-		[JsonPropertyName("unitPackageName")]
 		public string UnitPackageName { get; set; }
 
-		[JsonPropertyName("outerPackageName")]
 		public string OuterPackageName { get; set; }
 
-		[JsonPropertyName("supplierID")]
 		public int SupplierID { get; set; }
 
-		[JsonPropertyName("supplierName")]
 		public string SupplierName { get; set; }
 
 	}
