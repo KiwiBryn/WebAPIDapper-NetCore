@@ -30,7 +30,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
-	public class StockItemsPaginationController : Controller
+	public class StockItemsPaginationController : ControllerBase
 	{
 		private readonly string connectionString;
 		private readonly ILogger<StockItemsPaginationController> logger;
