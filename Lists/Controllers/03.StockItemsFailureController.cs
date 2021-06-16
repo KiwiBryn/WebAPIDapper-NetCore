@@ -27,7 +27,7 @@ using Dapper;
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class StockItemsFailureController : ControllerBase
 	{

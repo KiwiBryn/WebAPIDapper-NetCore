@@ -31,7 +31,7 @@ using Dapper;
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class StockItemsSearchController : ControllerBase
 	{
 		private readonly string connectionString;

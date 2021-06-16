@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class ReadWriteController : ControllerBase
 	{

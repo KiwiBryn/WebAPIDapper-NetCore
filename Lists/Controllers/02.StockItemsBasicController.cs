@@ -34,7 +34,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 	}
 
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class StockItemsBasicController : ControllerBase
 	{
 		private readonly string connectionString;
