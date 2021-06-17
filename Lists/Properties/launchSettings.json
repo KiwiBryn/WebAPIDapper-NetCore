@@ -20,7 +20,7 @@
     "Lists": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "stockitems",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
