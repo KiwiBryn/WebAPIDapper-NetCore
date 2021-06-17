@@ -47,11 +47,6 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
-			if (!ModelState.IsValid)
-			{
-				this.BadRequest(ModelState);
-			}
-
 			try
 			{
 				var parameters = new DynamicParameters();
