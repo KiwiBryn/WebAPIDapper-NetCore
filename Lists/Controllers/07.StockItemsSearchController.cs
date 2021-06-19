@@ -44,7 +44,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			this.logger = logger;
 		}
 
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")][MaxLength(100, ErrorMessage = "The name search text must be no more that 100 characters long")] string name)
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemSearchDtoV1 request)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -52,23 +52,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					if (name != null)
-					{
-						var parameters = new DynamicParameters();
-
-						parameters.Add("@Name", value: name);
-
-						response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems] WHERE [StockItemName] LIKE N'%' + @Name + N'%'", param: parameters, commandType: CommandType.Text);
-					}
-					else
-					{
-						response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
-					}
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsSearchV1]", param: request, commandType: CommandType.Text);
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsSearch exception searching for list of StockItems with name like:{0}", name);
+				logger.LogError(ex, "StockItemsSearch exception searching for list of StockItems with name like:{0}", request);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}

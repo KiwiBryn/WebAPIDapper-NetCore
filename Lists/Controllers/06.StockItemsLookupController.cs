@@ -53,24 +53,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: @"SELECT[StockItems].[StockItemID] as ""ID""  
-																							,[StockItems].[StockItemName] as ""Name"" 
-																							,[StockItems].[UnitPrice]
-																							,[StockItems].[RecommendedRetailPrice] 
-																							,[StockItems].[TaxRate]
-																							,[StockItems].[QuantityPerOuter]
-																							,[StockItems].[TypicalWeightPerUnit]
-																							,[UnitPackage].PackageTypeName as ""UnitPackageName""
-																							,[OuterPackage].PackageTypeName as ""OuterPackageName"" 
-																							,[Supplier].[SupplierID] 
-																							,[Supplier].[SupplierName] 
-																						FROM[Warehouse].[StockItems] as StockItems  
-																						INNER JOIN[Warehouse].[PackageTypes] as UnitPackage ON ([StockItems].[UnitPackageID] = [UnitPackage].[PackageTypeID]) 
-																						INNER JOIN[Warehouse].[PackageTypes] as OuterPackage ON ([StockItems].[OuterPackageID] = [OuterPackage].[PackageTypeID]) 
-																						INNER JOIN[Purchasing].[Suppliers] as Supplier ON ([StockItems].SupplierID = Supplier.SupplierID)
-																						WHERE[StockItems].[StockItemID] = @StockItemId",
-																					param: new { stockItemId=id },
-																					commandType: CommandType.Text);
+					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "StockItemsStockItemLookupV1", param: new { stockItemId=id }, commandType: CommandType.StoredProcedure);
 				}
 
 				if (response == default)
@@ -98,12 +81,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockGroupListDtoV1>(sql:@"SELECT [StockGroups].[StockGroupID] as ""ID"" ,[StockGroupName] as ""Name""
-												FROM[Warehouse].[StockGroups]
-												INNER JOIN [Warehouse].[StockItemStockGroups] ON ([Warehouse].[StockItemStockGroups].StockGroupID = [Warehouse].[StockGroups].[StockGroupID])
-												WHERE [StockItemStockGroups].[StockItemID] = @StockItemId",
-											param: new { stockItemId = id },
-											commandType: CommandType.Text);
+					response = await db.QueryAsync<Model.StockGroupListDtoV1>(sql: "StockItemsStockItemStockGroupListV1", param: new { stockItemId = id }, commandType: CommandType.Text);
 				}
 			}
 			catch (SqlException ex)
