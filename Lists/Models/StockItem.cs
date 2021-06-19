@@ -67,4 +67,25 @@ namespace devMobile.WebAPIDapper.Lists.Model
 		[Range(1, int.MaxValue, ErrorMessage = "PageNumber must be present and greater than 0")]
 		public int PageNumber { get; set; }
 	}
+
+	public class StockItemHistoryListDtoV1
+	{
+		public int Id { get; set; }
+
+		public string Name { get; set; }
+
+		public decimal UnitPrice { get; set; }
+
+		public decimal RecommendedRetailPrice { get; set; }
+
+		public decimal TaxRate { get; set; }
+
+		public string CustomFields { get; set; }
+
+		public DateTime ValidFrom { get; set; }
+
+		public DateTime ValidTo { get; set; }
+
+	}
+
 }
