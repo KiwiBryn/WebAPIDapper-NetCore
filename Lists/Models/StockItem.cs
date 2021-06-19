@@ -68,6 +68,32 @@ namespace devMobile.WebAPIDapper.Lists.Model
 		public int PageNumber { get; set; }
 	}
 
+	public class StockItemSearchDtoV1
+	{
+		[Required]
+		[MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")]
+		string name { get; set; }
+
+		[Required]
+		[Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be present and greater than 0")]
+		public int MaximumRowsToReturn { get; set; }
+	}
+
+	public class StockItemsHistoryListDtoV1
+	{
+		public int Id { get; set; }
+
+		public string Name { get; set; }
+
+		public decimal UnitPrice { get; set; }
+
+		public decimal RecommendedRetailPrice { get; set; }
+
+		public decimal TaxRate { get; set; }
+
+		public string CustomFields { get; set; }
+	}
+
 	public class StockItemHistoryListDtoV1
 	{
 		public int Id { get; set; }
@@ -85,7 +111,5 @@ namespace devMobile.WebAPIDapper.Lists.Model
 		public DateTime ValidFrom { get; set; }
 
 		public DateTime ValidTo { get; set; }
-
 	}
-
 }
