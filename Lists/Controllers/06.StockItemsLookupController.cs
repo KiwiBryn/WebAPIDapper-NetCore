@@ -14,6 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
@@ -50,30 +51,25 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			try
 			{
-				var parameters = new DynamicParameters();
-
-				parameters.Add("@stockItemId", id);
-
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					// Not certain if reabability would be improved by an @ on each line vs. @'s on line lines that need them
-					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: @"SELECT[StockItems].[StockItemID] as ""ID"" " +
-																							@",[StockItems].[StockItemName] as ""Name""" +
-																							@",[StockItems].[UnitPrice]" +
-																							",[StockItems].[RecommendedRetailPrice]" +
-																							",[StockItems].[TaxRate]" +
-																							",[StockItems].[QuantityPerOuter]" +
-																							",[StockItems].[TypicalWeightPerUnit]" +
-																							@",[UnitPackage].PackageTypeName as ""UnitPackageName""" +
-																							@",[OuterPackage].PackageTypeName as ""OuterPackageName""" +
-																							",[Supplier].[SupplierID]" +
-																							",[Supplier].[SupplierName]" +
-																						"FROM[Warehouse].[StockItems] as StockItems " +
-																						"INNER JOIN[Warehouse].[PackageTypes] as UnitPackage ON ([StockItems].[UnitPackageID] = [UnitPackage].[PackageTypeID])" +
-																						"INNER JOIN[Warehouse].[PackageTypes] as OuterPackage ON ([StockItems].[OuterPackageID] = [OuterPackage].[PackageTypeID])" +
-																						"INNER JOIN[Purchasing].[Suppliers] as Supplier ON ([StockItems].SupplierID = Supplier.SupplierID)" +
-																						"WHERE[StockItems].[StockItemID] = @StockItemId",
-																					param: parameters,
+					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: @"SELECT[StockItems].[StockItemID] as ""ID""  
+																							,[StockItems].[StockItemName] as ""Name"" 
+																							,[StockItems].[UnitPrice]
+																							,[StockItems].[RecommendedRetailPrice] 
+																							,[StockItems].[TaxRate]
+																							,[StockItems].[QuantityPerOuter]
+																							,[StockItems].[TypicalWeightPerUnit]
+																							,[UnitPackage].PackageTypeName as ""UnitPackageName""
+																							,[OuterPackage].PackageTypeName as ""OuterPackageName"" 
+																							,[Supplier].[SupplierID] 
+																							,[Supplier].[SupplierName] 
+																						FROM[Warehouse].[StockItems] as StockItems  
+																						INNER JOIN[Warehouse].[PackageTypes] as UnitPackage ON ([StockItems].[UnitPackageID] = [UnitPackage].[PackageTypeID]) 
+																						INNER JOIN[Warehouse].[PackageTypes] as OuterPackage ON ([StockItems].[OuterPackageID] = [OuterPackage].[PackageTypeID]) 
+																						INNER JOIN[Purchasing].[Suppliers] as Supplier ON ([StockItems].SupplierID = Supplier.SupplierID)
+																						WHERE[StockItems].[StockItemID] = @StockItemId",
+																					param: new { stockItemId=id },
 																					commandType: CommandType.Text);
 				}
 
@@ -85,6 +81,34 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			catch (SqlException ex)
 			{
 				logger.LogError(ex, "StockItemsLookup exception looking up a StockItem with Id:{0}", id);
+
+				return this.StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return this.Ok(response);
+		}
+
+		[HttpGet("{id}/stockgroups")]
+
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockGroupListDtoV1>>> GetStockGroups([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
+		{
+			IEnumerable<Model.StockGroupListDtoV1> response = null;
+
+			try
+			{
+				using (SqlConnection db = new SqlConnection(this.connectionString))
+				{
+					response = await db.QueryAsync<Model.StockGroupListDtoV1>(sql:@"SELECT [StockGroups].[StockGroupID] as ""ID"" ,[StockGroupName] as ""Name""
+												FROM[Warehouse].[StockGroups]
+												INNER JOIN [Warehouse].[StockItemStockGroups] ON ([Warehouse].[StockItemStockGroups].StockGroupID = [Warehouse].[StockGroups].[StockGroupID])
+												WHERE [StockItemStockGroups].[StockItemID] = @StockItemId",
+											param: new { stockItemId = id },
+											commandType: CommandType.Text);
+				}
+			}
+			catch (SqlException ex)
+			{
+				logger.LogError(ex, "StockItems exception retrieving list of StockGroups for StockItem with Id:{0}", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
