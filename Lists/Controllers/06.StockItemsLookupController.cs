@@ -93,6 +93,28 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			return this.Ok(response);
 		}
+
+		[HttpGet]
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemSearchDtoV1 request)
+		{
+			IEnumerable<Model.StockItemListDtoV1> response = null;
+
+			try
+			{
+				using (SqlConnection db = new SqlConnection(this.connectionString))
+				{
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsSearchV1]", param: request, commandType: CommandType.Text);
+				}
+			}
+			catch (SqlException ex)
+			{
+				logger.LogError(ex, "StockItemsSearch exception searching for list of StockItems with name like:{0}", request);
+
+				return this.StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return this.Ok(response);
+		}
 	}
 }
 
