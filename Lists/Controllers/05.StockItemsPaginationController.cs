@@ -49,14 +49,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			try
 			{
-				var parameters = new DynamicParameters();
-
-				parameters.Add("@PageNumber", request.PageNumber);
-				parameters.Add("@PageSize", request.PageSize);
-
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM[Warehouse].[StockItems] ORDER BY ID OFFSET @PageSize * (@PageNumber-1) ROWS FETCH NEXT @PageSize ROWS ONLY", param: parameters, commandType: CommandType.Text);
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM[Warehouse].[StockItems] ORDER BY ID OFFSET @PageSize * (@PageNumber-1) ROWS FETCH NEXT @PageSize ROWS ONLY", param: request, commandType: CommandType.Text);
 				}
 			}
 			catch (SqlException ex)
