@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
+	[SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "IDE Generated sample code")]
+
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ReadWriteController : ControllerBase
