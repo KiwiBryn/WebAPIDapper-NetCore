@@ -59,7 +59,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[warehouse].[StockItemsHistorySockItemsListAsAtV1]", param: new { asAt= asAt }, commandType: CommandType.StoredProcedure);
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[warehouse].[StockItemsHistorySockItemsListAsAtV1]", param: new { asAt }, commandType: CommandType.StoredProcedure);
 				}
 			}
 			catch (SqlException ex)
@@ -87,7 +87,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsHistoryStockItemLookupAsAtV1]", param: new { asAt=asAt, stockItemID=id }, commandType: CommandType.StoredProcedure);
+					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsHistoryStockItemLookupAsAtV1]", param: new { asAt, stockItemID=id }, commandType: CommandType.StoredProcedure);
 					if (response == default)
 					{
 						return this.NotFound($"StockItemsHistory StockItemId:{id} not found or no");
