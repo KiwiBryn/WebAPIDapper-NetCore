@@ -68,11 +68,11 @@ namespace devMobile.WebAPIDapper.Lists.Model
 		public int PageNumber { get; set; }
 	}
 
-	public class StockItemSearchDtoV1
+	public class StockItemNameSearchDtoV1
 	{
 		[Required]
 		[MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")]
-		string name { get; set; }
+		public string SearchText { get; set; }
 
 		[Required]
 		[Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be present and greater than 0")]

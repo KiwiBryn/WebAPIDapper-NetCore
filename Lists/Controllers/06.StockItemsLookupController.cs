@@ -53,7 +53,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "StockItemsStockItemLookupV1", param: new { stockItemId=id }, commandType: CommandType.StoredProcedure);
+					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId=id }, commandType: CommandType.StoredProcedure);
 				}
 
 				if (response == default)
@@ -71,31 +71,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(response);
 		}
 
-		[HttpGet("{id}/stockgroups")]
-
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockGroupListDtoV1>>> GetStockGroups([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
-		{
-			IEnumerable<Model.StockGroupListDtoV1> response = null;
-
-			try
-			{
-				using (SqlConnection db = new SqlConnection(this.connectionString))
-				{
-					response = await db.QueryAsync<Model.StockGroupListDtoV1>(sql: "StockItemsStockItemStockGroupListV1", param: new { stockItemId = id }, commandType: CommandType.Text);
-				}
-			}
-			catch (SqlException ex)
-			{
-				logger.LogError(ex, "StockItems exception retrieving list of StockGroups for StockItem with Id:{0}", id);
-
-				return this.StatusCode(StatusCodes.Status500InternalServerError);
-			}
-
-			return this.Ok(response);
-		}
-
 		[HttpGet]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemSearchDtoV1 request)
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -103,7 +80,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsSearchV1]", param: request, commandType: CommandType.Text);
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
 				}
 			}
 			catch (SqlException ex)
