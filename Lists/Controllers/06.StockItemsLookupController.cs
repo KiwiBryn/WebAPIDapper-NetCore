@@ -65,7 +65,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "Retrieving StockItem with Id:{0}", id);
+				logger.LogError(ex, "Looking up StockItem with Id:{0}", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
