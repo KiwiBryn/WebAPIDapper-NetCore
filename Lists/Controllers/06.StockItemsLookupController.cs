@@ -58,12 +58,14 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 				if (response == default)
 				{
-					return this.NotFound($"StockItemId:{id} not found");
+					logger.LogInformation("StockItem:{0} not found", id);
+
+					return this.NotFound($"StockItem:{id} not found");
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsLookup exception looking up a StockItem with Id:{0}", id);
+				logger.LogError(ex, "Retrieving StockItem with Id:{0}", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
@@ -85,7 +87,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsSearch exception searching for list of StockItems with name like:{0}", request);
+				logger.LogError(ex, "Searching for list of StockItems with name like:{0}", request);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
