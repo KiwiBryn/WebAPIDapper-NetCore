@@ -44,8 +44,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			this.logger = logger;
 		}
 
-		[HttpGet("{id}/jpg")]
-		public async Task<ActionResult<Task<FileStreamResult>>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
+		[HttpGet("{id}/image")]
+		public async Task<ActionResult> GetImage([Range(1, int.MaxValue, ErrorMessage = "StockItem id must greater than 0")] int id)
 		{
 			Byte[] response;
 
@@ -58,12 +58,14 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 				if (response == default)
 				{
+					logger.LogInformation("StockItem:{0} image not found", id);
+
 					return this.NotFound($"StockItem:{id} image not found");
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsImage exception looking up a StockItem:{0}", id);
+				logger.LogError(ex, "Looking up a StockItem:{0} image", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
@@ -72,7 +74,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet("{id}/base64")]
-		public async Task<ActionResult> GetImage([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
+		public async Task<ActionResult> GetBase64([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
 		{
 			Byte[] response;
 
@@ -85,12 +87,14 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 				if (response == default)
 				{
+					logger.LogInformation("StockItem:{0} Base64 not found", id);
+
 					return this.NotFound($"StockItem:{id} image not found");
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsImage exception looking up a StockItem:{0}", id);
+				logger.LogError(ex, "Looking up a StockItem withID:{0} base64", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
