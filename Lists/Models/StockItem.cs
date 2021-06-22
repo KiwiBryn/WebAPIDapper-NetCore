@@ -92,6 +92,10 @@ namespace devMobile.WebAPIDapper.Lists.Model
 		public decimal TaxRate { get; set; }
 
 		public string CustomFields { get; set; }
+
+		public int SupplierID { get; set; }
+
+		public string SupplierName { get; set; }
 	}
 
 	public class StockItemHistoryListDtoV1
