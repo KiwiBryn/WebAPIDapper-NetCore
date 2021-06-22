@@ -46,9 +46,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery]DateTime? asAt)
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemsHistoryListDtoV1>>> Get([FromQuery]DateTime? asAt)
 		{
-			IEnumerable<Model.StockItemListDtoV1> response = null;
+			IEnumerable<Model.StockItemsHistoryListDtoV1> response = null;
 
 			if (!asAt.HasValue)
 			{
@@ -59,7 +59,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[warehouse].[StockItemsHistoryStockItemsListAsAtV1]", param: new { asAt }, commandType: CommandType.StoredProcedure);
+					response = await db.QueryAsync<Model.StockItemsHistoryListDtoV1>(sql: "[warehouse].[StockItemsHistoryStockItemsListAsAtV1]", param: new { asAt }, commandType: CommandType.StoredProcedure);
 				}
 			}
 			catch (SqlException ex)
