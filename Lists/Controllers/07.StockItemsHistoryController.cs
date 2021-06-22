@@ -59,7 +59,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[warehouse].[StockItemsHistorySockItemsListAsAtV1]", param: new { asAt }, commandType: CommandType.StoredProcedure);
+					response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: "[warehouse].[StockItemsHistoryStockItemsListAsAtV1]", param: new { asAt }, commandType: CommandType.StoredProcedure);
 				}
 			}
 			catch (SqlException ex)
@@ -71,7 +71,6 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			return this.Ok(response);
 		}
-
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Model.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id, [FromQuery] DateTime? asAt)
