@@ -56,7 +56,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsPagination exception retrieving list of StockItems with PageSize:{0} PageNumber:{1}", request.PageSize, request.PageNumber);
+				logger.LogError(ex, "Retrieving list of StockItems with PageSize:{0} PageNumber:{1}", request.PageSize, request.PageNumber);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
