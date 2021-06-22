@@ -64,7 +64,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsAsync exception retrieving list of StockItems");
+				logger.LogError(ex, "Retrieving list of StockItems");
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
@@ -90,13 +90,15 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 					response = await db.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsHistoryStockItemLookupAsAtV1]", param: new { asAt, stockItemID=id }, commandType: CommandType.StoredProcedure);
 					if (response == default)
 					{
-						return this.NotFound($"StockItemsHistory StockItemId:{id} not found or no");
+						logger.LogInformation("StockItem:{0} not found", id);
+
+						return this.NotFound($"StockItem:{id} not found");
 					}
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsLookup exception looking up a StockItem with Id:{0}", id);
+				logger.LogError(ex, "Retrieving StockItem with Id:{0}", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
@@ -117,13 +119,15 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 					response = await db.QueryAsync<Model.StockItemHistoryListDtoV1>(sql: "[Warehouse].[StockItemsHistoryStockItemHistoryListV1]", param: new { StockItemID = id }, commandType: CommandType.StoredProcedure);
 					if (response == default)
 					{
-						return this.NotFound($"StockItemId:{id} not found");
+						logger.LogInformation("StockItem:{0} not found", id);
+
+						return this.NotFound($"StockItem:{id} not found");
 					}
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsLookup exception looking up a StockItem with Id:{0}", id);
+				logger.LogError(ex, "Retrieving up a StockItem with Id:{0}", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
