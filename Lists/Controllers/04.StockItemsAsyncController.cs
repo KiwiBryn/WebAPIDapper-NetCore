@@ -57,7 +57,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "StockItemsAsync exception retrieving list of StockItems");
+				logger.LogError(ex, "Retrieving list of StockItems");
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
