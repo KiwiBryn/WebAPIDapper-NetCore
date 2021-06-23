@@ -26,10 +26,12 @@
 //	These Microsoft documents provided more inspiration
 //		https://docs.microsoft.com/en-us/dotnet/architecture/microservices/
 //		https://docs.microsoft.com/en-us/azure/azure-sql/database/troubleshoot-common-errors-issues
+//		https://docs.microsoft.com/en-us/sql/connect/ado-net/step-4-connect-resiliently-sql-ado-net
 //
 // Ben Hyrman's articles also provided more inspiration
 //		https://hyr.mn/dapper-and-polly
 //		
+//		Different error codes and exception processing done by authors. Need to spend some quality time reviewing
 //		Did think about retry for async methods which returned object/dynamic but figured would stick to strongly typed ones
 //		Had problems with syntax for BeginTransactionAsync etc. so no retry versions currently
 //		May make the number of retries and intervals configurable but don't need that for V1
@@ -199,6 +201,9 @@ namespace devMobile.DapperTransient
 						// SQL Error Code: 40197
 						// The service has encountered an error processing your request. Please try again.
 						case 40197:
+						// SQL Error Code: 11001
+						// A connection attempt failed
+						case 11001:
 						// SQL Error Code: 10936
 						// Resource ID : %d. The request limit for the elastic pool is %d and has been reached.
 						// See 'http://go.microsoft.com/fwlink/?LinkId=267637' for assistance.
