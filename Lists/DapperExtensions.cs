@@ -48,7 +48,7 @@ using Polly;
 using Polly.Retry;
 
 
-namespace devMobile.DapperTransient
+namespace devMobile.Azure.DapperTransient
 {
 	public static class DapperExtensions
 	{
@@ -59,11 +59,16 @@ namespace devMobile.DapperTransient
 			 .Or<TimeoutException>()
 			 .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-		public static void OpenWithRetry(this SqlConnection cnn) => RetryPolicy.ExecuteAsync(() => cnn.OpenAsync());
+		public static void OpenWithRetry(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.OpenAsync());
 
-		public static void CloseWithRetry(this SqlConnection cnn) => RetryPolicy.ExecuteAsync(() => cnn.CloseAsync());
+		public static void CloseWithRetry(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.CloseAsync());
 
-		public static Task<DataTable> GetSchemaAsyncWithRetry(this SqlConnection cnn) => RetryPolicy.ExecuteAsync(() => cnn.GetSchemaAsync());
+#if NET5_0
+		public static Task<DataTable> GetSchemaAsyncWithRetry(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
+#elif NETCOREAPP3_1
+#else
+#error Unhandled TFM
+#endif
 
 		public static Task<int> ExecuteAsyncWithRetry(
 			  this IDbConnection connection,
@@ -171,7 +176,7 @@ namespace devMobile.DapperTransient
 						// Requests are currently blocked for resource optimization. Query sys.dm_operation_status for pending operations.
 						// Wait till pending create or update requests are complete or delete one of your pending requests and
 						// retry your request later.
-						case 49919:
+                  case 49919:
 						// SQL Error Code: 49918
 						// Cannot process request. Not enough resources to process request.
 						// The service is currently busy.Please retry the request later.
