@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-using devMobile.DapperTransient;
+using devMobile.Azure.DapperTransient;
 
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
