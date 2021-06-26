@@ -34,16 +34,16 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StockGroupsVersionController : ControllerBase
+	public class StockGroupsETagController : ControllerBase
 	{
 		private readonly string connectionString;
-		private readonly ILogger<StockGroupsVersionController> logger;
+		private readonly ILogger<StockGroupsETagController> logger;
 
 		// Would move these to a shared constants file
 		private const byte ETagBytesLength = 8;
 		private const byte ETagBase64Length = 12;
 
-		public StockGroupsVersionController(IConfiguration configuration, ILogger<StockGroupsVersionController> logger)
+		public StockGroupsETagController(IConfiguration configuration, ILogger<StockGroupsETagController> logger)
 		{
 			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
 
@@ -51,7 +51,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpHead]
-		public async Task<ActionResult> Head([Required][FromHeader(Name = "ETag")][MinLength(ETagBase64Length, ErrorMessage = "eTag length invalid too short")][MaxLength(ETagBase64Length, ErrorMessage = "eTag length {0} invalid too long")] string eTag)
+		public async Task<ActionResult> Head([FromHeader(Name = "ETag"), Required(ErrorMessage = "eTag header missing"), MinLength(ETagBase64Length, ErrorMessage = "eTag header value too short"), MaxLength(ETagBase64Length, ErrorMessage = "eTag header value too long")] string eTag)
 		{
 			byte[] headerVersion = new byte[ETagBytesLength];
 
@@ -135,7 +135,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 				{
 					byte[] databaseVersion = await db.ExecuteScalarAsync<byte[]>(sql: "SELECT Version FROM [Warehouse].[StockGroups] WHERE [StockGroupID]=@id", param: new { id }, commandType: CommandType.Text);
 
-					if (databaseVersion==null)
+					if (databaseVersion == null)
 					{
 						logger.LogInformation("StockGroup:{0} not found", id);
 
