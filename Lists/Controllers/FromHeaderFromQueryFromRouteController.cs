@@ -82,6 +82,25 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			User-Agent: Fiddler
 			Host: localhost:36739
 			eTag: USB456
+
+
+			HTTP/1.1 400 Bad Request
+			Content-Type: application/problem+json; charset=utf-8
+			Server: Microsoft-IIS/10.0
+			X-Powered-By: ASP.NET
+			Date: Sun, 27 Jun 2021 05:39:06 GMT
+			Content-Length: 257
+
+			{
+				"type":"https://tools.ietf.org/html/rfc7231#section-6.5.1",
+				"title":"One or more validation errors occurred.",
+				"status":400,
+				"traceId":"00-82b38ed4019b004282e49c70489a76e0-d3674e4952022949-00",
+				"errors":
+				{
+					"eTag":["eTagMust be not more than 5 characters long"]
+				}
+			}		
 		*/
 		[HttpGet("FromHeaderValidation")]
 		public ActionResult GetHeaderValidation([FromHeader(Name = "eTag")][MinLength(3, ErrorMessage = "The eTag header text must be at least 3 characters long")][MaxLength(5, ErrorMessage = "eTagMust be not more than 5 characters long")][Required(ErrorMessage ="The eTag field is required")] string request)
@@ -89,7 +108,20 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(request);
 		}
 
-		//http://localhost:36739/api/FromHeaderFromQueryFromRoute/FromHeaderValidation
+		/*
+			http://localhost:36739/api/FromHeaderFromQueryFromRoute/FromHeaderValidation
+			User-Agent: Fiddler
+			Host: localhost:36739
+			eTag: USB456
+
+
+			HTTP/1.1 400 Bad Request
+			Content-Length: 257
+			Content-Type: application/problem+json; charset=utf-8
+			Server: Microsoft-IIS/10.0
+			X-Powered-By: ASP.NET
+			Date: Sun, 27 Jun 2021 05:41:26 GMT
+		*/
 		[HttpHead("FromHeaderValidation")]
 		public ActionResult HeadHeaderValidation([FromHeader(Name = "eTag")][MinLength(3, ErrorMessage = "The eTag header text must be at least 3 characters long")][MaxLength(5, ErrorMessage = "eTagMust be not more than 5 characters long")][Required(ErrorMessage = "The eTag field is required")] string request)
 		{
