@@ -54,7 +54,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QueryAsyncWithRetry<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
+					response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
 				}
 			}
 			catch (SqlException ex)
@@ -76,7 +76,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					response = await db.QuerySingleOrDefaultAsyncWithRetry<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
+					response = await db.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
 				}
 
 				if (response == default)
