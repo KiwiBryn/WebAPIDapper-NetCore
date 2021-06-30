@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -65,7 +66,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "Looking up a StockItem:{0} image", id);
+				logger.LogError(ex, "Retrieving photo of StockItem with ID:{0} image", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
@@ -94,12 +95,49 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "Looking up a StockItem withID:{0} base64", id);
+				logger.LogError(ex, "Retrieving photo of StockItem with ID:{0} base64", id);
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
 
 			return Ok("data:image/jpeg;base64," + Convert.ToBase64String(response));
+		}
+
+		[HttpPost("{id}/image")]
+		public async Task<ActionResult> Upload([FromRoute(Name = "id")][Range(1, int.MaxValue, ErrorMessage = "StockItem id must greater than 0")] int id, [FromForm] IFormFile image)
+		{
+			if ((image.Length == 0) || (image.ContentType != "application/octet-stream"))
+			{
+				return this.BadRequest();
+			}
+
+			try
+			{
+				using (MemoryStream ms = new MemoryStream())
+				{
+					await image.CopyToAsync(ms);
+
+					ms.Seek(0, SeekOrigin.Begin);
+
+					using (SqlConnection db = new SqlConnection(this.connectionString))
+					{
+						DynamicParameters parameters = new DynamicParameters();
+
+						parameters.Add("StockItemId", id);
+						parameters.Add("photo", ms, DbType.Binary, ParameterDirection.Input);
+
+						await db.ExecuteAsync(sql: @"UPDATE [WareHouse].[StockItems] SET [Photo]=@Photo WHERE StockItemID=@StockItemId", param: parameters, commandType: CommandType.Text);
+					}
+				}
+			}
+			catch (SqlException ex)
+			{
+				logger.LogError(ex, "Updating photo of StockItem with ID:{0}", id);
+
+				return this.StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return this.Ok();
 		}
 	}
 }
