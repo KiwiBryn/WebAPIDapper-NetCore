@@ -106,9 +106,19 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		[HttpPost("{id}/image")]
 		public async Task<ActionResult> Upload([FromRoute(Name = "id")][Range(1, int.MaxValue, ErrorMessage = "StockItem id must greater than 0")] int id, [FromForm] IFormFile image)
 		{
-			if ((image.Length == 0) || (image.ContentType != "application/octet-stream"))
+			if (image == null) 
 			{
-				return this.BadRequest();
+				return this.BadRequest("Image image file missing");
+			}
+
+			if (image.Length == 0)
+			{
+				return this.BadRequest("Image image file is empty");
+			}
+
+			if (string.Compare(image.ContentType, "application/octet-stream",true) != 0)
+			{
+				return this.BadRequest("Image image file content-type is not application/octet-stream ");
 			}
 
 			try
