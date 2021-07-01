@@ -116,9 +116,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 				return this.BadRequest("Image image file is empty");
 			}
 
-			if (string.Compare(image.ContentType, "application/octet-stream",true) != 0)
+			if ((string.Compare(image.ContentType, "application/octet-stream",true) != 0) && (string.Compare(image.ContentType, "image/jpeg", true) != 0))
 			{
-				return this.BadRequest("Image image file content-type is not application/octet-stream ");
+				return this.BadRequest("Image image file content-type is not application/octet-stream or image/jpeg");
 			}
 
 			try
