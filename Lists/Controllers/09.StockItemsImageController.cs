@@ -108,17 +108,17 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		{
 			if (image == null) 
 			{
-				return this.BadRequest("Image image file missing");
+				return this.BadRequest("Image file missing");
 			}
 
 			if (image.Length == 0)
 			{
-				return this.BadRequest("Image image file is empty");
+				return this.BadRequest("Image file is empty");
 			}
 
 			if ((string.Compare(image.ContentType, "application/octet-stream",true) != 0) && (string.Compare(image.ContentType, "image/jpeg", true) != 0))
 			{
-				return this.BadRequest("Image image file content-type is not application/octet-stream or image/jpeg");
+				return this.BadRequest("Image file content-type is not application/octet-stream or image/jpeg");
 			}
 
 			try
