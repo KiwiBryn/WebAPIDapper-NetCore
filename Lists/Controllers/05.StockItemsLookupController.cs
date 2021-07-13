@@ -39,7 +39,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsLookupController(IConfiguration configuration, ILogger<StockItemsLookupController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}

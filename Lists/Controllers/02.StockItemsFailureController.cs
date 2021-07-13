@@ -36,7 +36,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsFailureController(IConfiguration configuration, ILogger<StockItemsFailureController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}

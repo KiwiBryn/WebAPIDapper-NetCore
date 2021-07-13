@@ -38,7 +38,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsAsyncController(IConfiguration configuration, ILogger<StockItemsAsyncController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}

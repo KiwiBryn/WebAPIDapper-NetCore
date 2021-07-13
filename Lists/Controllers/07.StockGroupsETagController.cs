@@ -45,7 +45,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockGroupsETagController(IConfiguration configuration, ILogger<StockGroupsETagController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}

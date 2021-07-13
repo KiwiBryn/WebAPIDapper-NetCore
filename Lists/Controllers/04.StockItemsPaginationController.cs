@@ -37,7 +37,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsPaginationController(IConfiguration configuration, ILogger<StockItemsPaginationController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}

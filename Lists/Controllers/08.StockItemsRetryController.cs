@@ -40,7 +40,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsRetryController(IConfiguration configuration, ILogger<StockItemsRetryController> logger)
 		{
-			this.connectionString = configuration.GetSection("ConnectionStrings").GetSection("WideWorldImportersDatabase").Value;
+			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
 
 			this.logger = logger;
 		}
