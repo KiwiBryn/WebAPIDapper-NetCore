@@ -51,7 +51,11 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpHead]
-		public async Task<ActionResult> Head([FromHeader(Name = "ETag"), Required(ErrorMessage = "eTag header missing"), MinLength(ETagBase64Length, ErrorMessage = "eTag header value too short"), MaxLength(ETagBase64Length, ErrorMessage = "eTag header value too long")] string eTag)
+		public async Task<ActionResult> Head(
+			[FromHeader(Name = "ETag")] 
+			[Required(ErrorMessage = "eTag header missing")]
+			[MinLength(ETagBase64Length, ErrorMessage = "eTag header value too short")]
+			[MaxLength(ETagBase64Length, ErrorMessage = "eTag header value too long")] string eTag)
 		{
 			byte[] headerVersion = new byte[ETagBytesLength];
 
@@ -118,9 +122,22 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpHead("{id}")]
-		public async Task<ActionResult> Head([Range(1, int.MaxValue, ErrorMessage = "Stock Group id must greater than 0")] int id, [Required][FromHeader(Name = "ETag")][MinLength(ETagBase64Length, ErrorMessage = "eTag length {0} invalid too short")][MaxLength(ETagBase64Length, ErrorMessage = "eTag length {0} invalid too long")] string eTag)
+		public async Task<ActionResult> Head(
+			[FromHeader(Name = "ETag")]
+			[MinLength(ETagBase64Length, ErrorMessage = "eTag length {0} invalid too short")]
+			[MaxLength(ETagBase64Length, ErrorMessage = "eTag length {0} invalid too long")]
+			[Required(ErrorMessage = "eTag header missing")] string eTag,
+			[Range(1, int.MaxValue, ErrorMessage = "Stock Group id must greater than 0")]
+			int id )
 		{
 			byte[] headerVersion = new byte[ETagBytesLength];
+
+			if (string.IsNullOrWhiteSpace(eTag))
+			{
+				logger.LogInformation("eTag invalid missing or empty");
+
+				return this.BadRequest("eTag invalid missing or empty");
+			}
 
 			if (!Convert.TryFromBase64String(eTag, headerVersion, out _))
 			{
