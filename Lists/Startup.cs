@@ -36,6 +36,10 @@ namespace devMobile.WebAPIDapper.Lists
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
+
+			services.AddResponseCaching();
+
+			services.AddApplicationInsightsTelemetry();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +51,8 @@ namespace devMobile.WebAPIDapper.Lists
 			}
 
 			app.UseHttpsRedirection();
+
+			app.UseResponseCaching();
 
 			app.UseRouting();
 
