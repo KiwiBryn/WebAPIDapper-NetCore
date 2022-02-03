@@ -41,7 +41,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsBasicController(IConfiguration configuration)
 		{
-			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
+			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 		}
 
 		public IEnumerable<StockItemListDto> Get()

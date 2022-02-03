@@ -40,7 +40,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 		public StockItemsHistoryController(IConfiguration configuration, ILogger<StockItemsHistoryController> logger)
 		{
-			this.connectionString = configuration.GetConnectionString("WideWorldImportersDatabase");
+			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
 			this.logger = logger;
 		}
