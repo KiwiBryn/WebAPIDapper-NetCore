@@ -59,9 +59,9 @@ namespace devMobile.Azure.DapperTransient
 			 .Or<TimeoutException>()
 			 .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-		public static void OpenWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.OpenAsync());
+		public static Task OpenWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.OpenAsync());
 
-		public static void CloseWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.CloseAsync());
+		public static Task CloseWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.CloseAsync());
 
 #if NET5_0
 		public static Task<DataTable> GetSchemaWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
