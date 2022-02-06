@@ -23,10 +23,9 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-using devMobile.Azure.DapperTransient;
+using Dapper.Extensions;
 
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
@@ -36,14 +35,15 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 	public class StockItemsCachingController : ControllerBase
 	{
 		private const int StockItemsListResponseCacheDuration = 30;
-		private readonly string connectionString;
+
 		private readonly ILogger<StockItemsCachingController> logger;
+		private readonly IDapper dapper;
 
-		public StockItemsCachingController(IConfiguration configuration, ILogger<StockItemsCachingController> logger)
+		public StockItemsCachingController(ILogger<StockItemsCachingController> logger, IDapper dapper)
 		{
-			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
-
 			this.logger = logger;
+
+			this.dapper = dapper;
 		}
 
 		[HttpGet("Response")]
@@ -56,10 +56,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			try
 			{
-				using (SqlConnection db = new SqlConnection(this.connectionString))
-				{
-					response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
-				}
+				response = await dapper.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
 			}
 			catch (SqlException ex)
 			{
@@ -81,11 +78,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			try
 			{
-				using (SqlConnection db = new SqlConnection(this.connectionString))
-				{
-					response = await db.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
-				}
-
+				response = await dapper.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
 				if (response == default)
 				{
 					logger.LogInformation("StockItem:{0} not found", id);
@@ -102,6 +95,67 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			return this.Ok(response);
 		}
+
+#if DAPPER_EXTENSIONS_CACHE_MEMORY
+		[HttpGet("DapperMemory")]
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDapper()
+		{
+			List<Model.StockItemListDtoV1> response;
+
+			logger.LogInformation("Dapper memory cache load");
+
+			try
+			{
+				response = await dapper.QueryAsync<Model.StockItemListDtoV1>(
+							sql: "[Warehouse].[StockItemsStockItemLookupV1]",
+							commandType: CommandType.StoredProcedure,
+							enableCache: true,
+							cacheExpire: TimeSpan.FromSeconds(StockItemsListResponseCacheDuration));
+			}
+			catch (SqlException ex)
+			{
+				logger.LogError(ex, "Retrieving list of StockItems");
+
+				return this.StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return this.Ok(response);
+		}
+
+		[HttpGet("DapperMemoryVarying")]
+		public async Task<ActionResult<Model.StockItemGetDtoV1>> GetDapperVarying([FromQuery(Name = "id"), Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
+		{
+			Model.StockItemGetDtoV1 response = null;
+
+			logger.LogInformation("Dapper memory cache load id:{0}", id);
+
+			try
+			{
+				response = await dapper.QuerySingleOrDefaultAsync<Model.StockItemGetDtoV1>(
+							sql: "[Warehouse].[StockItemsStockItemLookupV1]",
+							param: new { stockItemId = id },
+							commandType: CommandType.StoredProcedure,
+							cacheKey: $"StockItem:{id}",
+							enableCache: true,
+							cacheExpire: TimeSpan.FromSeconds(StockItemsListResponseCacheDuration)
+							);
+				if (response == default)
+				{
+					logger.LogInformation("StockItem:{0} not found", id);
+
+					return this.NotFound($"StockItem:{id} not found");
+				}
+			}
+			catch (SqlException ex)
+			{
+				logger.LogError(ex, "Looking up StockItem with Id:{0}", id);
+
+				return this.StatusCode(StatusCodes.Status500InternalServerError);
+			}
+
+			return this.Ok(response);
+		}
+#endif
 	}
 }
 
