@@ -21,7 +21,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Dapper.Extensions.MSSQL;
-using Dapper.Extensions.Caching.Memory;
+#if DAPPER_EXTENSIONS_CACHE_MEMORY
+	using Dapper.Extensions.Caching.Memory;
+#endif
+#if DAPPER_EXTENSIONS_CACHE_REDIS
+	using Dapper.Extensions.Caching.Redis;
+#endif
 
 namespace devMobile.WebAPIDapper.Lists
 {
@@ -47,6 +52,14 @@ namespace devMobile.WebAPIDapper.Lists
 			{
 				AllMethodsEnableCache = false
 			});
+#endif
+#if DAPPER_EXTENSIONS_CACHE_REDIS
+			services.AddDapperCachingInRedis(new RedisConfiguration
+			{
+				AllMethodsEnableCache = false,
+				KeyPrefix = "WebApiDapper",
+				ConnectionString = Configuration.GetConnectionString("")
+			}); ;
 #endif
 			services.AddApplicationInsightsTelemetry();
 		}
