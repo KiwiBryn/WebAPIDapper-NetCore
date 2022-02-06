@@ -51,15 +51,15 @@ namespace devMobile.WebAPIDapper.Lists
 			services.AddDapperCachingInMemory(new MemoryConfiguration
 			{
 				AllMethodsEnableCache = false
-			});
+ 			});
 #endif
 #if DAPPER_EXTENSIONS_CACHE_REDIS
 			services.AddDapperCachingInRedis(new RedisConfiguration
 			{
 				AllMethodsEnableCache = false,
-				KeyPrefix = "WebApiDapper",
-				ConnectionString = Configuration.GetConnectionString("")
-			}); ;
+				KeyPrefix = Configuration.GetConnectionString("RedisKeyPrefix"),
+				ConnectionString = Configuration.GetConnectionString("RedisConnection")
+			}); 
 #endif
 			services.AddApplicationInsightsTelemetry();
 		}
