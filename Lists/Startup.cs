@@ -20,6 +20,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Dapper.Extensions.MSSQL;
+using Dapper.Extensions.Caching.Memory;
 
 namespace devMobile.WebAPIDapper.Lists
 {
@@ -39,6 +41,13 @@ namespace devMobile.WebAPIDapper.Lists
 
 			services.AddResponseCaching();
 
+			services.AddDapperForMSSQL();
+#if DAPPER_EXTENSIONS_CACHE_MEMORY
+			services.AddDapperCachingInMemory(new MemoryConfiguration
+			{
+				AllMethodsEnableCache = false
+			});
+#endif
 			services.AddApplicationInsightsTelemetry();
 		}
 

@@ -6,8 +6,14 @@
     <RootNamespace>devMobile.WebAPIDapper.Lists</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DAPPER_EXTENSIONS_CACHE_MEMORY</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="4.0.2" />
+    <PackageReference Include="Dapper.Extensions.MSSQL" Version="4.0.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
