@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using Dapper.Extensions;
@@ -36,11 +37,14 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 	{
 		private const int StockItemsListResponseCacheDuration = 30;
 
+		private readonly IConfiguration Configuration;
 		private readonly ILogger<StockItemsCachingController> logger;
 		private readonly IDapper dapper;
 
-		public StockItemsCachingController(ILogger<StockItemsCachingController> logger, IDapper dapper)
+		public StockItemsCachingController( IConfiguration configuration, ILogger<StockItemsCachingController> logger, IDapper dapper)
 		{
+			this.Configuration = configuration;
+
 			this.logger = logger;
 
 			this.dapper = dapper;
@@ -101,7 +105,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		{
 			List<Model.StockItemListDtoV1> response;
 
-			logger.LogInformation("Dapper memory cache load");
+			logger.LogInformation("Dapper cache load");
 
 			try
 			{
@@ -109,7 +113,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 							sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]",
 							commandType: CommandType.Text,
 							enableCache: true,
-							cacheExpire: TimeSpan.FromSeconds(StockItemsListResponseCacheDuration));
+							cacheExpire: TimeSpan.Parse(this.Configuration.GetValue<string>("DapperCachingDuration"))
+							);
+
 			}
 			catch (SqlException ex)
 			{
@@ -126,7 +132,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		{
 			Model.StockItemGetDtoV1 response = null;
 
-			logger.LogInformation("Dapper memory cache load id:{0}", id);
+			logger.LogInformation("Dapper cache varying load id:{0}", id);
 
 			try
 			{
@@ -136,7 +142,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 							commandType: CommandType.StoredProcedure,
 							cacheKey: $"StockItem:{id}",
 							enableCache: true,
-							cacheExpire: TimeSpan.FromSeconds(StockItemsListResponseCacheDuration)
+							cacheExpire: TimeSpan.Parse(this.Configuration.GetValue<string>("DapperCachingDuration"))
 							);
 				if (response == default)
 				{
