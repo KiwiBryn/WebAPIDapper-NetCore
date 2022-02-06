@@ -96,7 +96,6 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(response);
 		}
 
-#if DAPPER_EXTENSIONS_CACHE_MEMORY
 		[HttpGet("DapperMemory")]
 		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDapper()
 		{
@@ -107,8 +106,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			try
 			{
 				response = await dapper.QueryAsync<Model.StockItemListDtoV1>(
-							sql: "[Warehouse].[StockItemsStockItemLookupV1]",
-							commandType: CommandType.StoredProcedure,
+							sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]",
+							commandType: CommandType.Text,
 							enableCache: true,
 							cacheExpire: TimeSpan.FromSeconds(StockItemsListResponseCacheDuration));
 			}
@@ -155,7 +154,6 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			return this.Ok(response);
 		}
-#endif
 	}
 }
 
