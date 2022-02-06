@@ -176,7 +176,7 @@ namespace devMobile.Azure.DapperTransient
 						// Requests are currently blocked for resource optimization. Query sys.dm_operation_status for pending operations.
 						// Wait till pending create or update requests are complete or delete one of your pending requests and
 						// retry your request later.
-                  case 49919:
+						case 49919:
 						// SQL Error Code: 49918
 						// Cannot process request. Not enough resources to process request.
 						// The service is currently busy.Please retry the request later.
