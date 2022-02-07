@@ -112,6 +112,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 				response = await dapper.QueryAsync<Model.StockItemListDtoV1>(
 							sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]",
 							commandType: CommandType.Text,
+							cacheKey: "StockItems",
 							enableCache: true,
 							cacheExpire: TimeSpan.Parse(this.Configuration.GetValue<string>("DapperCachingDuration"))
 							);
