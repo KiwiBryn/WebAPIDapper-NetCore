@@ -39,6 +39,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -69,6 +70,9 @@ namespace devMobile.Azure.DapperTransient
 #else
 #error Unhandled TFM
 #endif
+		public static Task<int> ExecuteWithRetryAsync(
+			this IDbConnection connection, 
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.ExecuteAsync(command));
 
 		public static Task<int> ExecuteWithRetryAsync(
 			  this IDbConnection connection,
@@ -111,6 +115,19 @@ namespace devMobile.Azure.DapperTransient
 			 CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType));
 
 		public static Task<IDataReader> ExecuteReaderWithRetryAsync(
+			this IDbConnection connection,
+			CommandDefinition command,
+			CommandBehavior commandBehavior) => RetryPolicy.ExecuteAsync(() => connection.ExecuteReaderAsync(command, commandBehavior));
+
+		public static Task<DbDataReader> ExecuteReaderWithRetryAsync(
+			this DbConnection connection,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.ExecuteReaderAsync(command));
+
+		public static Task<IDataReader> ExecuteReaderWithRetryAsync(
+			this IDbConnection connection, 
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.ExecuteReaderAsync(command));
+
+		public static Task<IDataReader> ExecuteReaderWithRetryAsync(
 				this IDbConnection connection,
 				string sql,
 				object param = null,
@@ -149,6 +166,123 @@ namespace devMobile.Azure.DapperTransient
 			 IDbTransaction transaction = null,
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<dynamic> QuerySingleWithRetryAsync(
+			this IDbConnection connection,
+			string sql,
+			object param = null,
+			IDbTransaction transaction = null,
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync(sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<object> QuerySingleWithRetryAsync(
+			this IDbConnection connection,
+			Type type,
+			string sql,
+			object param = null,
+			IDbTransaction transaction = null,
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync(type, sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<dynamic> QuerySingleWithRetryWithRetryAsync<T>(
+			this IDbConnection connection,
+			string sql,
+			object param = null,
+			IDbTransaction transaction = null,
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync(sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<object> QuerySingleWithRetryAsync(
+			this IDbConnection connection,
+			Type type,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync(type, command));
+
+		public static Task<T> QuerySingleWithRetryAsync<T>(
+			this IDbConnection connection,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync<T>(command));
+
+		public static Task<dynamic> QuerySingleWithRetryAsync(
+			this IDbConnection connection,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleAsync(command));
+
+		public static Task<object> QuerySingleOrDefaultWithRetryAsync(
+			this IDbConnection connection,
+			Type type,
+			string sql,
+			object param = null,
+			IDbTransaction transaction = null,
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(type, sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<object> QuerySingleOrDefaultWithRetryAsync(
+			this IDbConnection connection,
+			Type type,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(type, command));
+
+		public static Task<dynamic> QuerySingleOrDefaultWithRetryAsync(
+			this IDbConnection connection,
+			string sql,
+			object param = null,
+			IDbTransaction transaction = null,
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<dynamic> QuerySingleOrDefaultWithRetryAsync(
+			this IDbConnection connection,
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(command));
+
+		public static Task<IEnumerable<dynamic>> ReadWithRetryAsync(
+			this SqlMapper.GridReader gridReader,
+			bool buffered = true) => RetryPolicy.ExecuteAsync(() => gridReader.ReadAsync(buffered));
+
+		public static Task<IEnumerable<object>> ReadWithRetryAsync(
+			this SqlMapper.GridReader gridReader,
+			Type type, 
+			bool buffered = true) => RetryPolicy.ExecuteAsync(() => gridReader.ReadAsync(type, buffered));
+
+		public static Task<IEnumerable<T>> ReadWithRetryAsync<T>(
+			this SqlMapper.GridReader gridReader,
+			bool buffered = true) => RetryPolicy.ExecuteAsync(() => gridReader.ReadAsync<T>(buffered));
+
+		public static Task<T> ReadFirstWithRetryAsync<T>(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstAsync<T>());
+
+		public static Task<object> ReadFirstWithRetryAsync(
+			this SqlMapper.GridReader gridReader,
+			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstAsync(type));
+
+		public static Task<dynamic> ReadFirstWithRetryAsync(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstAsync());
+
+		public static Task<T> ReadFirstOrDefaultWithRetryAsync<T>(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstOrDefaultAsync<T>());
+
+		public static Task<dynamic> ReadFirstOrDefaultWithRetryAsync(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstOrDefaultAsync<dynamic>());
+
+		public static Task<object> ReadFirstOrDefaultWithRetryAsync(
+				this SqlMapper.GridReader gridReader,
+				Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadFirstOrDefaultAsync(type));
+
+		public static Task<T> ReadSingleWithRetryAsync<T>(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleAsync<T>());
+
+		public static Task<dynamic> ReadSingleWithRetryAsync(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleAsync<dynamic>());
+
+		public static Task<object> ReadSingleWithRetryAsync(
+			this SqlMapper.GridReader gridReader,
+			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleAsync(type));
+
+		public static Task<object> ReadSingleOrDefaulWithRetryAsync(
+			this SqlMapper.GridReader gridReader,
+			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync(type));
+
+		public static Task<dynamic> ReadSingleOrDefaulWithRetryAsync(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync<dynamic>());
+
+		public static Task<T> ReadSingleOrDefaultWithRetryAsync<T>(
+			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync<T>());
 
 		/// <summary>
 		///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
