@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/StockItemsBasic",
+      "launchUrl": "api/StockItemsCaching/DapperMemory",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
