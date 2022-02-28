@@ -21,80 +21,17 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using devMobile.Azure.DapperTransient;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+
+using devMobile.Azure.DapperTransient;
+
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
-	/*
-	public class InvoiceSummaryGetDtoV1
-	{
-		public int OrderId { get; set; }
-
-		public int DeliveryMethodId { get; set; }
-		public string DeliveryMethodName { get; set; }
-
-		public int SalesPersonId { get; set; }
-		public string SalesPersonName { get; set; }
-
-		public DateTime InvoicedOn { get; set; }
-		public string CustomerPurchaseOrderNumber { get; set; }
-		public bool IsCreditNote { get; set; }
-		public string CreditNoteReason { get; set; }
-
-		public string Comments { get; set; }
-
-
-		public string DeliveryInstructions { get; set; }
-
-		public string DeliveryRun { get; set; }
-
-		public DateTime? DeliveredAt { get; set; }
-
-		public string DeliveredTo { get; set; }
-
-		public InvoiceInvoiceLineSummaryListDtoV1[] InvoiceLines { get; set; }
-
-		public StockItemTransactionSummaryListDtoV1[] StockItemTransactions { get; set; }
-	}
-
-	public class InvoiceInvoiceLineSummaryListDtoV1
-	{
-		public int InvoiceLineID { get; set; }
-
-		public int StockItemID { get; set; }
-		public string StockItemDescription { get; set; }
-
-		public int PackageTypeID { get; set; }
-		public string PackageTypeName { get; set; }
-
-		public int Quantity { get; set; }
-		public decimal? UnitPrice { get; set; }
-		public decimal TaxRate { get; set; }
-		public decimal TaxAmount { get; set; }
-		public decimal ExtendedPrice { get; set; }
-	}
-
-	public class StockItemTransactionSummaryListDtoV1
-	{
-		public int StockItemTransactionID { get; set; }
-
-		public int StockItemID { get; set; }
-		public string StockItemName { get; set; }
-
-		public int TransactionTypeID { get; set; }
-		public string TransactionTypeName { get; set; }
-
-		public DateTime TransactionAt { get; set; }
-
-		public decimal Quantity { get; set; }
-	}
-	*/
-
 	[Route("api/[controller]")]
 	[ApiController]
 	public class InvoiceSummaryLookupController : ControllerBase
@@ -118,24 +55,24 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					var order = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
+					var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
 
-					response = await order.ReadSingleOrDefaultWithRetryAsync<Model.InvoiceSummaryGetDtoV1>();
+					response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Model.InvoiceSummaryGetDtoV1>();
 					if (response == default)
 					{
-						logger.LogInformation("Order:{0} not found", id);
+						logger.LogInformation("Invoice:{0} not found", id);
 
-						return this.NotFound($"Order:{id} not found");
+						return this.NotFound($"Invoice:{id} not found");
 					}
 
-					response.InvoiceLines = (await order.ReadWithRetryAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
+					response.InvoiceLines = (await invoiceSummary.ReadWithRetryAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
 
-					response.StockItemTransactions = (await order.ReadWithRetryAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
+					response.StockItemTransactions = (await invoiceSummary.ReadWithRetryAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
 				}
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "Retrieving Order and list of OrderLines");
+				logger.LogError(ex, "Retrieving Invoice, Invoice Lines or Stock Item Transactions");
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
