@@ -34,12 +34,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class InvoiceSummaryLookupController : ControllerBase
+	public class InvoiceQueryMultipleLookupController : ControllerBase
 	{
 		private readonly string connectionString;
-		private readonly ILogger<InvoiceSummaryLookupController> logger;
+		private readonly ILogger<InvoiceQueryMultipleLookupController> logger;
 
-		public InvoiceSummaryLookupController(IConfiguration configuration, ILogger<InvoiceSummaryLookupController> logger)
+		public InvoiceQueryMultipleLookupController(IConfiguration configuration, ILogger<InvoiceQueryMultipleLookupController> logger)
 		{
 			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
