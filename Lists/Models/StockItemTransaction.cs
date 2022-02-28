@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------------------
-// Copyright (c) Feb 2022, devMobile Software
+// Copyright (c) February 2022, devMobile Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,22 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Lists.Model
 {
-	public class MultipleResultsetsUnrelatedController : Controller
+	using System;
+
+	public class StockItemTransactionSummaryListDtoV1
 	{
-		public IActionResult Index()
-		{
-			return View();
-		}
+		public int StockItemTransactionID { get; set; }
+
+		public int StockItemID { get; set; }
+		public string StockItemName { get; set; }
+
+		public int TransactionTypeID { get; set; }
+		public string TransactionTypeName { get; set; }
+
+		public DateTime TransactionAt { get; set; }
+
+		public decimal Quantity { get; set; }
 	}
 }

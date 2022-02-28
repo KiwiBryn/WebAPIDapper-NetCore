@@ -14,12 +14,10 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-
-
-using System.Text.Json.Serialization;
-
 namespace devMobile.WebAPIDapper.Lists.Model
 {
+	using System.Text.Json.Serialization;
+
 	public class StockGroupListDtoV1
 	{
 		public int Id { get; set; }

@@ -14,12 +14,11 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-using System;
-using System.ComponentModel.DataAnnotations;
-
-
 namespace devMobile.WebAPIDapper.Lists.Model
 {
+	using System;
+	using System.ComponentModel.DataAnnotations;
+
 	public class StockItemListDtoV1
 	{
 		public int Id { get; set; }
