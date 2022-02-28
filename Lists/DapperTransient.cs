@@ -274,7 +274,7 @@ namespace devMobile.Azure.DapperTransient
 			this SqlMapper.GridReader gridReader,
 			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleAsync(type));
 
-		public static Task<object> ReadSingleOrDefaulWithRetryAsync(
+		public static Task<object> ReadSingleOrDefaultWithRetryAsync(
 			this SqlMapper.GridReader gridReader,
 			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync(type));
 
