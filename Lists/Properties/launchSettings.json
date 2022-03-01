@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/InvoiceSummaryLookup?id=10",
+      "launchUrl": "api/InvoiceQuerySplitOn",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

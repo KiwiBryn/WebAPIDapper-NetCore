@@ -26,7 +26,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 using devMobile.Azure.DapperTransient;
-using Dapper;
 
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
@@ -68,7 +67,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			{
 				using (SqlConnection db = new SqlConnection(this.connectionString))
 				{
-					var stockGroups = await db.QueryAsync<StockGroupStockItemsListDto, StockItemListDto, StockGroupStockItemsListDto>(
+					var stockGroups = await db.QueryWithRetryAsync<StockGroupStockItemsListDto, StockItemListDto, StockGroupStockItemsListDto>(
 						sql: @"SELECT [StockGroups].[StockGroupID] as 'StockGroupID'" +
 									",[StockGroups].[StockGroupName]" +
 									",[StockItems].StockItemID as 'ID'" +
@@ -80,7 +79,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 									"INNER JOIN[Warehouse].[StockItems] ON ([Warehouse].[StockItemStockGroups].[StockItemID] = [StockItems].[StockItemID])",
 							(stockGroup, stockItem) =>
 							{
-								// Not certain I link using a List<> here...
+								// Not certain I like using a List<> here...
 								stockGroup.StockItems.Add(stockItem);
 								return stockGroup;
 							},
