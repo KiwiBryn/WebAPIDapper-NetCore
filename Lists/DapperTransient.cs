@@ -106,6 +106,119 @@ namespace devMobile.Azure.DapperTransient
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType));
 
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
+			this IDbConnection connection,
+			string sql,
+			Func<TFirst, TSecond, TReturn> map,
+			object param = null,
+			IDbTransaction transaction = null,
+			bool buffered = true,
+			string splitOn = "Id",
+			int? commandTimeout = null,
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, 
+			Func<TFirst, TSecond, TReturn> map, 
+			string splitOn = "Id") => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TReturn>(command, map, splitOn));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TReturn>(
+			this IDbConnection connection, 
+			string sql, 
+			Func<TFirst, TSecond, TThird, TReturn> map, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			bool buffered = true, 
+			string splitOn = "Id", 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, 
+			Func<TFirst, TSecond, TThird, TReturn> map, 
+			string splitOn = "Id") => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TReturn>(command, map, splitOn));
+
+		public static Task<IEnumerable<object>> QueryWithRetryAsync(
+			this IDbConnection connection, 
+			Type type, 
+			string sql, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() =>connection.QueryAsync(type, sql, param, transaction, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(
+			this IDbConnection connection, 
+			string sql, 
+			Func<TFirst, TSecond, TThird, TFourth, TReturn> map, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			bool buffered = true, 
+			string splitOn = "Id", 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(
+			this IDbConnection connection, 
+			string sql, 
+			Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			bool buffered = true, 
+			string splitOn = "Id", 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, 
+			Func<TFirst, TSecond, TThird, TFourth, TFifth, TReturn> map, 
+			string splitOn = "Id")=> RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TReturn>(command, map, splitOn));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(
+			this IDbConnection connection, 
+			string sql, 
+			Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			bool buffered = true, 
+			string splitOn = "Id", 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TReturn> map, 
+			string splitOn = "Id") => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(command, map, splitOn));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(
+			this IDbConnection connection, 
+			string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, 
+			object param = null, 
+			IDbTransaction transaction = null, 
+			bool buffered = true, 
+			string splitOn = "Id", 
+			int? commandTimeout = null, 
+			CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, 
+			Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, 
+			string splitOn = "Id") => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(command, map, splitOn));
+
+		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(
+			this IDbConnection connection, 
+			CommandDefinition command, 
+			Func<TFirst, TSecond, TThird, TFourth, TReturn> map, 
+			string splitOn = "Id") => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(command, map, splitOn));
+
+		public static Task<IEnumerable<dynamic>> QueryWithRetryAsync(
+			this IDbConnection connection, 
+			CommandDefinition command) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(command));
+
 		public static Task<T> QueryFirstWithRetryAsync<T>(
 			 this IDbConnection connection,
 			 string sql,
