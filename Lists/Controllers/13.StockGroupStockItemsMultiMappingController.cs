@@ -46,12 +46,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 	[Route("api/[controller]")]
 	[ApiController]
-	public class InvoiceQuerySplitOnController : ControllerBase
+	public class StockGroupStockItemsMultiMappingController : ControllerBase
 	{
 		private readonly string connectionString;
-		private readonly ILogger<InvoiceQuerySplitOnController> logger;
+		private readonly ILogger<StockGroupStockItemsMultiMappingController> logger;
 
-		public InvoiceQuerySplitOnController(IConfiguration configuration, ILogger<InvoiceQuerySplitOnController> logger)
+		public StockGroupStockItemsMultiMappingController(IConfiguration configuration, ILogger<StockGroupStockItemsMultiMappingController> logger)
 		{
 			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
@@ -96,7 +96,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 			catch (SqlException ex)
 			{
-				logger.LogError(ex, "Retrieving Invoice, Invoice Lines or Stock Item Transactions");
+				logger.LogError(ex, "Retrieving StockGroup, StockItemStockGroup or StockItems");
 
 				return this.StatusCode(StatusCodes.Status500InternalServerError);
 			}
