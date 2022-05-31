@@ -67,18 +67,21 @@ namespace devMobile.WebAPIDapper.Lists
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+#if ERROR_PAGE_STANDARD
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
 			}
+#endif
+#if ERROR_PAGE_CUSTOM
+			app.UseExceptionHandler("/Error");
+#endif
 
 			app.UseHttpsRedirection();
 
 			app.UseResponseCaching();
 
 			app.UseRouting();
-
-			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{
