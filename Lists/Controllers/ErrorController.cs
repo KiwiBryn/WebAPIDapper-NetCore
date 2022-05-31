@@ -27,14 +27,9 @@ namespace ListsErrorPages.Controllers
 		[Route("/error")]
 		public IActionResult HandleError([FromServices] IHostEnvironment hostEnvironment)
 		{
-			if (hostEnvironment.IsDevelopment())
-			{
-				var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
+			var exceptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>()!;
 
-				return Problem(detail: exceptionHandlerFeature.Error.StackTrace, title: exceptionHandlerFeature.Error.Message);
-			}
-
-			return Problem();
+			return Problem("Something has gone wrong call the help desk on 0800-RebootIT", statusCode:exceptionHandlerFeature.Error.HResult, title:"Webpage has died");
 		}
 	}
 }
