@@ -34,7 +34,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		[Route("/error")]
 		public IActionResult HandleError([FromServices] IHostEnvironment hostEnvironment)
 		{
-			return Problem(detail: errorHandlerSettings.Detail, title: errorHandlerSettings.Title);
+			if (!this.errorHandlerSettings.UrlSpecificSettings.ContainsKey(this.Request.Host.Host))
+			{
+				return Problem(detail: errorHandlerSettings.Detail, title: errorHandlerSettings.Title);
+			}
+
+			return Problem(errorHandlerSettings.UrlSpecificSettings[this.Request.Host.Host].Title, errorHandlerSettings.UrlSpecificSettings[this.Request.Host.Host].Detail);
 		}
 	}
 }

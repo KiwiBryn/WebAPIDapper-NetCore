@@ -16,10 +16,44 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.Lists
 {
+	using System.Collections.Generic;
+
+	public class UrlSpecificSetting
+	{
+		public string Title { get; set; } = "";
+		
+		public string Detail { get; set; } = "";
+
+		public UrlSpecificSetting()
+		{
+		}
+
+		public UrlSpecificSetting(string title, string detail)
+		{
+			this.Title = title;
+			this.Detail = detail;
+		}
+	}
+
 	public class ErrorHandlerSettings
 	{
+		public string Title { get; set; } = "System Error";
+
 		public string Detail { get; set; } = "devMobile Lists Classic API failure";
 
-		public string Title { get; set; } = "System Error";
+		public Dictionary<string, UrlSpecificSetting> UrlSpecificSettings { get; set; }
+
+		public ErrorHandlerSettings()
+		{
+		}
+
+		public ErrorHandlerSettings(string title, string detail, Dictionary<string, UrlSpecificSetting> urlSpecificSettings )
+		{
+			Title = title;
+
+			Detail = detail;
+
+			UrlSpecificSettings = urlSpecificSettings;
+		}
 	}
 }
