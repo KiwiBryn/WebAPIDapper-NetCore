@@ -44,6 +44,9 @@ namespace devMobile.WebAPIDapper.Lists
 		{
 			services.AddControllers();
 
+			var errorHandlerSettings = Configuration.GetSection(nameof(ErrorHandlerSettings));
+			services.Configure<ErrorHandlerSettings>(errorHandlerSettings);
+
 			services.AddResponseCaching();
 
 			services.AddDapperForMSSQL();

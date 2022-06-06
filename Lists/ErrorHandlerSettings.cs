@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------------------
-// Copyright (c) June 2022, devMobile Software
+// Copyright (c) June 2021, devMobile Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,27 +14,12 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Lists
 {
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.Extensions.Hosting;
-	using Microsoft.Extensions.Options;
-
-
-	[ApiController]
-	public class ErrorController : Controller
+	public class ErrorHandlerSettings
 	{
-		private readonly ErrorHandlerSettings errorHandlerSettings;
+		public string Detail { get; set; } = "devMobile Lists Classic API failure";
 
-		public ErrorController(IOptions<ErrorHandlerSettings> errorHandlerSettings)
-		{
-			this.errorHandlerSettings = errorHandlerSettings.Value;
-		}
-
-		[Route("/error")]
-		public IActionResult HandleError([FromServices] IHostEnvironment hostEnvironment)
-		{
-			return Problem(detail: errorHandlerSettings.Detail, title: errorHandlerSettings.Title);
-		}
+		public string Title { get; set; } = "System Error";
 	}
 }
