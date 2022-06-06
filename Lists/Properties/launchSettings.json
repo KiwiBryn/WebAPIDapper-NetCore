@@ -20,7 +20,7 @@
     "Lists": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "stockitems",
+      "launchUrl": "api/stockitemsBasic",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
