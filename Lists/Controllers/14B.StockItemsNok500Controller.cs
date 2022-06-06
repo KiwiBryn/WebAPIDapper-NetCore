@@ -33,35 +33,21 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StockItemsNokController : ControllerBase
+	public class StockItemsNok500Controller : ControllerBase
 	{
 		private readonly string connectionString;
-		private readonly ILogger<StockItemsNokController> logger;
+		private readonly ILogger<StockItemsNok500Controller> logger;
 
-		public StockItemsNokController(IConfiguration configuration, ILogger<StockItemsNokController> logger)
+		public StockItemsNok500Controller(IConfiguration configuration, ILogger<StockItemsNok500Controller> logger)
 		{
 			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
 			this.logger = logger;
 		}
 
-		[HttpGet("Exception")]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetException()
-		{
-			IEnumerable<Model.StockItemListDtoV1>? response = null;
-
-			using (SqlConnection db = new SqlConnection(this.connectionString))
-			{
-				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItemsException]", commandType: CommandType.Text);
-			}
-
-			return this.Ok(response);
-		}
-
-		[HttpGet("500")]
 		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get500()
 		{
-			IEnumerable<Model.StockItemListDtoV1>? response = null;
+			IEnumerable<Model.StockItemListDtoV1> response = null;
 
 			try
 			{
