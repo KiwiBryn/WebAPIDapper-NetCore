@@ -17,6 +17,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+#if ERROR_PAGE_STANDARD
+	using Microsoft.Extensions.Hosting;
+#endif
 using Microsoft.Extensions.DependencyInjection;
 
 using Dapper.Extensions.MSSQL;
