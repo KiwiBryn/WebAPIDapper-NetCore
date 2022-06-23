@@ -46,7 +46,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>>Get([Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
+		public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>>Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
 		{
 			Model.InvoiceSummaryGetDtoV1 response = null;
 
