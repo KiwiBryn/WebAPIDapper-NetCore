@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +51,9 @@ namespace devMobile.WebAPIDapper.Lists
 			var errorHandlerSettings = Configuration.GetSection(nameof(ErrorHandlerSettings));
 			services.Configure<ErrorHandlerSettings>(errorHandlerSettings);
 
+			var catalogServerStringSettings = Configuration.GetSection("CatalogServerConnectionStringSettings");
+			services.Configure<List<string>>(catalogServerStringSettings);
+
 			services.AddResponseCaching();
 
 			services.AddDapperForMSSQL();
@@ -62,7 +67,7 @@ namespace devMobile.WebAPIDapper.Lists
 			services.AddDapperCachingInRedis(new RedisConfiguration
 			{
 				AllMethodsEnableCache = false,
-				KeyPrefix = Configuration.GetConnectionString("RedisKeyPrefix"),
+				KeyPrefix = Configuration.GetValue<string>("RedisKeyPrefix"),
 				ConnectionString = Configuration.GetConnectionString("RedisConnection")
 			}); 
 #endif
