@@ -14,3 +14,4 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 11. [Memory caching](http://blog.devmobile.co.nz/2022/02/07/net-core-web-api-dapper-caching/)
 12. [Queries returning multiple recordsets](http://blog.devmobile.co.nz/2022/02/28/net-core-web-api-dapper-querymultiple/)
 13. [Shaping recordsets](http://blog.devmobile.co.nz/2022/03/02/net-core-web-api-dapper-multimapping/)
+14. [Error handling revisited](http://blog.devmobile.co.nz/2022/06/08/net-core-web-api-dapper-error-handling/)
