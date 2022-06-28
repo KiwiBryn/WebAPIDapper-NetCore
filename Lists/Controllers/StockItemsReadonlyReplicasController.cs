@@ -36,12 +36,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
     public class StockItemsReadonlyReplicasController : ControllerBase
     {
         private readonly string connectionString;
-        private readonly ILogger<StockItemsReadonlyReplicasController> logger;
-    
+
         public StockItemsReadonlyReplicasController(IConfiguration configuration, ILogger<StockItemsReadonlyReplicasController> logger, IOptions<List<string>> readonlyReplicasServerConnectionStringNames)
         {
-            this.logger = logger;
-
             List<string>readonlyReplicasConnectionStringNames = readonlyReplicasServerConnectionStringNames.Value;
 
             if (readonlyReplicasConnectionStringNames.Count == 0)
