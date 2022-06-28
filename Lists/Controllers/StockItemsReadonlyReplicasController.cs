@@ -22,46 +22,50 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
     using System.Data.SqlClient;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    
+
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
     using Dapper;
-    
-    
+
+
     [ApiController]
     [Route("api/[controller]")]
     public class StockItemsReadonlyReplicasController : ControllerBase
     {
+        private readonly string connectionString;
         private readonly ILogger<StockItemsReadonlyReplicasController> logger;
-        private readonly List<string> readonlyReplicasConnectionStrings;
-
-        public StockItemsReadonlyReplicasController(ILogger<StockItemsReadonlyReplicasController> logger, IOptions<List<string>> readonlyReplicasServerConnectionStrings)
+    
+        public StockItemsReadonlyReplicasController(IConfiguration configuration, ILogger<StockItemsReadonlyReplicasController> logger, IOptions<List<string>> readonlyReplicasServerConnectionStringNames)
         {
             this.logger = logger;
 
-            this.readonlyReplicasConnectionStrings = readonlyReplicasServerConnectionStrings.Value;
+            List<string>readonlyReplicasConnectionStringNames = readonlyReplicasServerConnectionStringNames.Value;
+
+            if (readonlyReplicasConnectionStringNames.Count == 0)
+            {
+                logger.LogError("No readonly replica server connection string names configured");
+
+                return;
+            }
+
+            Random random = new Random(); // maybe this should be instantiated ever call, but "danger here by thy threading"
+
+            string connectionStringName = readonlyReplicasConnectionStringNames[random.Next(0, readonlyReplicasConnectionStringNames.Count)];
+
+            logger.LogTrace("Connection string name {connectionString}", connectionStringName);
+
+            this.connectionString = configuration.GetConnectionString(connectionStringName);
+
+            logger.LogTrace("Connection string {connectionString}", connectionString);
         }
 
         [HttpGet]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get()
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
-
-            if (readonlyReplicasConnectionStrings.Count == 0)
-            {
-                logger.LogError("No readonly replica server Connection strings configured");
-
-                return this.StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-            Random random = new Random(); // maybe this should be instantiated ever call, but "danger here by thy threading"
-
-            string connectionString = readonlyReplicasConnectionStrings[random.Next(0, readonlyReplicasConnectionStrings.Count)];
-
-            logger.LogTrace("Connection string {connectionString}", connectionString);
 
             using (SqlConnection db = new SqlConnection(connectionString))
             {

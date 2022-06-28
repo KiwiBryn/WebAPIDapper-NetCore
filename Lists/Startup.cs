@@ -51,8 +51,8 @@ namespace devMobile.WebAPIDapper.Lists
 			var errorHandlerSettings = Configuration.GetSection(nameof(ErrorHandlerSettings));
 			services.Configure<ErrorHandlerSettings>(errorHandlerSettings);
 
-			var readonlyReplicaServersConnectionStringSettings = Configuration.GetSection("ReadonlyReplicaServersConnectionStringSettings");
-			services.Configure<List<string>>(readonlyReplicaServersConnectionStringSettings);
+			var ReadonlyReplicaServersConnectionStringNamesSettings = Configuration.GetSection("ReadonlyReplicaServersConnectionStringNames");
+			services.Configure<List<string>>(ReadonlyReplicaServersConnectionStringNamesSettings);
 
 			services.AddResponseCaching();
 
