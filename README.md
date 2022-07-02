@@ -15,3 +15,5 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 12. [Queries returning multiple recordsets](http://blog.devmobile.co.nz/2022/02/28/net-core-web-api-dapper-querymultiple/)
 13. [Shaping recordsets](http://blog.devmobile.co.nz/2022/03/02/net-core-web-api-dapper-multimapping/)
 14. [Error handling revisited](http://blog.devmobile.co.nz/2022/06/08/net-core-web-api-dapper-error-handling/)
+15. [Offloading readonly query workloads](http://blog.devmobile.co.nz/2022/06/28/net-core-web-api-dapper-offloading-readonly-query-workloads/)
+16. [Readonly query workloads with Geo Replication](http://blog.devmobile.co.nz/2022/06/30/net-core-web-api-dapper-readonly-query-workloads-with-geo-replication/)
