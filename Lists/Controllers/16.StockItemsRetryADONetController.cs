@@ -46,8 +46,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
         private readonly int NumberOfRetries = 3;
         private readonly TimeSpan TimeBeforeNextExecution = TimeSpan.Parse("00:00:01");
         private readonly TimeSpan MaximumInterval = TimeSpan.Parse("00:00:30");
-        private readonly List<int> TransientErrors = new List<int>()
-        {
+		private readonly List<int> TransientErrors = new List<int>()        
+		{
             49920, // Cannot process rquest. Too many operations in progress for subscription
 			49919, // Cannot process create or update request.Too many create or update operations in progress for subscription
 			49918, // Cannot process request. Not enough resources to process request.
@@ -107,9 +107,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
-            SqlRetryLogicOption sqlRetryLogicOption = new SqlRetryLogicOption()
-            {
-                NumberOfTries = NumberOfRetries,
+			SqlRetryLogicOption sqlRetryLogicOption = new SqlRetryLogicOption()
+			{
+				NumberOfTries = NumberOfRetries,
                 DeltaTime = TimeBeforeNextExecution,
                 MaxTimeInterval = MaximumInterval,
                 TransientErrors = TransientErrors
@@ -117,9 +117,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
             SqlRetryLogicBaseProvider sqlRetryLogicProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(sqlRetryLogicOption);
 
-            using (SqlConnection db = new SqlConnection(this.connectionString))
-            {
-                db.RetryLogicProvider = sqlRetryLogicProvider;
+			using (SqlConnection db = new SqlConnection(this.connectionString))
+			{
+				db.RetryLogicProvider = sqlRetryLogicProvider;
 
                 db.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnRetrying);
 
@@ -131,7 +131,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
         protected void OnRetrying(object sender, SqlRetryingEventArgs args)
         {
-            logger.LogInformation("Retrying for {0} times for {1:0.00} sec - Error code: {2}", args.RetryCount, args.Delay.TotalMilliseconds / 1000.0, (args.Exceptions[0] as SqlException).Number);
+            logger.LogInformation("Retrying for {RetryCount} times for {args.Delay.TotalMilliseconds:0.} mSec - Error code: {Number}", args.RetryCount, args.Delay.TotalMilliseconds, (args.Exceptions[0] as SqlException).Number);
         }
     }
 }
