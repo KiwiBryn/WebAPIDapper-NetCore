@@ -33,12 +33,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class StockItemsRetryController : ControllerBase
+	public class StockItemsRetryPollyController : ControllerBase
 	{
 		private readonly string connectionString;
-		private readonly ILogger<StockItemsRetryController> logger;
+		private readonly ILogger<StockItemsRetryPollyController> logger;
 
-		public StockItemsRetryController(IConfiguration configuration, ILogger<StockItemsRetryController> logger)
+		public StockItemsRetryPollyController(IConfiguration configuration, ILogger<StockItemsRetryPollyController> logger)
 		{
 			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
