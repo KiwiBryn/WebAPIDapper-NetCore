@@ -16,8 +16,9 @@
     <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="4.0.4" />
     <PackageReference Include="Dapper.Extensions.MSSQL" Version="4.0.4" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
