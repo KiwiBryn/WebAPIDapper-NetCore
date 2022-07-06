@@ -129,7 +129,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             {
                 db.RetryLogicProvider = sqlRetryLogicProvider;
 
-                db.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnConnectionRetrying);
+                db.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnDapperRetrying);
 
                 await db.OpenAsync(); // Did explicitly so I could yank out the LAN cable.
 
@@ -137,6 +137,11 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             }
 
             return this.Ok(response);
+        }
+
+        protected void OnDapperRetrying(object sender, SqlRetryingEventArgs args)
+        {
+            logger.LogInformation("Dapper retrying for {RetryCount} times for {args.Delay.TotalMilliseconds:0.} mSec - Error code: {Number}", args.RetryCount, args.Delay.TotalMilliseconds, (args.Exceptions[0] as SqlException).Number);
         }
 
         [HttpGet("AdoNet")]
