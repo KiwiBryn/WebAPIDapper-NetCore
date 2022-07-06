@@ -13,16 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+//		*****NOTE This approach doesn't work******
+//
 //		https://devblogs.microsoft.com/azure-sql/configurable-retry-logic-for-microsoft-data-sqlclient/
 //
 // I started with the EF list of transient faults (essentially a copy n paste)
 //
 //		https://raw.githubusercontent.com/aspnet/EntityFrameworkCore/master/src/EFCore.SqlServer/Storage/Internal/SqlServerTransientExceptionDetector.cs
 //
+//		https://devblogs.microsoft.com/azure-sql/configurable-retry-logic-for-microsoft-data-sqlclient/
+//
+//      https://github.com/dotnet/SqlClient/issues/1640
+// 
 //---------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -46,8 +53,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
         private readonly int NumberOfRetries = 3;
         private readonly TimeSpan TimeBeforeNextExecution = TimeSpan.Parse("00:00:01");
         private readonly TimeSpan MaximumInterval = TimeSpan.Parse("00:00:30");
-		private readonly List<int> TransientErrors = new List<int>()        
-		{
+        private readonly List<int> TransientErrors = new List<int>()
+        {
             49920, // Cannot process rquest. Too many operations in progress for subscription
 			49919, // Cannot process create or update request.Too many create or update operations in progress for subscription
 			49918, // Cannot process request. Not enough resources to process request.
@@ -102,26 +109,29 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             this.logger = logger;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get()
+		[HttpGet("Dapper")]
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDapper()
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
-			SqlRetryLogicOption sqlRetryLogicOption = new SqlRetryLogicOption()
-			{
-				NumberOfTries = NumberOfRetries,
+            SqlRetryLogicOption sqlRetryLogicOption = new SqlRetryLogicOption()
+            {
+                NumberOfTries = NumberOfRetries,
                 DeltaTime = TimeBeforeNextExecution,
                 MaxTimeInterval = MaximumInterval,
-                TransientErrors = TransientErrors
+                TransientErrors = TransientErrors,
+                //AuthorizedSqlCondition = x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, @"^SELECT", RegexOptions.IgnoreCase),
             };
 
             SqlRetryLogicBaseProvider sqlRetryLogicProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(sqlRetryLogicOption);
 
-			using (SqlConnection db = new SqlConnection(this.connectionString))
-			{
-				db.RetryLogicProvider = sqlRetryLogicProvider;
+            using (SqlConnection db = new SqlConnection(this.connectionString))
+            {
+                db.RetryLogicProvider = sqlRetryLogicProvider;
 
-                db.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnRetrying);
+                db.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnConnectionRetrying);
+
+                await db.OpenAsync(); // Did explicitly so I could yank out the LAN cable.
 
                 response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
             }
@@ -129,9 +139,69 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             return this.Ok(response);
         }
 
-        protected void OnRetrying(object sender, SqlRetryingEventArgs args)
+        [HttpGet("AdoNet")]
+        public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAdoNet()
         {
-            logger.LogInformation("Retrying for {RetryCount} times for {args.Delay.TotalMilliseconds:0.} mSec - Error code: {Number}", args.RetryCount, args.Delay.TotalMilliseconds, (args.Exceptions[0] as SqlException).Number);
+            List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
+
+            // Both connection and command share same logic not really an issue for nasty demo
+            SqlRetryLogicOption sqlRetryLogicOption = new SqlRetryLogicOption()
+            {
+                NumberOfTries = NumberOfRetries,
+                DeltaTime = TimeBeforeNextExecution,
+                MaxTimeInterval = MaximumInterval,
+                TransientErrors = TransientErrors,
+                //AuthorizedSqlCondition = x => string.IsNullOrEmpty(x) || Regex.IsMatch(x, @"^SELECT", RegexOptions.IgnoreCase),
+            };
+
+            SqlRetryLogicBaseProvider sqlRetryLogicProvider = SqlConfigurableRetryFactory.CreateFixedRetryProvider(sqlRetryLogicOption);
+
+
+            // This ADO.Net is a bit overkill but just wanted to highlight ADO.Net vs. Dapper
+            using (SqlConnection sqlConnection = new SqlConnection(this.connectionString))
+            {
+                sqlConnection.RetryLogicProvider = sqlRetryLogicProvider;
+                sqlConnection.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnConnectionRetrying);
+
+                await sqlConnection.OpenAsync(); // Did explicitly so I could yank out the LAN cable.
+
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
+                    sqlCommand.CommandType = CommandType.Text;
+
+                    sqlCommand.RetryLogicProvider = sqlRetryLogicProvider;
+                    sqlCommand.RetryLogicProvider.Retrying += new EventHandler<SqlRetryingEventArgs>(OnCommandRetrying);
+
+                    // Over kill but makes really obvious
+                    using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync(CommandBehavior.CloseConnection))
+                    {
+                        while (await sqlDataReader.ReadAsync())
+                        {
+                            response.Add(new Model.StockItemListDtoV1()
+                            {
+                                Id = sqlDataReader.GetInt32("Id"),
+                                Name = sqlDataReader.GetString("Name"),
+                                RecommendedRetailPrice = sqlDataReader.GetDecimal("RecommendedRetailPrice"),
+                                TaxRate = sqlDataReader.GetDecimal("TaxRate"),
+                            });
+                        }
+                    }
+                };
+            }
+
+            return this.Ok(response);
+        }
+
+        protected void OnConnectionRetrying(object sender, SqlRetryingEventArgs args)
+        {
+            logger.LogInformation("Connection retrying for {RetryCount} times for {args.Delay.TotalMilliseconds:0.} mSec - Error code: {Number}", args.RetryCount, args.Delay.TotalMilliseconds, (args.Exceptions[0] as SqlException).Number);
+        }
+
+        protected void OnCommandRetrying(object sender, SqlRetryingEventArgs args)
+        {
+            logger.LogInformation("Command retrying for {RetryCount} times for {args.Delay.TotalMilliseconds:0.} mSec - Error code: {Number}", args.RetryCount, args.Delay.TotalMilliseconds, (args.Exceptions[0] as SqlException).Number);
         }
     }
 }
