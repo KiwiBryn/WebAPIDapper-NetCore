@@ -17,3 +17,5 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 14. [Error handling revisited](http://blog.devmobile.co.nz/2022/06/08/net-core-web-api-dapper-error-handling/)
 15. [Offloading readonly query workloads](http://blog.devmobile.co.nz/2022/06/28/net-core-web-api-dapper-offloading-readonly-query-workloads/)
 16. [Readonly query workloads with Geo Replication](http://blog.devmobile.co.nz/2022/06/30/net-core-web-api-dapper-readonly-query-workloads-with-geo-replication/)
+17. [ADO.Net Retries](http://blog.devmobile.co.nz/2022/07/07/net-core-web-api-dapper-ado-net-retries/)
+18. [Readonly query workloads with Data Sync](http://blog.devmobile.co.nz/2022/07/10/net-core-web-api-dapper-readonly-query-workloads-with-data-sync/)
