@@ -14,11 +14,13 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using devMobile.WebAPIDapper.ListsDIBasic;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration)); 
 builder.Services.AddControllers();
 
 var app = builder.Build();
