@@ -20,7 +20,7 @@
     "Lists": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/StockItemsReadonlyReplicas",
+      "launchUrl": "api/StockItemsIAsyncEnumerable",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
