@@ -38,7 +38,7 @@ namespace devMobile.WebAPIDapper.ListsDIBasic.Controllers
       }
 
       [HttpGet]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get()
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
       {
          IEnumerable<Model.StockItemListDtoV1> response;
 
@@ -72,7 +72,7 @@ namespace devMobile.WebAPIDapper.ListsDIBasic.Controllers
       }
 
       [HttpGet("search")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
       {
          IEnumerable<Model.StockItemListDtoV1> response;
 

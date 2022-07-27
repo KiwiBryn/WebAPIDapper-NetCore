@@ -14,23 +14,28 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-using devMobile.WebAPIDapper.ListsDIBasic;
+namespace devMobile.WebAPIDapper.ListsDIBasic
+{
+   public class Program
+   {
+      public static void Main(string[] args)
+      {
+         var builder = WebApplication.CreateBuilder(args);
 
+         // Add services to the container.
+         builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
-var builder = WebApplication.CreateBuilder(args);
+         builder.Services.AddControllers();
 
-// Add services to the container.
-builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration)); 
-builder.Services.AddControllers();
+         var app = builder.Build();
 
-var app = builder.Build();
+         // Configure the HTTP request pipeline.
 
-// Configure the HTTP request pipeline.
+         app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
+         app.MapControllers();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+         app.Run();
+      }
+   }
+}
