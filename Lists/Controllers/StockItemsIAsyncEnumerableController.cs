@@ -49,7 +49,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
 			using (SqlConnection db = new SqlConnection(this.connectionString))
 			{
-				logger.LogInformation("IEnumerableSmall start Buffered:{buffered} i", buffered);
+				logger.LogInformation("IEnumerableSmall start Buffered:{buffered}", buffered);
 
 				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(
 					sql: @"SELECT [SI1].[StockItemID] as ""ID"", [SI1].[StockItemName] as ""Name"", [SI1].[RecommendedRetailPrice], [SI1].[TaxRate]" +
