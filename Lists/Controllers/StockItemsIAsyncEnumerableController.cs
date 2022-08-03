@@ -130,7 +130,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet("IAsyncEnumerableMedium")]
-		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetIAsyncEnumerableMedium([FromQuery] bool buffered = false)
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetIAsyncEnumerableMedium([FromQuery] bool buffered = false)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -152,7 +152,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet("IAsyncEnumerableLarge")]
-		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAsyncEnumerableLarge([FromQuery] bool buffered = false)
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAsyncEnumerableLarge([FromQuery] bool buffered = false)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
