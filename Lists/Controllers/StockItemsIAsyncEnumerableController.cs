@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+using Dapper;
 using devMobile.Azure.DapperTransient;
 
 
@@ -43,7 +44,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 		}
 
 		[HttpGet("IEnumerableSmall")]
-		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetIEnumerableSmall([FromQuery]bool buffered = false)
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetIEnumerableSmall([FromQuery] bool buffered = false)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -97,7 +98,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(
 					sql: @" SELECT [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
 							"FROM [Warehouse].[StockItems] as SI1" +
-							"	CROSS JOIN[Warehouse].[StockItems] as SI2" +  
+							"	CROSS JOIN[Warehouse].[StockItems] as SI2" +
 							"	CROSS JOIN[Warehouse].[StockItems] as SI3",
 					buffered,
 					commandType: CommandType.Text);
@@ -151,20 +152,43 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(response);
 		}
 
-		[HttpGet("IAsyncEnumerableLarge")]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAsyncEnumerableLarge([FromQuery] bool buffered = false)
+		[HttpGet("EnumerableLarge")]
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetEnumerableLarge([FromQuery] bool buffered = false, [FromQuery] int recordCount = 10)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
 			using (SqlConnection db = new SqlConnection(this.connectionString))
 			{
-				logger.LogInformation("IAsyncEnumerableLarge start Buffered:{buffered}", buffered);
+				logger.LogInformation("IEnumerableLarge start RecordCount:{recordCount} Buffered:{buffered}", recordCount, buffered);
 
 				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(
-					sql: @"SELECT [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
+					sql: $@"SELECT TOP({recordCount}) [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
 							"FROM [Warehouse].[StockItems] as SI1" +
 							"   CROSS JOIN[Warehouse].[StockItems] as SI2" +
-							"	CROSS JOIN[Warehouse].[StockItems] as SI3", 
+							"	CROSS JOIN[Warehouse].[StockItems] as SI3",
+				buffered,
+				commandType: CommandType.Text);
+
+				logger.LogInformation("IEnumerableLarge done");
+			}
+
+			return this.Ok(response);
+		}
+
+		[HttpGet("AsyncEnumerableLarge")]
+		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAsyncEnumerableLarge([FromQuery] bool buffered = false, [FromQuery]int recordCount = 10)
+		{
+			IEnumerable<Model.StockItemListDtoV1> response = null;
+
+			using (SqlConnection db = new SqlConnection(this.connectionString))
+			{
+				logger.LogInformation("IAsyncEnumerableLarge start RecordCount:{recordCount} Buffered:{buffered}", recordCount, buffered);
+
+				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(
+					sql: $@"SELECT TOP({recordCount}) [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
+							"FROM [Warehouse].[StockItems] as SI1" +
+							"   CROSS JOIN[Warehouse].[StockItems] as SI2" +
+							"	CROSS JOIN[Warehouse].[StockItems] as SI3",
 				buffered,
 				commandType: CommandType.Text);
 
@@ -172,6 +196,43 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			}
 
 			return this.Ok(response);
+		}
+
+		[HttpGet("AsyncEnumerableLargeYield")]
+		public async IAsyncEnumerable<Model.StockItemListDtoV1> GetAsyncEnumerableLargeYield([FromQuery] int recordCount = 10)
+		{
+			int rowCount = 0;
+
+			using (SqlConnection db = new SqlConnection(this.connectionString))
+			{
+				logger.LogInformation("IAsyncEnumerableLargeYield start RecordCount:{recordCount}", recordCount);
+
+				CommandDefinition commandDefinition = new CommandDefinition(
+					$@"SELECT TOP({recordCount}) [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
+								"FROM [Warehouse].[StockItems] as SI1" +
+								"   CROSS JOIN[Warehouse].[StockItems] as SI2" +
+								"	CROSS JOIN[Warehouse].[StockItems] as SI3",
+					//commandTimeout: 
+					CommandType.Text
+				);
+
+				using var reader = await db.ExecuteReaderWithRetryAsync(commandDefinition);
+
+				var rowParser = reader.GetRowParser<Model.StockItemListDtoV1>();
+
+				while (await reader.ReadAsync())
+				{
+					rowCount++;
+
+					if ((rowCount % 10000) == 0)
+					{
+						logger.LogInformation("Row count:{0}", rowCount);
+					}
+
+					yield return rowParser(reader);
+				}
+				logger.LogInformation("IAsyncEnumerableLargeYield done");
+			}
 		}
 	}
 }
