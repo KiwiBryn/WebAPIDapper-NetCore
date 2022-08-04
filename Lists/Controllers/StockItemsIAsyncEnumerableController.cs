@@ -152,30 +152,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(response);
 		}
 
-		[HttpGet("EnumerableLarge")]
-		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetEnumerableLarge([FromQuery] bool buffered = false, [FromQuery] int recordCount = 10)
-		{
-			IEnumerable<Model.StockItemListDtoV1> response = null;
-
-			using (SqlConnection db = new SqlConnection(this.connectionString))
-			{
-				logger.LogInformation("IEnumerableLarge start RecordCount:{recordCount} Buffered:{buffered}", recordCount, buffered);
-
-				response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(
-					sql: $@"SELECT TOP({recordCount}) [SI3].[StockItemID] as ""ID"", [SI3].[StockItemName] as ""Name"", [SI3].[RecommendedRetailPrice], [SI3].[TaxRate]" +
-							"FROM [Warehouse].[StockItems] as SI1" +
-							"   CROSS JOIN[Warehouse].[StockItems] as SI2" +
-							"	CROSS JOIN[Warehouse].[StockItems] as SI3",
-				buffered,
-				commandType: CommandType.Text);
-
-				logger.LogInformation("IEnumerableLarge done");
-			}
-
-			return this.Ok(response);
-		}
-
-		[HttpGet("AsyncEnumerableLarge")]
+		[HttpGet("IAsyncEnumerableLarge")]
 		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAsyncEnumerableLarge([FromQuery] bool buffered = false, [FromQuery]int recordCount = 10)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
@@ -198,7 +175,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 			return this.Ok(response);
 		}
 
-		[HttpGet("AsyncEnumerableLargeYield")]
+		[HttpGet("IAsyncEnumerableLargeYield")]
 		public async IAsyncEnumerable<Model.StockItemListDtoV1> GetAsyncEnumerableLargeYield([FromQuery] int recordCount = 10)
 		{
 			int rowCount = 0;
