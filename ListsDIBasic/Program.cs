@@ -16,26 +16,28 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.ListsDIBasic
 {
-   public class Program
-   {
-      public static void Main(string[] args)
-      {
-         var builder = WebApplication.CreateBuilder(args);
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-         // Add services to the container.
-         builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
+            // Add services to the container.
+            builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
+            //builder.Services.AddTransient<IDapperContext>(s => new DapperContext(builder.Configuration));
+            //builder.Services.AddScoped<IDapperContext>(s => new DapperContext(builder.Configuration));
 
-         builder.Services.AddControllers();
+            builder.Services.AddControllers();
 
-         var app = builder.Build();
+            var app = builder.Build();
 
-         // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline.
 
-         app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
-         app.MapControllers();
+            app.MapControllers();
 
-         app.Run();
-      }
-   }
+            app.Run();
+        }
+    }
 }
