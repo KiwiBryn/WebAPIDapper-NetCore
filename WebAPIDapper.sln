@@ -5,9 +5,9 @@ VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListsClassic", "Lists\ListsClassic.csproj", "{D4B6CA9B-AEDB-487C-A8D8-BB969F6FE353}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListsDIBasic", "ListsDIBasic\ListsDIBasic.csproj", "{8DDD4274-C617-40EB-B0F7-11CFD6040D60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIBasic", "ListsDIBasic\DIBasic.csproj", "{8DDD4274-C617-40EB-B0F7-11CFD6040D60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListsDINasty", "ListsDINasty\ListsDINasty.csproj", "{7FAEB2E3-68DB-4BD1-A1AF-D31287DBB02A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DINasty", "ListsDINasty\DINasty.csproj", "{7FAEB2E3-68DB-4BD1-A1AF-D31287DBB02A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
