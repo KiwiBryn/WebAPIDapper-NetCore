@@ -90,9 +90,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             return this.Ok(response);
         }
 
+        //
+        // https://localhost:5001/api/StockItemsParameter/Array?StockItemId=1&StockItemId=5&StockItemId=10
+        //
         [HttpGet("Array")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetArray(
-            [Required(), MinLength(1, ErrorMessage = "Minimum of {1} StockItem id(s)"), MaxLength(100, ErrorMessage = "Maximum {1} StockItem ids")] int[] stockItemIDs)
+            [FromQuery][Required(), MinLength(1, ErrorMessage = "Minimum of {1} StockItem id(s)"), MaxLength(100, ErrorMessage = "Maximum {1} StockItem ids")] int[] stockItemIDs)
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
