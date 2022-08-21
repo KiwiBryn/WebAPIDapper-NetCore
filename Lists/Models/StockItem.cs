@@ -19,7 +19,7 @@ namespace devMobile.WebAPIDapper.Lists.Model
 	using System;
 	using System.ComponentModel.DataAnnotations;
 
-	public class StockItemListDtoV1
+    public class StockItemListDtoV1
 	{
 		public int Id { get; set; }
 
@@ -59,23 +59,22 @@ namespace devMobile.WebAPIDapper.Lists.Model
 	public class StockItemPagingDtoV1
 	{
 		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "PageSize must be present and greater than 0")]
+		[Range(1, int.MaxValue, ErrorMessage = "PageSize must be present and greater than {1}")]
 		public int PageSize { get; set; }
 
 		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "PageNumber must be present and greater than 0")]
+		[Range(1, int.MaxValue, ErrorMessage = "PageNumber must be present and greater than {1}")]
 		public int PageNumber { get; set; }
 	}
 
 	public class StockItemNameSearchDtoV1
 	{
-		[Required]
-		[MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")]
-		public string SearchText { get; set; }
+        [Required]
+        [MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")]
+        public string SearchText { get; set; }
 
-		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be present and greater than 0")]
-		public int MaximumRowsToReturn { get; set; }
+        [Required][Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be at least {1}")]
+        public int MaximumRowsToReturn { get; set; }
 	}
 
 	public class StockItemsHistoryListDtoV1
