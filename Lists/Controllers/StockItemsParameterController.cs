@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// https://localhost:5001/api/StockItemsParameter/dynamic?SearchText=USB&maximumRowsToReturn=5
 //
 //---------------------------------------------------------------------------------
 using System.Collections.Generic;
@@ -42,6 +41,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
         }
 
+        //
+        // https://localhost:5001/api/StockItemsParameter/dynamic?SearchText=USB&maximumRowsToReturn=5
+        //
         [HttpGet("Dynamic")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDynamic(
                     [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
@@ -62,6 +64,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             return this.Ok(response);
         }
 
+        //
+        // https://localhost:5001/api/StockItemsParameter/Anonymous?SearchText=USB&maximumRowsToReturn=5
+        //
         [HttpGet("Anonymous")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAnonymous(
                     [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
@@ -77,6 +82,9 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
             return this.Ok(response);
         }
 
+        //
+        // https://localhost:5001/api/StockItemsParameter/Automagic?SearchText=USB&maximumRowsToReturn=5
+        //
         [HttpGet("Automagic")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetMapping([FromQuery] Model.StockItemNameSearchDtoV1 request)
         {
