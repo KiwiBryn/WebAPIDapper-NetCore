@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 using Dapper;
 using devMobile.Azure.DapperTransient;
@@ -37,20 +36,16 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
     public class StockItemsParameterController : ControllerBase
     {
         private readonly string connectionString;
-        private readonly ILogger<StockItemsParameterController> logger;
 
-        public StockItemsParameterController(IConfiguration configuration, ILogger<StockItemsParameterController> logger)
+        public StockItemsParameterController(IConfiguration configuration)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
-
-            this.logger = logger;
         }
 
         [HttpGet("Dynamic")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDynamic(
                     [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
-                    [Required][Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be present and greater than or equal to {1}")] int maximumRowsToReturn)
-
+                    [Required][Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be greater than or equal to {1}")] int maximumRowsToReturn)
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -76,7 +71,7 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", new { maximumRowsToReturn , searchText }, commandType: CommandType.StoredProcedure);
+                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", new { maximumRowsToReturn, searchText }, commandType: CommandType.StoredProcedure);
             }
 
             return this.Ok(response);
@@ -97,13 +92,13 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
 
         [HttpGet("Array")]
         public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetArray(
-            [Required(), MinLength(1,ErrorMessage ="{1}"), MaxLength(20,ErrorMessage ="")]int[] stockItemID)
+            [Required(), MinLength(1, ErrorMessage = "Minimum of {1} StockItem id(s)"), MaxLength(100, ErrorMessage = "Maximum {1} StockItem ids")] int[] stockItemIDs)
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems] WHERE  StockItemID IN @StockItemIds ", new { StockItemIDs = stockItemID }, commandType: CommandType.Text);
+                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems] WHERE  StockItemID IN @StockItemIds ", new { StockItemIDs = stockItemIDs }, commandType: CommandType.Text);
             }
 
             return this.Ok(response);
