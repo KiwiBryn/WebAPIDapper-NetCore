@@ -30,6 +30,9 @@ using devMobile.Azure.DapperTransient;
 
 namespace devMobile.WebAPIDapper.Lists.Controllers
 {
+    //
+    // In "real-world" would extract string length and integer range constants.
+    //
     [ApiController]
     [Route("api/[controller]")]
     public class StockItemsParameterController : ControllerBase
