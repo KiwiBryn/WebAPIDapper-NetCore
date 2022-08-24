@@ -19,6 +19,8 @@ namespace devMobile.WebAPIDapper.Lists.Model
    using System;
    using System.ComponentModel.DataAnnotations;
 
+   using Microsoft.AspNetCore.Mvc;
+
    public class StockItemListDtoV1
    {
       public int Id { get; set; }
@@ -73,19 +75,21 @@ namespace devMobile.WebAPIDapper.Lists.Model
       public string SearchText { get; set; }
 
       [Required]
-      [Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2)")]
+      [Range(1, 100, ErrorMessage = "The maximum number of rows to return must be greater than or equal to {1} and less then or equal {2}")]
       public int MaximumRowsToReturn { get; set; }
    }
 
    public class StockItemNameSearchDtoV2
    {
       [Required]
+      [FromQuery(Name = "SearchText")]
       [MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more than {1} characters long")]
       public string SearchText { get; set; }
 
       [Required]
-      [Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2)")]
-      public int StockItemsMaximum { get; set; }
+      [FromQuery(Name = "StockItemsMaximum")]
+      [Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2}")]
+      public int MaximumRowsToReturn { get; set; }
    }
 
    public class StockItemsHistoryListDtoV1
