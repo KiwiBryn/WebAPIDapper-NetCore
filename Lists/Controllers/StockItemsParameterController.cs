@@ -89,13 +89,13 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
       // https://localhost:5001/api/StockItemsParameter/Automagic?SearchText=USB&StockItemsMaximum=5
       //
       [HttpGet("Automagic")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetMapping([FromQuery] Model.StockItemNameSearchDtoV1 request)
+      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAutomagic([FromQuery] Model.StockItemNameSearchDtoV2 request)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
 
          using (SqlConnection db = new SqlConnection(this.connectionString))
          {
-            response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
+            response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV2]", param: request, commandType: CommandType.StoredProcedure);
          }
 
          return this.Ok(response);
