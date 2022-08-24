@@ -20,4 +20,4 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
     3. [Readonly query workloads with Data Sync](http://blog.devmobile.co.nz/2022/07/10/net-core-web-api-dapper-readonly-query-workloads-with-data-sync/)    
 16. [ADO.Net Retries](http://blog.devmobile.co.nz/2022/07/07/net-core-web-api-dapper-ado-net-retries/)
 17. [Asynchronicity Revisited](http://blog.devmobile.co.nz/2022/08/13/net-core-web-api-dapper-asynchronicity-revisited/)
-
+18. [Dapper-Parameters](http://blog.devmobile.co.nz/2022/08/24/net-core-web-api-dapper-parameters/)
