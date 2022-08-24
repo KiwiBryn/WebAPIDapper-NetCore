@@ -45,12 +45,12 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
       }
 
       //
-      // https://localhost:5001/api/StockItemsParameter/dynamic?SearchText=USB&maximumRowsToReturn=5
+      // https://localhost:5001/api/StockItemsParameter/dynamic?SearchText=USB&stockItemsMaximum=5
       //
       [HttpGet("Dynamic")]
       public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDynamic(
                   [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
-                  [Required][Range(1, 100, ErrorMessage = "MaximumRowsToReturn must be greater than or equal to {1}")] int maximumRowsToReturn)
+                  [Required][Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2)")] int stockItemsMaximum)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -58,8 +58,8 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
          {
             DynamicParameters parameters = new DynamicParameters();
 
-            parameters.Add("MaximumRowsToReturn", maximumRowsToReturn);
             parameters.Add("SearchText", searchText);
+            parameters.Add("MaximumRowsToReturn", stockItemsMaximum);
 
             response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: parameters, commandType: CommandType.StoredProcedure);
          }
@@ -68,25 +68,25 @@ namespace devMobile.WebAPIDapper.Lists.Controllers
       }
 
       //
-      // https://localhost:5001/api/StockItemsParameter/Anonymous?SearchText=USB&maximumRowsToReturn=5
+      // https://localhost:5001/api/StockItemsParameter/Anonymous?SearchText=USB&StockItemsMaximum=5
       //
       [HttpGet("Anonymous")]
       public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAnonymous(
                   [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
-                  [Required][Range(1, 100, ErrorMessage = "MaximumRowsToReturn must be at least {1}")] int maximumRowsToReturn)
+                  [Required][Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2)")] int stockItemsMaximum)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
 
          using (SqlConnection db = new SqlConnection(this.connectionString))
          {
-            response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", new { maximumRowsToReturn, searchText }, commandType: CommandType.StoredProcedure);
+            response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", new { searchText, maximumRowsToReturn = stockItemsMaximum }, commandType: CommandType.StoredProcedure);
          }
 
          return this.Ok(response);
       }
 
       //
-      // https://localhost:5001/api/StockItemsParameter/Automagic?SearchText=USB&maximumRowsToReturn=5
+      // https://localhost:5001/api/StockItemsParameter/Automagic?SearchText=USB&StockItemsMaximum=5
       //
       [HttpGet("Automagic")]
       public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetMapping([FromQuery] Model.StockItemNameSearchDtoV1 request)
