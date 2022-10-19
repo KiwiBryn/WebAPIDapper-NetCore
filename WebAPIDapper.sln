@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIBasic", "DIBasic\DIBasic.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DINasty", "DINasty\DINasty.csproj", "{7C7A711B-8DE6-4F29-953E-7E090F16BB71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swagger", "Swagger\Swagger.csproj", "{4BCC01F1-5889-4324-B891-3685EA1B5F62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7C7A711B-8DE6-4F29-953E-7E090F16BB71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7A711B-8DE6-4F29-953E-7E090F16BB71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C7A711B-8DE6-4F29-953E-7E090F16BB71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BCC01F1-5889-4324-B891-3685EA1B5F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BCC01F1-5889-4324-B891-3685EA1B5F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BCC01F1-5889-4324-B891-3685EA1B5F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BCC01F1-5889-4324-B891-3685EA1B5F62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
