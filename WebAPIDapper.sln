@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListsClassic", "Lists\ListsClassic.csproj", "{D4B6CA9B-AEDB-487C-A8D8-BB969F6FE353}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Basics", "Basics\Basics.csproj", "{D4B6CA9B-AEDB-487C-A8D8-BB969F6FE353}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIBasic", "DIBasic\DIBasic.csproj", "{2494C3E8-B993-4A67-945D-50B83F3FC8FF}"
 EndProject
