@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.Extensions.Hosting;

@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Lists
+namespace devMobile.WebAPIDapper.Basics
 {
 	using System.Collections.Generic;
 

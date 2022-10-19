@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace devMobile.WebAPIDapper.Lists
+namespace devMobile.WebAPIDapper.Basics
 {
 	public class Program
 	{

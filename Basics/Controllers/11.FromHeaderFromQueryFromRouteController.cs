@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	public class FromQueryClassDto
 	{

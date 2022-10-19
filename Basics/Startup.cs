@@ -32,7 +32,7 @@ using Dapper.Extensions.MSSQL;
 	using Dapper.Extensions.Caching.Redis;
 #endif
 
-namespace devMobile.WebAPIDapper.Lists
+namespace devMobile.WebAPIDapper.Basics
 {
 	public class Startup
 	{

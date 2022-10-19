@@ -27,7 +27,7 @@ using Dapper;
 using devMobile.Azure.DapperTransient;
 
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]

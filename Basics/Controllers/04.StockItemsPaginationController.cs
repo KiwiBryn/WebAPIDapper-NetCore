@@ -26,7 +26,7 @@ using Microsoft.Extensions.Logging;
 
 using Dapper;
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]

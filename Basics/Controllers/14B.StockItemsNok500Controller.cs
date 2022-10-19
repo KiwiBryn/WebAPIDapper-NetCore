@@ -15,7 +15,7 @@
 // 
 // NOTE - The broken SQL is intentional
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	using System.Collections.Generic;
 	using System.Data;

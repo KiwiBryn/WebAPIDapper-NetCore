@@ -23,7 +23,7 @@ using Microsoft.Extensions.Configuration;
 
 using Dapper;
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	public class StockItemListDto
 	{

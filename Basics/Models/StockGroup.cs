@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Lists.Model
+namespace devMobile.WebAPIDapper.Basics.Model
 {
 	using System.Text.Json.Serialization;
 

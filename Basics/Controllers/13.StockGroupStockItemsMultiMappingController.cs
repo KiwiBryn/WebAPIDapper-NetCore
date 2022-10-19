@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 using devMobile.Azure.DapperTransient;
 
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	public class StockGroupStockItemsListDto
 	{

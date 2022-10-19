@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
 	[SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "IDE Generated sample code")]
 

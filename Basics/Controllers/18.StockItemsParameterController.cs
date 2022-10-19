@@ -28,7 +28,7 @@ using Dapper;
 using devMobile.Azure.DapperTransient;
 
 
-namespace devMobile.WebAPIDapper.Lists.Controllers
+namespace devMobile.WebAPIDapper.Basics.Controllers
 {
    //
    // In "real-world" would extract string length and integer range constants.
