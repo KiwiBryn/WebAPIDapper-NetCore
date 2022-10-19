@@ -7,6 +7,9 @@
     <UserSecretsId>509908a9-7394-4258-b25e-54a66dd43acd</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>WebAPIDapper.xml</DocumentationFile>
+    <AssemblyVersion>1.0.1.*</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+	<Deterministic>false</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>
