@@ -37,7 +37,9 @@ namespace devMobile.WebAPIDapper.Swagger.Model
 
 	public class InvoiceSummaryGetDtoV1
 	{
-		public int OrderId { get; set; }
+        public int InvoiceId { get; set; }
+
+        public int OrderId { get; set; }
 
 		public int DeliveryMethodId { get; set; }
 		public string DeliveryMethodName { get; set; }
@@ -49,7 +51,7 @@ namespace devMobile.WebAPIDapper.Swagger.Model
 		public string CustomerPurchaseOrderNumber { get; set; }
 
 		public bool IsCreditNote { get; set; }
-		public string CreditNoteReason { get; set; }
+        public string CreditNoteReason { get; set; }
 
 		public string Comments { get; set; }
 
