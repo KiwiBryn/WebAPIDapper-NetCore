@@ -51,7 +51,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
                 response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Model.InvoiceSummaryGetDtoV1>();
                 if (response == default)
                 {
-                    logger.LogInformation("Invoice:{0} not found", id);
+                    logger.LogInformation("Invoice:{id} not found", id);
 
                     return this.NotFound($"Invoice:{id} not found");
                 }
