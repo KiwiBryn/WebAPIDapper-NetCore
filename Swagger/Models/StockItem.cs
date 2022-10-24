@@ -57,17 +57,6 @@ namespace devMobile.WebAPIDapper.Swagger.Model
       public string SupplierName { get; set; }
    }
 
-   public class StockItemPagingDtoV1
-   {
-      [Required]
-      [Range(1, int.MaxValue, ErrorMessage = "PageSize must be present and greater than {1}")]
-      public int PageSize { get; set; }
-
-      [Required]
-      [Range(1, int.MaxValue, ErrorMessage = "PageNumber must be present and greater than {1}")]
-      public int PageNumber { get; set; }
-   }
-
    public class StockItemNameSearchDtoV1
    {
       [Required]
@@ -77,56 +66,5 @@ namespace devMobile.WebAPIDapper.Swagger.Model
       [Required]
       [Range(1, 100, ErrorMessage = "The maximum number of rows to return must be greater than or equal to {1} and less then or equal {2}")]
       public int MaximumRowsToReturn { get; set; }
-   }
-
-   public class StockItemNameSearchDtoV2
-   {
-      [Required]
-      [FromQuery(Name = "SearchText")]
-      [MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more than {1} characters long")]
-      public string SearchText { get; set; }
-
-      [Required]
-      [FromQuery(Name = "StockItemsMaximum")]
-      [Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2}")]
-      public int MaximumRowsToReturn { get; set; }
-   }
-
-   public class StockItemsHistoryListDtoV1
-   {
-      public int Id { get; set; }
-
-      public string Name { get; set; }
-
-      public decimal UnitPrice { get; set; }
-
-      public decimal RecommendedRetailPrice { get; set; }
-
-      public decimal TaxRate { get; set; }
-
-      public string CustomFields { get; set; }
-
-      public int SupplierID { get; set; }
-
-      public string SupplierName { get; set; }
-   }
-
-   public class StockItemHistoryListDtoV1
-   {
-      public int Id { get; set; }
-
-      public string Name { get; set; }
-
-      public decimal UnitPrice { get; set; }
-
-      public decimal RecommendedRetailPrice { get; set; }
-
-      public decimal TaxRate { get; set; }
-
-      public string CustomFields { get; set; }
-
-      public DateTime ValidFrom { get; set; }
-
-      public DateTime ValidTo { get; set; }
    }
 }
