@@ -35,28 +35,27 @@ namespace devMobile.WebAPIDapper.Swagger
             builder.Services.AddEndpointsApiExplorer();
 
             // Extract application info for Swagger docs from assmebly info
-            var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location);
+            var version = Assembly.GetEntryAssembly().GetName().Version;
 
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
-                        Title = fileVersionInfo.ProductName,
-                        Version = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}",
-                        Description = fileVersionInfo.Comments,
+                        Title = ".NET Core web API + Dapper + Swagger",
+                        Version = $"{version.Major}.{version.Minor}",
 
-                        License = new OpenApiLicense
+                        Description = "This sample application shows how .NET Core and Dapper can be used to build a lightweight OPENAPI described Web API",
+                        Contact = new()
                         {
-                            Name = fileVersionInfo.LegalCopyright,
-                            //Url = new Uri(""),
+                            //Email = "", // Don't think this would be a good idea...
+                            Name = "Bryn Lewis",
+                            Url = new Uri("https://blog.devMobile.co.nz")
                         },
-                        //TermsOfService = new Uri(""),
-
-                        Contact = new OpenApiContact
+                        License = new()
                         {
-                            Name = fileVersionInfo.CompanyName,
-                            //Url = new Uri(""),
+                            Name = "Apache License V2.0",
+                            Url = new Uri("http://www.apache.org/licenses/LICENSE-2.0"),
                         }
                     });
                 c.OperationFilter<AddResponseHeadersFilter>();
@@ -72,7 +71,7 @@ namespace devMobile.WebAPIDapper.Swagger
                 app.UseSwaggerUI();
             }
 
-            builder.Services.AddApplicationInsightsTelemetry();
+    builder.Services.AddApplicationInsightsTelemetry();
 
             app.UseHttpsRedirection();
 
