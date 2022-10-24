@@ -12,12 +12,25 @@
 	<Deterministic>false</Deterministic>
   </PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<Copyright>Apache License V2.0</Copyright>
+		<Description>A sample application showing how integrate Swager and .net Core application</Description>
+		<Authors>Bryn Lewis</Authors>
+		<Company>devMobile Software</Company>
+		<PackageProjectUrl>https://blog.devmobile.co.nz/</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/KiwiBryn/WebAPIDapper-NetCore</RepositoryUrl>
+		<Title>WebAPI Dapper Swagger</Title>
+		<Product>WebAPI Dapper Swagger sample</Product>
+	</PropertyGroup>
+
+	<ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
   </ItemGroup>
 

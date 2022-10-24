@@ -16,7 +16,10 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.Swagger
 {
+    using System.Reflection;
+
     using Microsoft.OpenApi.Models;
+    using Swashbuckle.AspNetCore.Filters;
 
     public class Program
     {
@@ -31,30 +34,32 @@ namespace devMobile.WebAPIDapper.Swagger
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
+            // Extract application info for Swagger docs from assmebly info
+            var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location);
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
-                        // Consider picking some of these up from Package info
-                        Title = "devMobile WebAPIDapper",
-                        Version = "v1.0",
-                        Description = ".NET Core WebAPI sample with StackOverflow Dapper for data access",
+                        Title = fileVersionInfo.ProductName,
+                        Version = $"{fileVersionInfo.FileMajorPart}.{fileVersionInfo.FileMinorPart}",
+                        Description = fileVersionInfo.Comments,
 
                         License = new OpenApiLicense
                         {
-                            Name = "APACHE LICENSE, VERSION 2.0",
-                            Url = new Uri("http://www.apache.org/licenses/LICENSE-2.0")
+                            Name = fileVersionInfo.LegalCopyright,
+                            //Url = new Uri(""),
                         },
-                        TermsOfService = new Uri("https://blog.devmobile.co.nz/about/"),
+                        //TermsOfService = new Uri(""),
 
                         Contact = new OpenApiContact
                         {
-                            Name = "devMobile Software",
-                            Url = new Uri("https://blog.devmobile.co.nz")
+                            Name = fileVersionInfo.CompanyName,
+                            //Url = new Uri(""),
                         }
                     });
-                //c.OperationFilter<AddResponseHeadersFilter>();
+                c.OperationFilter<AddResponseHeadersFilter>();
                 c.IncludeXmlComments(string.Format(@"{0}\WebAPIDapper.xml", System.AppDomain.CurrentDomain.BaseDirectory));
             });
 
