@@ -16,6 +16,8 @@
 //---------------------------------------------------------------------------------
 namespace Swagger.Controllers
 {
+    using System.Reflection;
+
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
@@ -25,9 +27,7 @@ namespace Swagger.Controllers
         [HttpGet]
         public string DeploymentVersion()
         {
-            // https://marinovdh.wordpress.com/2018/10/22/68/
-            //
-            return this.GetType().Assembly.GetName().Version.ToString();
+            return Assembly.GetEntryAssembly().GetName().Version.ToString();
         }
     }
 }
