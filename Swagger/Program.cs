@@ -18,7 +18,10 @@ namespace devMobile.WebAPIDapper.Swagger
 {
     using System.Reflection;
 
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.FileProviders;
     using Microsoft.OpenApi.Models;
+
     using Swashbuckle.AspNetCore.Filters;
 
     public class Program
@@ -64,14 +67,38 @@ namespace devMobile.WebAPIDapper.Swagger
 
             var app = builder.Build();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "css")),
+                RequestPath = "/css",
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")),
+                RequestPath = "/images",
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "JavaScript")),
+                RequestPath = "/JavaScript",
+            });
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+
+                app.UseSwaggerUI(c =>
+                {
+                    c.InjectStylesheet("/css/.css");
+                    c.InjectJavascript("/JavaScript/Swagger.js");
+                    c.DocumentTitle = "Web API Dapper Sample";
+                });
             }
 
-    builder.Services.AddApplicationInsightsTelemetry();
+            builder.Services.AddApplicationInsightsTelemetry();
 
             app.UseHttpsRedirection();
 
