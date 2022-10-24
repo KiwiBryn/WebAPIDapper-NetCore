@@ -74,22 +74,5 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
             return this.Ok(response);
         }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Delivered([FromQuery] Model.StockItemNameSearchDtoV1 request)
-        {
-            using (SqlConnection db = new SqlConnection(this.connectionString))
-            {
-                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsV1]", param: request, commandType: CommandType.StoredProcedure);
-
-                if (!response.Any())
-                {
-                    logger.LogInformation("StockItem search with {0} nothing found", request.SearchText);
-                }
-                )
-            }
-
-            return this.Ok();
-        }
     }
 }
