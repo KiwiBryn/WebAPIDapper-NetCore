@@ -92,7 +92,8 @@ namespace devMobile.WebAPIDapper.Swagger
 
                 app.UseSwaggerUI(c =>
                 {
-                    c.InjectStylesheet("/css/.css");
+                    c.EnableFilter();
+                    c.InjectStylesheet("/css/Swagger.css");
                     c.InjectJavascript("/JavaScript/Swagger.js");
                     c.DocumentTitle = "Web API Dapper Sample";
                 });
