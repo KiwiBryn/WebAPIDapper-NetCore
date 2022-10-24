@@ -37,19 +37,6 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
             this.logger = logger;
         }
 
-        [HttpGet()]
-        public async Task<IEnumerable<Model.StockItemListDtoV1>> Get()
-        {
-            IEnumerable<Model.StockItemListDtoV1> response;
-
-            using (SqlConnection db = new SqlConnection(this.connectionString))
-            {
-                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsStockItemListV1]", commandType: CommandType.StoredProcedure);
-            }
-
-            return response;
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
         {
@@ -86,6 +73,23 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
             }
 
             return this.Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Delivered([FromQuery] Model.StockItemNameSearchDtoV1 request)
+        {
+            using (SqlConnection db = new SqlConnection(this.connectionString))
+            {
+                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsV1]", param: request, commandType: CommandType.StoredProcedure);
+
+                if (!response.Any())
+                {
+                    logger.LogInformation("StockItem search with {0} nothing found", request.SearchText);
+                }
+                )
+            }
+
+            return this.Ok();
         }
     }
 }
