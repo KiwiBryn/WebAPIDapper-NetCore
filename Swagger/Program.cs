@@ -34,6 +34,8 @@ namespace devMobile.WebAPIDapper.Swagger
 
             builder.Services.AddControllers();
 
+            builder.Services.AddControllersWithViews().AddNewtonsoftJson();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
