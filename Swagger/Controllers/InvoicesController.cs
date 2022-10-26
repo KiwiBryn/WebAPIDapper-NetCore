@@ -25,13 +25,22 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     
     using devMobile.Azure.DapperTransient;
 
-    [Route("api/[controller]")]
+    /// <summary>
+    /// WebAPI controller for handling Invoice functionality.
+    /// </summary>
     [ApiController]
+    [Produces("application/json")]
+    [Route("api/[controller]")]
     public class InvoicesController : ControllerBase
     {
         private readonly string connectionString;
         private readonly ILogger<InvoicesController> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvoicesController"/> class.
+        /// </summary>
+        /// <param name="configuration">DI configuration provider.</param>
+        /// <param name="logger">DI logging provider.</param>/// 
         public InvoicesController(IConfiguration configuration, ILogger<InvoicesController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
@@ -39,21 +48,30 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Gets a summary of the specified invoice plus associated invoice lines and stock item transactions.
+        /// </summary>
+        /// <param name="invoiceId">Numeric ID used for referencing an invoice within the database.</param>
+        /// <response code="200">Summary of Invoice plus associated InvoiceLines and StockItemTransactions returned.</response>
+        /// <response code="404">Invoice ID not found.</response>
+        /// <returns>Invoice information with associated invoice lines and item transaction.</returns>
         [HttpGet]
-        public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
         {
             Model.InvoiceSummaryGetDtoV1 response ;
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
+                var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = invoiceId }, commandType: CommandType.StoredProcedure);
 
                 response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Model.InvoiceSummaryGetDtoV1>();
                 if (response == default)
                 {
-                    logger.LogInformation("Invoice:{id} not found", id);
+                    logger.LogInformation("Invoice:{invoiceId} not found", invoiceId);
 
-                    return this.NotFound($"Invoice:{id} not found");
+                    return this.NotFound($"Invoice:{invoiceId} not found");
                 }
 
                 response.InvoiceLines = (await invoiceSummary.ReadWithRetryAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
