@@ -55,7 +55,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
             using (SqlConnection db = new SqlConnection(configuration.GetConnectionString("WorldWideImportersDatabase")))
             {
-                PersonAuthenticateLogonDetailsDto userLogonUserDetails = await db.QuerySingleOrDefaultWithRetryAsync<PersonAuthenticateLogonDetailsDto>("[Application].[PersonAuthenticateLookupByLogonNameV1]", param: request, commandType: CommandType.StoredProcedure);
+                PersonAuthenticateLogonDetailsDto userLogonUserDetails = await db.QuerySingleOrDefaultWithRetryAsync<PersonAuthenticateLogonDetailsDto>("[Website].[PersonAuthenticateLookupByLogonNameV2]", param: request, commandType: CommandType.StoredProcedure);
                 if (userLogonUserDetails == null)
                 {
                     logger.LogWarning("Login attempt by user {0} failed", request.LogonName);
@@ -90,6 +90,12 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
             public string FullName { get; set; }
 
             public string EmailAddress { get; set; }
+
+            public bool IsSystemUser { get; set; }
+
+            public bool IsEmployee { get; set; }
+
+            public bool IsSalesPerson { get; set; }
         }
     }
 }
