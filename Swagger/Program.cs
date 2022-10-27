@@ -16,10 +16,16 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.Swagger
 {
+    using System;
     using System.Reflection;
+    using System.Text;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.FileProviders;
+    using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
 
     using Swashbuckle.AspNetCore.Filters;
@@ -31,26 +37,23 @@ namespace devMobile.WebAPIDapper.Swagger
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddApplicationInsightsTelemetry();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
 
-            builder.Services.AddControllersWithViews().AddNewtonsoftJson();
+            builder.Services.Configure<Model.JwtIssuerOptions>(builder.Configuration.GetSection(nameof(Model.JwtIssuerOptions)));
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-
-            // Extract application info for Swagger docs from assmebly info
-            var version = Assembly.GetEntryAssembly().GetName().Version;
-
-            builder.Services.AddSwaggerGen(c =>
+            builder.Services.AddSwaggerGen(swagger =>
             {
-                c.SwaggerDoc("v1",
+                swagger.OperationFilter<AddResponseHeadersFilter>();
+                swagger.IncludeXmlComments(string.Format(@"{0}\WebAPIDapper.xml", System.AppDomain.CurrentDomain.BaseDirectory));
+
+                swagger.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
                         Title = ".NET Core web API + Dapper + Swagger",
-                        Version = $"{version.Major}.{version.Minor}",
-
-                        Description = "This sample application shows how .NET Core and Dapper can be used to build a lightweight OPENAPI described Web API",
+                        Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                         Contact = new()
                         {
                             //Email = "", // Don't think this would be a good idea...
@@ -63,8 +66,70 @@ namespace devMobile.WebAPIDapper.Swagger
                             Url = new Uri("http://www.apache.org/licenses/LICENSE-2.0"),
                         }
                     });
-                c.OperationFilter<AddResponseHeadersFilter>();
-                c.IncludeXmlComments(string.Format(@"{0}\WebAPIDapper.xml", System.AppDomain.CurrentDomain.BaseDirectory));
+
+                swagger.AddSecurityDefinition("Bearer", //Name the security scheme
+                                     new OpenApiSecurityScheme
+                                     {
+                                         Description = "JWT Authorization header using the Bearer scheme.",
+                                         Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
+                                         Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+                                     });
+
+                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+
+            Model.JwtIssuerOptions jwtIssuerOptions = builder.Configuration.GetSection(nameof(Model.JwtIssuerOptions)).Get<Model.JwtIssuerOptions>();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtIssuerOptions.Issuer,
+
+                ValidateAudience = true,
+                ValidAudience = jwtIssuerOptions.Audience,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtIssuerOptions.SecretKey)),
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = jwtIssuerOptions.Issuer;
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             var app = builder.Build();
@@ -87,6 +152,9 @@ namespace devMobile.WebAPIDapper.Swagger
                 RequestPath = "/JavaScript",
             });
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -94,14 +162,12 @@ namespace devMobile.WebAPIDapper.Swagger
 
                 app.UseSwaggerUI(c =>
                 {
-                    c.EnableFilter();
+                    //c.EnableFilter();
                     c.InjectStylesheet("/css/Swagger.css");
                     c.InjectJavascript("/JavaScript/Swagger.js");
                     c.DocumentTitle = "Web API Dapper Sample";
                 });
             }
-
-            builder.Services.AddApplicationInsightsTelemetry();
 
             app.UseHttpsRedirection();
 
