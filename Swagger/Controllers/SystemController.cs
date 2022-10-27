@@ -17,17 +17,19 @@
 namespace Swagger.Controllers
 {
     using System.Reflection;
-
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
     [ApiController]
     public class SystemController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet, Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public string DeploymentVersion()
         {
-            return Assembly.GetEntryAssembly().GetName().Version.ToString();
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
     }
 }
