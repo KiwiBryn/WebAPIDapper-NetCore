@@ -31,17 +31,17 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class InvoicesController : ControllerBase
+    public class InvoiceController : ControllerBase
     {
         private readonly string connectionString;
-        private readonly ILogger<InvoicesController> logger;
+        private readonly ILogger<InvoiceController> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvoicesController"/> class.
+        /// Initializes a new instance of the <see cref="InvoiceController"/> class.
         /// </summary>
         /// <param name="configuration">DI configuration provider.</param>
         /// <param name="logger">DI logging provider.</param>/// 
-        public InvoicesController(IConfiguration configuration, ILogger<InvoicesController> logger)
+        public InvoiceController(IConfiguration configuration, ILogger<InvoiceController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 
