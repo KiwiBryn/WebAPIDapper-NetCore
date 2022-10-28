@@ -65,6 +65,18 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
                 // Setup the primary SID + name info
                 claims.Add(new Claim(ClaimTypes.PrimarySid, userLogonUserDetails.PersonID.ToString()));
+                if (userLogonUserDetails.IsSystemUser)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, "SystemUser"));
+                }
+                if (userLogonUserDetails.IsEmployee)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+                }
+                if (userLogonUserDetails.IsSalesPerson)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, "SalesPerson"));
+                }
             }
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtIssuerOptions.SecretKey));
