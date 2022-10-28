@@ -46,9 +46,6 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         }
 
         [HttpPost("logon")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Logon([FromBody] Model.LogonRequest request )
         {
             var claims = new List<Claim>();
