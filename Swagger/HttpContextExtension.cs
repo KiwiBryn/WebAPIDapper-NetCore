@@ -30,9 +30,9 @@ namespace devMobile.WebAPIDapper.Swagger
         /// </summary>
         /// <param name="httpContext">HTTP request context which has PrimarySid .</param>
         /// <returns>Swagger PersonId UserID.</returns>
-        public static long PersonId(this HttpContext httpContext)
+        public static int PersonId(this HttpContext httpContext)
         {
-            return long.Parse(httpContext.User.FindFirstValue(ClaimTypes.PrimarySid));
+            return int.Parse(httpContext.User.FindFirstValue(ClaimTypes.PrimarySid));
         }
     }
 }
