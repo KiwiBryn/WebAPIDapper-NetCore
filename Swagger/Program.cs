@@ -40,6 +40,7 @@ namespace devMobile.WebAPIDapper.Swagger
             builder.Services.AddApplicationInsightsTelemetry();
 
             builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddSwaggerGenNewtonsoftSupport();
 
             builder.Services.Configure<Model.JwtIssuerOptions>(builder.Configuration.GetSection(nameof(Model.JwtIssuerOptions)));
 
