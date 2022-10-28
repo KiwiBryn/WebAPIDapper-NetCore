@@ -26,12 +26,12 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
     [ApiController]
     [Route("api/[controller]")]
-    public class StockItemsController : ControllerBase
+    public class StockItemController : ControllerBase
     {
         private readonly string connectionString;
-        private readonly ILogger<StockItemsController> logger;
+        private readonly ILogger<StockItemController> logger;
 
-        public StockItemsController(IConfiguration configuration, ILogger<StockItemsController> logger)
+        public StockItemController(IConfiguration configuration, ILogger<StockItemController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
             this.logger = logger;
