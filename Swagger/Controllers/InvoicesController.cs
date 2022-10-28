@@ -55,9 +55,8 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         /// <response code="200">Summary of Invoice plus associated InvoiceLines and StockItemTransactions returned.</response>
         /// <response code="404">Invoice ID not found.</response>
         /// <returns>Invoice information with associated invoice lines and item transaction.</returns>
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{invoiceId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(Model.InvoiceSummaryGetDtoV1))]
         public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
         {
             Model.InvoiceSummaryGetDtoV1 response ;
