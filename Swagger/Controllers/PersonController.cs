@@ -31,9 +31,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     public class PersonController : ControllerBase
     {
         private readonly string connectionString;
-        private readonly ILogger<StockItemsController> logger;
+        private readonly ILogger<PersonController> logger;
 
-        public PersonController(IConfiguration configuration, ILogger<StockItemsController> logger)
+        public PersonController(IConfiguration configuration, ILogger<PersonController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
             this.logger = logger;
