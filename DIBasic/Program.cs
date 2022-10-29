@@ -14,6 +14,9 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace devMobile.WebAPIDapper.ListsDIBasic
 {
     public class Program

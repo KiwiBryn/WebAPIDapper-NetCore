@@ -14,9 +14,12 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using devMobile.Azure.DapperTransient;
 
