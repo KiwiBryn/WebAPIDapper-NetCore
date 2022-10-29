@@ -18,18 +18,42 @@ namespace devMobile.WebAPIDapper.Swagger.Model
 {
 	using System;
 
+    /// <summary>
+    /// DTO for returning summarised list of stock item transaction information.
+    /// </summary>
 	public class StockItemTransactionSummaryListDtoV1
 	{
-		public int StockItemTransactionID { get; set; }
+        /// <summary>
+        /// Numeric ID used to refer to a stock item transaction within the database.
+        /// </summary>
+        public int StockItemTransactionID { get; set; }
 
-		public int StockItemID { get; set; }
-		public string StockItemName { get; set; }
+        /// <summary>
+        /// Numeric ID used for reference to a stock item within the database.
+        /// </summary>
+        public int StockItemID { get; set; }
+        /// <summary>
+        /// Full name of a stock item (but not a full description)
+        /// </summary>
+        public string StockItemName { get; set; }
 
+        /// <summary>
+        /// Numeric ID used for reference to a transaction type within the database.
+        /// </summary>
 		public int TransactionTypeID { get; set; }
+        /// <summary>
+        /// Full name of the transaction type.
+        /// </summary>
 		public string TransactionTypeName { get; set; }
 
+        /// <summary>
+        /// Date and time when the transaction occurred.
+        /// </summary>
 		public DateTime TransactionAt { get; set; }
 
+        /// <summary>
+        /// Quantity of stock movement (positive is incoming stock, negative is outgoing).
+        /// </summary>
 		public decimal Quantity { get; set; }
 	}
 }
