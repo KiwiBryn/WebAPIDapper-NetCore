@@ -19,6 +19,10 @@ namespace devMobile.WebAPIDapper.ListsDINasty
    using System.Data;
    using System.Data.SqlClient;
 
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
    public class Program
    {
       public static void Main(string[] args)
