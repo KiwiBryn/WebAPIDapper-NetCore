@@ -29,7 +29,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
     using devMobile.Azure.DapperTransient;
 
-
+    /// <summary>
+    /// WebAPI controller for handling Authentication functionality.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -38,6 +40,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         private readonly ILogger<AuthenticationController> logger;
         private readonly Model.JwtIssuerOptions jwtIssuerOptions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationController"/> class.
+        /// </summary>
         public AuthenticationController(IConfiguration configuration, ILogger<AuthenticationController> logger, IOptions<Model.JwtIssuerOptions> jwtIssuerOptions)
         {
             this.configuration = configuration;

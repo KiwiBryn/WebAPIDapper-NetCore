@@ -26,6 +26,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
     using devMobile.Azure.DapperTransient;
 
+    /// <summary>
+    /// WebAPI controller with functionality for managing People.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PersonController : ControllerBase
@@ -33,6 +36,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         private readonly string connectionString;
         private readonly ILogger<PersonController> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PersonController"/> class.
+        /// </summary>
         public PersonController(IConfiguration configuration, ILogger<PersonController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
