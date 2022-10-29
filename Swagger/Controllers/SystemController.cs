@@ -17,7 +17,9 @@
 namespace Swagger.Controllers
 {
     using System.Reflection;
+
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]

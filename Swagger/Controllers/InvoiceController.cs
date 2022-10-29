@@ -20,9 +20,14 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     using System.ComponentModel.DataAnnotations;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
-    
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+
     using devMobile.Azure.DapperTransient;
 
     /// <summary>

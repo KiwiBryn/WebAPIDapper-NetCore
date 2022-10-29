@@ -15,15 +15,19 @@
 //
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.Swagger.Controllers
-{ 
+{
+    using System;
+    using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
 
