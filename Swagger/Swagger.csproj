@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
     <UserSecretsId>509908a9-7394-4258-b25e-54a66dd43acd</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>WebAPIDapper.xml</DocumentationFile>
@@ -22,6 +22,14 @@
 		<RepositoryUrl>https://github.com/KiwiBryn/WebAPIDapper-NetCore</RepositoryUrl>
 		<Title>WebAPI Dapper Swagger</Title>
 		<Product>WebAPI Dapper Swagger sample</Product>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <NoWarn>1701;1702;CS8618</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <NoWarn>1701;1702;CS8618</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
