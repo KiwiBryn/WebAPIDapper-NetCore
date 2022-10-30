@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger.Model
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models
 {
     using System;
 
@@ -161,11 +161,11 @@ namespace devMobile.WebAPIDapper.Swagger.Model
         /// <summary>
         /// 
         /// </summary>
-		public Model.InvoiceLineSummaryListDtoV1[] InvoiceLines { get; set; }
+		public Models.InvoiceLineSummaryListDtoV1[] InvoiceLines { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-		public Model.StockItemTransactionSummaryListDtoV1[] StockItemTransactions { get; set; } 
+		public Models.StockItemTransactionSummaryListDtoV1[] StockItemTransactions { get; set; } 
 	}
 }
