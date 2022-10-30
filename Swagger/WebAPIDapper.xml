@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Swagger</name>
+    </assembly>
+    <members>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Controllers.InvoiceController">
+            <summary>
+            WebAPI controller for handling Invoice functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.Swagger.Controllers.InvoiceController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.Swagger.Controllers.InvoiceController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.Swagger.Controllers.InvoiceController"/> class.
+            </summary>
+            <param name="configuration">DI configuration provider.</param>
+            <param name="logger">DI logging provider.</param>/// 
+        </member>
+        <member name="M:devMobile.WebAPIDapper.Swagger.Controllers.InvoiceController.Get(System.Int32)">
+            <summary>
+            Gets a summary of the specified invoice plus associated invoice lines and stock item transactions.
+            </summary>
+            <param name="invoiceId">Numeric ID used for referencing an invoice within the database.</param>
+            <response code="200">Summary of Invoice plus associated InvoiceLines and StockItemTransactions returned.</response>
+            <response code="404">Invoice ID not found.</response>
+            <returns>Invoice information with associated invoice lines and item transaction.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1">
+            <summary>
+            Invoice line summary DTO with reduced number of fields some of which have been "flattened" for easy of display in lists.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.InvoiceLineID">
+            <summary>
+            Numeric ID used for reference to a line on an Order within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.StockItemID">
+            <summary>
+            Numeric ID used for reference to a stock item within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.StockItemDescription">
+            <summary>
+            Description of the item supplied (Usually the stock item name but can be overridden).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.PackageTypeID">
+            <summary>
+            Numeric ID of type of package to be supplied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.PackageTypeName">
+            <summary>
+            Name of type of package to be supplied
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.Quantity">
+            <summary>
+            Quantity to be supplied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.UnitPrice">
+            <summary>
+            Unit price to be charged.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.TaxAmount">
+            <summary>
+            Tax amount calculated.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1.ExtendedPrice">
+            <summary>
+            Extended line price charged.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1">
+             <summary>
+             Invoice summary DTO with reduced number of fields some of which have been "flattened" for easy of display in lists.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.InvoiceId">
+            <summary>
+            Numeric ID used for reference to an invoice within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.OrderId">
+            <summary>
+            Numeric ID used for reference to an order within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveryMethodId">
+            <summary>
+            Numeric ID used for reference to a delivery method within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveryMethodName">
+            <summary>
+            Full name of methods that can be used for delivery of customer orders.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.SalesPersonId">
+            <summary>
+            Numeric ID used for reference to a sales person within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.SalesPersonName">
+            <summary>
+            Full name of the salesperson.
+            
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.InvoicedOn">
+            <summary>
+            Date that this invoice was raised.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.CustomerPurchaseOrderNumber">
+            <summary>
+            Purchase Order Number received from customer.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.IsCreditNote">
+            <summary>
+            Is this a credit note (rather than an invoice).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.CreditNoteReason">
+            <summary>
+            eason that this credit note needed to be generated (if applicable).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.Comments">
+            <summary>
+            Any comments related to this invoice (sent to customer).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveryInstructions">
+            <summary>
+            Any comments related to delivery (sent to customer)'.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveryRun">
+            <summary>
+            Delivery run for this shipment.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveredAt">
+            <summary>
+            Confirmed delivery date and time promoted from JSON delivery data.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.DeliveredTo">
+            <summary>
+            Confirmed receiver promoted from JSON delivery data.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.InvoiceLines">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.InvoiceSummaryGetDtoV1.StockItemTransactions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.StockItemListDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemListDtoV1.Id">
+            <summary>
+            Numeric ID used for reference to a stock item within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemListDtoV1.Name">
+            <summary>
+            Full name of a stock item (but not a full description).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemListDtoV1.RecommendedRetailPrice">
+            <summary>
+            Recommended retail price for this stock item.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemListDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1">
+            <summary>
+            DTO for returning summarised stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.Id">
+            <summary>
+            Numeric ID used for reference to a stock item within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.Name">
+            <summary>
+            Full name of a stock item (but not a full description).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.UnitPrice">
+            <summary>
+            Selling price (ex-tax) for one unit of this product.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.RecommendedRetailPrice">
+            <summary>
+            Recommended retail price for this stock item.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.QuantityPerOuter">
+            <summary>
+            Quantity of the stock item in an outer package.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.TypicalWeightPerUnit">
+            <summary>
+            Typical weight for one unit of this product (packaged).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.UnitPackageName">
+            <summary>
+            Full name of unit package that stock items can be purchased in or sold in.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.OuterPackageName">
+            <summary>
+            Full name of outer package that stock items can be purchased in or sold in.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.SupplierID">
+            <summary>
+            Numeric ID used for reference to a supplier within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemGetDtoV1.SupplierName">
+            <summary>
+            Supplier's full name (usually a trading name).
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.StockItemNameSearchDtoV1">
+            <summary>
+            DTO for stock item search parameters.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemNameSearchDtoV1.SearchText">
+            <summary>
+            Text in stock item name to search for.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemNameSearchDtoV1.MaximumRowsToReturn">
+            <summary>
+            Maximum number of search result to return for a query.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item transaction information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.StockItemTransactionID">
+            <summary>
+            Numeric ID used to refer to a stock item transaction within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.StockItemID">
+            <summary>
+            Numeric ID used for reference to a stock item within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.StockItemName">
+            <summary>
+            Full name of a stock item (but not a full description)
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.TransactionTypeID">
+            <summary>
+            Numeric ID used for reference to a transaction type within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.TransactionTypeName">
+            <summary>
+            Full name of the transaction type.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.TransactionAt">
+            <summary>
+            Date and time when the transaction occurred.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.Swagger.Models.StockItemTransactionSummaryListDtoV1.Quantity">
+            <summary>
+            Quantity of stock movement (positive is incoming stock, negative is outgoing).
+            </summary>
+        </member>
+        <member name="M:devMobile.Azure.DapperTransient.DapperExtensions.ShouldRetryOn(System.Exception)">
+            <summary>
+                This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+                the same compatibility standards as public APIs. It may be changed or removed without notice in
+                any release. You should only use it directly in your code with extreme caution and knowing that
+                doing so can result in application failures when updating to a new Entity Framework Core release.
+            </summary>
+        </member>
+    </members>
+</doc>
