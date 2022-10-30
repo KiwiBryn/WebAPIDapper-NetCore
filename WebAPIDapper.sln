@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIBasic", "DIBasic\DIBasic.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DINasty", "DINasty\DINasty.csproj", "{7C7A711B-8DE6-4F29-953E-7E090F16BB71}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationAndAuthorisationJWTDatabase", "AuthenticationAndAuthorisation\AuthenticationAndAuthorisationJWTDatabase.csproj", "{CE8450C1-936E-45EF-9AEF-13162778D5AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationAndAuthorisationJWTDatabase", "AuthenticationAndAuthorisationJWTDatabase\AuthenticationAndAuthorisationJWTDatabase.csproj", "{CE8450C1-936E-45EF-9AEF-13162778D5AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swagger", "Swagger\Swagger.csproj", "{6868200E-3A65-496D-AA85-374F4E743C77}"
 EndProject
