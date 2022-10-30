@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger.Controllers
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System.ComponentModel.DataAnnotations;
     using System.Data.SqlClient;
@@ -57,7 +57,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         /// <response code="409">Specified Person not found</response> 
         [Authorize()]
         [HttpPut("{personId:int}", Name = "PasswordReset")]
-        public async Task<ActionResult> PasswordReset([Range(1, int.MaxValue, ErrorMessage = "Person id must greater than 0")] int personId, [FromBody] Model.PersonPasswordResetRequest request)
+        public async Task<ActionResult> PasswordReset([Range(1, int.MaxValue, ErrorMessage = "Person id must greater than 0")] int personId, [FromBody] Models.PersonPasswordResetRequest request)
         {
             request.UserId = HttpContext.PersonId();
             request.PersonID = personId;
@@ -84,7 +84,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         /// <response code="409">Previous password invalid.</response>
         [Authorize()]
         [HttpPut(Name = "PasswordChange")]
-        public async Task<ActionResult> PasswordChange([FromBody] Model.PersonPasswordChangeRequest request)
+        public async Task<ActionResult> PasswordChange([FromBody] Models.PersonPasswordChangeRequest request)
         {
             request.UserID = HttpContext.PersonId();
 

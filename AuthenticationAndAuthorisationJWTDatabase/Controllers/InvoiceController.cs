@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger.Controllers
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -61,16 +61,16 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         /// <response code="404">Invoice ID not found.</response>
         /// <returns>Invoice information with associated invoice lines and item transaction.</returns>
         [HttpGet("{invoiceId}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(Model.InvoiceSummaryGetDtoV1))]
-        public async Task<ActionResult<Model.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(Models.InvoiceSummaryGetDtoV1))]
+        public async Task<ActionResult<Models.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
         {
-            Model.InvoiceSummaryGetDtoV1 response ;
+            Models.InvoiceSummaryGetDtoV1 response ;
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
                 var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = invoiceId }, commandType: CommandType.StoredProcedure);
 
-                response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Model.InvoiceSummaryGetDtoV1>();
+                response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Models.InvoiceSummaryGetDtoV1>();
                 if (response == default)
                 {
                     logger.LogInformation("Invoice:{invoiceId} not found", invoiceId);
@@ -78,9 +78,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
                     return this.NotFound($"Invoice:{invoiceId} not found");
                 }
 
-                response.InvoiceLines = (await invoiceSummary.ReadWithRetryAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
+                response.InvoiceLines = (await invoiceSummary.ReadWithRetryAsync<Models.InvoiceLineSummaryListDtoV1>()).ToArray();
 
-                response.StockItemTransactions = (await invoiceSummary.ReadWithRetryAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
+                response.StockItemTransactions = (await invoiceSummary.ReadWithRetryAsync<Models.StockItemTransactionSummaryListDtoV1>()).ToArray();
             }
 
             return this.Ok(response);

@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger.Controllers
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -43,13 +43,13 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Model.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
+        public async Task<ActionResult<Models.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
         {
-            Model.StockItemGetDtoV1 response;
+            Models.StockItemGetDtoV1 response;
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                response = await db.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
+                response = await db.QuerySingleOrDefaultWithRetryAsync<Models.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
             }
 
             if (response == default)
@@ -63,13 +63,13 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
+        public async Task<ActionResult<IAsyncEnumerable<Models.StockItemListDtoV1>>> Get([FromQuery] Models.StockItemNameSearchDtoV1 request)
         {
-            IEnumerable<Model.StockItemListDtoV1> response;
+            IEnumerable<Models.StockItemListDtoV1> response;
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
+                response = await db.QueryWithRetryAsync<Models.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
 
                 if (!response.Any())
                 {

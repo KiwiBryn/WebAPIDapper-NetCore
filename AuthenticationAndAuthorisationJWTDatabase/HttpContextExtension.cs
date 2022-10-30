@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
 {
     using System.Security.Claims;
 

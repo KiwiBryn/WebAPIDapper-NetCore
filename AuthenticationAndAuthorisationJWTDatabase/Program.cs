@@ -14,17 +14,19 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using System.Text;
+    using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
 
@@ -42,7 +44,7 @@ namespace devMobile.WebAPIDapper.Swagger
             builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddSwaggerGenNewtonsoftSupport();
 
-            builder.Services.Configure<Model.JwtIssuerOptions>(builder.Configuration.GetSection(nameof(Model.JwtIssuerOptions)));
+            builder.Services.Configure<Models.JwtIssuerOptions>(builder.Configuration.GetSection(nameof(Models.JwtIssuerOptions)));
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(swagger =>
@@ -92,7 +94,7 @@ namespace devMobile.WebAPIDapper.Swagger
                 });
             });
 
-            Model.JwtIssuerOptions jwtIssuerOptions = builder.Configuration.GetSection(nameof(Model.JwtIssuerOptions)).Get<Model.JwtIssuerOptions>();
+            Models.JwtIssuerOptions jwtIssuerOptions = builder.Configuration.GetSection(nameof(Models.JwtIssuerOptions)).Get<Models.JwtIssuerOptions>();
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -135,24 +137,6 @@ namespace devMobile.WebAPIDapper.Swagger
 
             var app = builder.Build();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "css")),
-                RequestPath = "/css",
-            });
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "images")),
-                RequestPath = "/images",
-            });
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "JavaScript")),
-                RequestPath = "/JavaScript",
-            });
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -164,8 +148,6 @@ namespace devMobile.WebAPIDapper.Swagger
                 app.UseSwaggerUI(c =>
                 {
                     //c.EnableFilter();
-                    c.InjectStylesheet("/css/Swagger.css");
-                    c.InjectJavascript("/JavaScript/Swagger.js");
                     c.DocumentTitle = "Web API Dapper Sample";
                 });
             }

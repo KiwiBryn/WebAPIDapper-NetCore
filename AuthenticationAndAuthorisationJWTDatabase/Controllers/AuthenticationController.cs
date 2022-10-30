@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.Swagger.Controllers
+namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -42,12 +42,12 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly ILogger<AuthenticationController> logger;
-        private readonly Model.JwtIssuerOptions jwtIssuerOptions;
+        private readonly Models.JwtIssuerOptions jwtIssuerOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationController"/> class.
         /// </summary>
-        public AuthenticationController(IConfiguration configuration, ILogger<AuthenticationController> logger, IOptions<Model.JwtIssuerOptions> jwtIssuerOptions)
+        public AuthenticationController(IConfiguration configuration, ILogger<AuthenticationController> logger, IOptions<Models.JwtIssuerOptions> jwtIssuerOptions)
         {
             this.configuration = configuration;
             this.logger = logger;
@@ -55,7 +55,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         }
 
         [HttpPost("logon")]
-        public async Task<ActionResult> Logon([FromBody] Model.LogonRequest request )
+        public async Task<ActionResult> Logon([FromBody] Models.LogonRequest request )
         {
             var claims = new List<Claim>();
 
