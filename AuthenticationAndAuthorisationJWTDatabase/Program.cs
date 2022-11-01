@@ -75,7 +75,8 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
                                      {
                                          Description = "JWT Authorization header using the Bearer scheme.",
                                          Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
-                                         Scheme = "bearer" //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer".
+                                         Scheme = "bearer", //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer"
+                                         BearerFormat = "JWT",
                                      });
 
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
