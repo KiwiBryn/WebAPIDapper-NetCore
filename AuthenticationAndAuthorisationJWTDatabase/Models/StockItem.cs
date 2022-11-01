@@ -114,14 +114,14 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
         /// Text in stock item name to search for.
         /// </summary>
         [Required]
-        [MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")]
+        [MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(Constants.StockItemNameMaximumLength, ErrorMessage = "The name search text must be no more that {1} characters long")]
         public string SearchText { get; set; }
 
         /// <summary>
         /// Maximum number of search result to return for a query.
         /// </summary>
         [Required]
-        [Range(1, 100, ErrorMessage = "The maximum number of rows to return must be greater than or equal to {1} and less then or equal {2}")]
+        [Range(1, Constants.StockItemSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be greater than or equal to {1} and less then or equal {2}")]
         public int MaximumRowsToReturn { get; set; }
     }
 }

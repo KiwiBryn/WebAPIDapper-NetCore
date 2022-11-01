@@ -40,5 +40,25 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
         /// Maximum length of a person's password.
         /// </summary>
         public const int PasswordLengthMaximum = 40;
+
+        /// <summary>
+        /// Maximum length of a customer's name.
+        /// </summary>
+        public const int CustomerNameLengthMaximum = 100;
+
+        /// <summary>
+        /// Maximum number of customers returned by a name search
+        /// </summary>
+        public const int CustomerSearchMaximumRowsToReturn = 100;
+
+        /// <summary>
+        /// Maximum length of StockItem name
+        /// </summary>
+        public const int StockItemNameMaximumLength = 100;
+
+        /// Maximum number of customers returned by a name search
+        /// </summary>
+        public const int StockItemSearchMaximumRowsToReturn = 100;
+
     }
 }
