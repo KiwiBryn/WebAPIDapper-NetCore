@@ -55,7 +55,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         /// <response code="200">Password reset.</response>
         /// <response code="401">Unauthorised, bearer token missing or expired.</response>
         /// <response code="409">Specified Person not found</response> 
-        [Authorize()]
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{personId:int}", Name = "PasswordReset")]
         public async Task<ActionResult> PasswordReset([Range(1, int.MaxValue, ErrorMessage = "Person id must greater than 0")] int personId, [FromBody] Models.PersonPasswordResetRequest request)
         {
@@ -64,7 +64,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
             using (SqlConnection db = new SqlConnection(connectionString))
             {
-                if (await db.ExecuteWithRetryAsync("[WebSite].[PersonPasswordChangeV1]", param: request, commandType: CommandType.StoredProcedure) != 1)
+                if (await db.ExecuteWithRetryAsync("[WebSite].[PersonPasswordResetV1]", param: request, commandType: CommandType.StoredProcedure) != 1)
                 {
                     logger.LogWarning("Person {0} password change failed", request.PersonID);
 
@@ -90,7 +90,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
             using (SqlConnection db = new SqlConnection(connectionString))
             {
-                if (1 != await db.ExecuteWithRetryAsync("[WebSite].[PersonPasswordChangeV1]", param: request, commandType: CommandType.StoredProcedure))
+                if (await db.ExecuteWithRetryAsync("[WebSite].[PersonPasswordChangeV1]", param: request, commandType: CommandType.StoredProcedure) != 1)
                 {
                     logger.LogWarning("Person {0} password change failed", request.UserID);
 
