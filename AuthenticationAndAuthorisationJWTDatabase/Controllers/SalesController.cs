@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------------------
-// Copyright (c) October 2022, devMobile Software
+// Copyright (c) November 2022, devMobile Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,29 +15,12 @@
 //
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
-{
-    using System.Reflection;
-
-    using Microsoft.AspNetCore.Authorization;
+{ 
     using Microsoft.AspNetCore.Mvc;
 
-    /// <summary>
-    /// WebAPI controller for handling System functionality.
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class SystemController : ControllerBase
+    public class SalesController : ControllerBase
     {
-        /// <summary>
-        /// Returns the Application version in [Major].[Minor].[Build].Revision] format.
-        /// </summary>
-        /// <response code="200">Application version returned.</response>
-        /// <response code="401">Unauthorised, bearer token missing, invalid or expired.</response>
-        /// <returns>Returns the Application version in [Major].[Minor].[Build].Revision] format.</returns>
-        [HttpGet("DeploymentVersion"), Authorize]
-        public string DeploymentVersion()
-        {
-            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        }
     }
 }
