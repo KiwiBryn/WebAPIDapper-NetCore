@@ -83,6 +83,14 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
                 {
                     claims.Add(new Claim(ClaimTypes.Role, "SalesPerson"));
                 }
+
+                // Lookup the Person's permissions
+                IEnumerable<string> permissions = await db.QueryWithRetryAsync<string>("[Website].[PersonPermissionsByPersonIdV1]", new { userLogonUserDetails.PersonID }, commandType: CommandType.StoredProcedure);
+
+                foreach(string permission in permissions)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, permission));
+                }
             }
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtIssuerOptions.SecretKey));
