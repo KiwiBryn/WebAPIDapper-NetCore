@@ -59,9 +59,12 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         {
             var claims = new List<Claim>();
 
+            PersonAuthenticateLogonDetailsDto userLogonUserDetails;
+            IEnumerable<string> permissions;
+
             using (SqlConnection db = new SqlConnection(configuration.GetConnectionString("WorldWideImportersDatabase")))
             {
-                PersonAuthenticateLogonDetailsDto userLogonUserDetails = await db.QuerySingleOrDefaultWithRetryAsync<PersonAuthenticateLogonDetailsDto>("[Website].[PersonAuthenticateLookupByLogonNameV2]", param: request, commandType: CommandType.StoredProcedure);
+                userLogonUserDetails = await db.QuerySingleOrDefaultWithRetryAsync<PersonAuthenticateLogonDetailsDto>("[Website].[PersonAuthenticateLookupByLogonNameV2]", param: request, commandType: CommandType.StoredProcedure);
                 if (userLogonUserDetails == null)
                 {
                     logger.LogWarning("Login attempt by user {0} failed", request.LogonName);
@@ -69,28 +72,28 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
                     return this.Unauthorized();
                 }
 
-                // Setup the primary SID + name info
-                claims.Add(new Claim(ClaimTypes.PrimarySid, userLogonUserDetails.PersonID.ToString()));
-                if (userLogonUserDetails.IsSystemUser)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, "SystemUser"));
-                }
-                if (userLogonUserDetails.IsEmployee)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, "Employee"));
-                }
-                if (userLogonUserDetails.IsSalesPerson)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, "SalesPerson"));
-                }
-
                 // Lookup the Person's permissions
-                IEnumerable<string> permissions = await db.QueryWithRetryAsync<string>("[Website].[PersonPermissionsByPersonIdV1]", new { userLogonUserDetails.PersonID }, commandType: CommandType.StoredProcedure);
+                permissions = await db.QueryWithRetryAsync<string>("[Website].[PersonPermissionsByPersonIdV1]", new { userLogonUserDetails.PersonID }, commandType: CommandType.StoredProcedure);
+            }
 
-                foreach(string permission in permissions)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, permission));
-                }
+            // Setup the primary SID + name info
+            claims.Add(new Claim(ClaimTypes.PrimarySid, userLogonUserDetails.PersonID.ToString()));
+            if (userLogonUserDetails.IsSystemUser)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "SystemUser"));
+            }
+            if (userLogonUserDetails.IsEmployee)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+            }
+            if (userLogonUserDetails.IsSalesPerson)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "SalesPerson"));
+            }
+
+            foreach(string permission in permissions)
+            {
+               claims.Add(new Claim(ClaimTypes.Role, permission));
             }
 
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtIssuerOptions.SecretKey));
