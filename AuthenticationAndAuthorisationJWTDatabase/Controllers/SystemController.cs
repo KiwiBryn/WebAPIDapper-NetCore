@@ -19,16 +19,22 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.Reflection;
 
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
+    /// <summary>
+    /// WebAPI controller for handling System Dapper functionality.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class SystemController : ControllerBase
     {
-        [HttpGet, Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <summary>
+        /// Returns the Application version in [Major].[Minor].[Build].Revision] format.
+        /// </summary>
+        /// <response code="200">List of claims returned.</response>
+        /// <response code="401">Unauthorised, bearer token missing or expired.</response>
+        /// <returns>Returns the Application version in [Major].[Minor].[Build].Revision] format.</returns>
+        [HttpGet("DeploymentVersion"), Authorize]
         public string DeploymentVersion()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
