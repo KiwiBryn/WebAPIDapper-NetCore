@@ -22,13 +22,16 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.Data.SqlClient;
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc;
 
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     using devMobile.Azure.DapperTransient;
 
+    /// <summary>
+    /// WebAPI controller with functionality for managing StockItems.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class StockItemController : ControllerBase
@@ -36,6 +39,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         private readonly string connectionString;
         private readonly ILogger<StockItemController> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StockItemController"/> class.
+        /// </summary>
         public StockItemController(IConfiguration configuration, ILogger<StockItemController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
@@ -70,11 +76,11 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
                 response = await db.QueryWithRetryAsync<Models.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
+            }
 
-                if (!response.Any())
-                {
-                    logger.LogInformation("StockItem search with {0} nothing found", request.SearchText);
-                }
+            if (!response.Any())
+            {
+                logger.LogInformation("StockItem search with {0} nothing found", request.SearchText);
             }
 
             return this.Ok(response);
