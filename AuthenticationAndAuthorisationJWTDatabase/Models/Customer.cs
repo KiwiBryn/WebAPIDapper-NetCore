@@ -16,9 +16,10 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.ComponentModel.DataAnnotations;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// DTO for returning summarised list of stock item information.
