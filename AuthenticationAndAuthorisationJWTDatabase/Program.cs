@@ -41,7 +41,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
             // Add services to the container.
             builder.Services.AddApplicationInsightsTelemetry();
 
-            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddMvc().AddNewtonsoftJson();
             builder.Services.AddSwaggerGenNewtonsoftSupport();
 
             builder.Services.Configure<Models.JwtIssuerOptions>(builder.Configuration.GetSection(nameof(Models.JwtIssuerOptions)));
