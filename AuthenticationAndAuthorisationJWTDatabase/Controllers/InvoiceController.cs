@@ -23,6 +23,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -60,6 +61,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         /// <response code="200">Summary of Invoice plus associated InvoiceLines and StockItemTransactions returned.</response>
         /// <response code="404">Invoice ID not found.</response>
         /// <returns>Invoice information with associated invoice lines and item transaction.</returns>
+        [Authorize(Roles = "SalesPerson,SalesAdministrator,Administrator")]
         [HttpGet("{invoiceId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(Models.InvoiceSummaryGetDtoV1))]
         public async Task<ActionResult<Models.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
@@ -68,7 +70,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = invoiceId }, commandType: CommandType.StoredProcedure);
+                var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV2]", param: new { UserId = HttpContext.PersonId(), InvoiceId = invoiceId }, commandType: CommandType.StoredProcedure);
 
                 response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Models.InvoiceSummaryGetDtoV1>();
                 if (response == default)
