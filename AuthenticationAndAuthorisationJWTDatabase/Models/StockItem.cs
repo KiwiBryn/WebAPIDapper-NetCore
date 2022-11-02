@@ -19,6 +19,8 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// DTO for returning summarised list of stock item information.
     /// </summary>
@@ -110,6 +112,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
     /// </summary>
     public class StockItemNameSearchDtoV1
     {
+        [JsonIgnore]
+        public int UserId { get; set; }
+
         /// <summary>
         /// Text in stock item name to search for.
         /// </summary>
