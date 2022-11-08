@@ -43,8 +43,8 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
             this.logger = logger;
         }
 
-        [HttpGet("Search"), Authorize(Roles = "SalesPerson,SalesAdministrator")]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>> Get([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        [HttpGet("SearchUnion"), Authorize(Roles = "SalesPerson,SalesAdministrator")]
+        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>> GetUnion([FromQuery] Models.CustomerNameSearchDtoV1 request)
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 
@@ -52,19 +52,39 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-               response = await db.QueryWithRetryAsync<Models.CustomerListDtoV1>(sql: "[Sales].[CustomersNameSearchV1]", param: request, commandType: CommandType.StoredProcedure);
+               response = await db.QueryWithRetryAsync<Models.CustomerListDtoV1>(sql: "[Sales].[CustomersNameSearchUnionV1]", param: request, commandType: CommandType.StoredProcedure);
             }
 
             if (!response.Any())
             {
-                logger.LogInformation("Customer search UserId:{0} with {1} nothing found", request.userId, request.SearchText);
+                logger.LogInformation("Customer search Union UserId:{0} with {1} nothing found", request.userId, request.SearchText);
+            }
+
+            return this.Ok(response);
+        }
+
+        [HttpGet("SearchView"), Authorize(Roles = "SalesPerson,SalesAdministrator")]
+        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>> GetView([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        {
+            IEnumerable<Models.CustomerListDtoV1> response;
+
+            request.userId = HttpContext.PersonId();
+
+            using (SqlConnection db = new SqlConnection(this.connectionString))
+            {
+                response = await db.QueryWithRetryAsync<Models.CustomerListDtoV1>(sql: "[Sales].[CustomersNameSearchViewV1]", param: request, commandType: CommandType.StoredProcedure);
+            }
+
+            if (!response.Any())
+            {
+                logger.LogInformation("Customer search View UserId:{0} with {1} nothing found", request.userId, request.SearchText);
             }
 
             return this.Ok(response);
         }
 
         [HttpGet("SearchAll"), Authorize(Roles = "Aministrator,SalesAdministrator")]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerNameSearchDtoV1>>> Getll([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerNameSearchDtoV1>>> GetAll([FromQuery] Models.CustomerNameSearchDtoV1 request)
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 

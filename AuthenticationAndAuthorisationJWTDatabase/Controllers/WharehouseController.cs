@@ -31,7 +31,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.ComponentModel.DataAnnotations;
 
     /// <summary>
-    /// WebAPI controller for handling Invoice functionality.
+    /// WebAPI controller for warehouse functionality.
     /// </summary>
     [ApiController]
     [Produces("application/json")]
@@ -42,7 +42,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         private readonly ILogger<WarehouseController> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvoiceController"/> class.
+        /// Initializes a new instance of the <see cref="WarehouseController"/> class.
         /// </summary>
         /// <param name="configuration">DI configuration provider.</param>
         /// <param name="logger">DI logging provider.</param>/// 
@@ -80,17 +80,17 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
             using (SqlConnection db = new SqlConnection(this.connectionString))
             {
-                var invoiceSummary = await db.QueryMultipleWithRetryAsync("[Sales].[InvoiceSummaryGetV1]", commandType: CommandType.StoredProcedure);
+                var orderSummary = await db.QueryMultipleWithRetryAsync("[Warehouse].[OrderOrderLinesToPickV1]", param: new { UserID = HttpContext.PersonId(), orderId }, commandType: CommandType.StoredProcedure);
 
-                response = await invoiceSummary.ReadSingleOrDefaultWithRetryAsync<Models.InvoiceSummaryGetDtoV1>();
+                response = await orderSummary.ReadSingleOrDefaultWithRetryAsync<Models.OrderToPickGetDtoV1>();
                 if (response == default)
                 {
-                    logger.LogInformation("Order:{invoiceId} not found", orderId);
+                    logger.LogInformation("Order:{orderId} not found", orderId);
 
-                    return this.NotFound($"Invoice:{orderId} not found");
+                    return this.NotFound($"Order:{orderId} not found");
                 }
 
-                response.OrderLinesToPick = (await invoiceSummary.ReadWithRetryAsync<Models.OrderLineToPickListDtoV1>()).ToArray();
+                response.OrderLinesToPick = (await orderSummary.ReadWithRetryAsync<Models.OrderLineToPickListDtoV1>()).ToArray();
             }
 
             return this.Ok(response);
