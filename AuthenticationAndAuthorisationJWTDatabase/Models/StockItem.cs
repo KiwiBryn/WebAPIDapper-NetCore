@@ -19,6 +19,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -112,7 +113,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
     /// </summary>
     public class StockItemNameSearchDtoV1
     {
-        [JsonIgnore]
+        [BindNever]
         public int UserId { get; set; }
 
         /// <summary>

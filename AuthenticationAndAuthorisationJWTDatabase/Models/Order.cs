@@ -17,8 +17,8 @@
 namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models
 {
     using System;
-    using System.ComponentModel.DataAnnotations;
-
+    using System.ComponentModel;
+   
     using Newtonsoft.Json;
 
     public class OrderToPickListDtoV1
@@ -49,11 +49,13 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
         /// <summary>
         /// Numeric ID used for reference to a order within the database
         /// </summary>
-        public int Id { get; set; }
+        public int OrderId { get; set; }
 
         public int CustomerId { get; set; }
 
         public string CustomerName { get; set; }
+
+        public string CustomerPurchaseOrderNumber { get; set; }
 
         public int SalesPersonId { get; set; }
 
@@ -65,22 +67,26 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
 
         public string DeliveryPostalCode { get; set; }
 
-        public string DeliveryCity { get; set; }
+        public int DeliveryCityId { get; set; }
 
-        public string DeliveryLocation { get; set; }
+        public string DeliveryCityName { get; set; }
+
+        public int DeliveryMethodId { get; set; }
+
+        public string DeliveryMethodName { get; set; }
 
         public string DeliveryRun { get; set; }
 
         public string DeliveryRunPosition { get; set; }
-
-        public bool IsOneCreditHold { get; set; }
 
         public OrderLineToPickListDtoV1[] OrderLinesToPick { get; set; }
     }
 
     public class OrderLineToPickListDtoV1
     {
-        public int Id { get; set; }
+        public int OrderLineId { get; set; }
+
+        public int OrderId { get; set; }
 
         public int StockItemId { get; set; }
 
@@ -88,7 +94,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
 
         public int StockItemColourId { get; set; }
 
-        public string StockItemColourName { get; set; }
+        public string StockItemColorName { get; set; }
 
         public int StockItemUnitPackageId { get; set; }
 
@@ -98,22 +104,22 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
 
         public string StockItemOuterPackageName { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue("")]
         public string StockItemBrand { get; set; }
 
         public string StockItemSize{ get; set; }
 
-        public string StockQuantityPerOuter { get; set; }
+        public string StockItemQuantityPerOuter { get; set; }
 
-        public bool IsChillerStock{ get; set; }
-
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue("")]
         public string StockItemBarcode { get; set; }
-
-        public double TypicalWeightPerUnit { get; set; }
 
         public int Quantity { get; set; }
 
         public int QuantityPicked { get; set; }
 
-        public DateTime PickingCompletedAt { get; set; }
+        public DateTime? PickingCompletedAt { get; set; }
     }
 }
