@@ -56,6 +56,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
         /// </summary>
         public const int StockItemNameMaximumLength = 100;
 
+        /// <summary>
         /// Maximum number of customers returned by a name search
         /// </summary>
         public const int StockItemSearchMaximumRowsToReturn = 100;
