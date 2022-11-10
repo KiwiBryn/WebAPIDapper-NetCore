@@ -28,7 +28,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
     public class CustomerListDtoV1
     {
         /// <summary>
-        /// Numeric ID used for reference to a stock item within the database
+        /// Numeric ID used for reference to a customer within the database
         /// </summary>
         public int Id { get; set; }
 
@@ -58,5 +58,25 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
         [Required]
         [Range(1, Constants.CustomerSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be greater than or equal to {1} and less then or equal {2}")]
         public int MaximumRowsToReturn { get; set; }
+    }
+
+    public class CustomerCreditHoldUpdateV1
+    {
+        /// <summary>
+        /// The personId of the user updating the Customer's credit status.
+        /// </summary>
+        [JsonIgnore]
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// Numeric ID used for reference to a customer within the database.
+        /// </summary>
+        public int CustomerId { get; set; }
+
+        /// <summary>
+        /// Boolean flag which indicates Customer's credit status.
+        /// </summary>
+        public bool IsOnCreditHold { get; set; }
+
     }
 }
