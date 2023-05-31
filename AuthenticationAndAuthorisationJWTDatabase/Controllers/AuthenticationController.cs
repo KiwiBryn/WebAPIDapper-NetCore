@@ -25,6 +25,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.Text;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -38,6 +39,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class AuthenticationController : ControllerBase
     {
         private readonly IConfiguration configuration;
@@ -54,7 +58,17 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
             this.jwtIssuerOptions = jwtIssuerOptions.Value;
         }
 
+        /// <summary>
+        /// Validates User's LogonName and password, then returns their permissions/claims
+        /// </summary>
+        /// <param name="request">LogonName and password POST payload.</param>
+        /// <response code="200">logon successful.</response>
+        ///	<response code="400">Invalid LogonName or password format</response>
+        ///	<response code="401">Invalid LogonName or password.</response>
+        /// <returns>Returns JavaScript Web Token(JWT) + expiry time.</returns>
         [HttpPost("logon")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> Logon([FromBody] Models.LogonRequest request )
         {
             var claims = new List<Claim>();
@@ -67,7 +81,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
                 userLogonUserDetails = await db.QuerySingleOrDefaultWithRetryAsync<PersonAuthenticateLogonDetailsDto>("[Website].[PersonAuthenticateLookupByLogonNameV2]", param: request, commandType: CommandType.StoredProcedure);
                 if (userLogonUserDetails == null)
                 {
-                    logger.LogWarning("Login attempt by user {0} failed", request.LogonName);
+                    logger.LogWarning("Login attempt by user {LogonName} failed", request.LogonName);
 
                     return this.Unauthorized();
                 }
