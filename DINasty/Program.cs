@@ -32,8 +32,8 @@ namespace devMobile.WebAPIDapper.ListsDINasty
          // Add services to the container.
 
          //builder.Services.AddSingleton<IDbConnection>(s => new SqlConnection(builder.Configuration.GetConnectionString("default")));
-         //builder.Services.AddScoped<IDbConnection>(s => new SqlConnection(builder.Configuration.GetConnectionString("default")));
-         builder.Services.AddTransient<IDbConnection>(s => new SqlConnection(builder.Configuration.GetConnectionString("default")));
+         builder.Services.AddScoped<IDbConnection>(s => new SqlConnection(builder.Configuration.GetConnectionString("default")));
+         //builder.Services.AddTransient<IDbConnection>(s => new SqlConnection(builder.Configuration.GetConnectionString("default")));
 
          builder.Services.AddControllers();
 
