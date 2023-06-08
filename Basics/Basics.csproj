@@ -12,18 +12,18 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="4.0.6" />
-    <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="4.0.6" />
-    <PackageReference Include="Dapper.Extensions.MSSQL" Version="4.0.6" />
+    <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="4.1.0" />
+    <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="4.1.0" />
+    <PackageReference Include="Dapper.Extensions.MSSQL" Version="4.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Polly" Version="7.2.3" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.4" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup>
