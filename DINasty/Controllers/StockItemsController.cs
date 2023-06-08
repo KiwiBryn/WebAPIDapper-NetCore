@@ -43,11 +43,12 @@ namespace devMobile.WebAPIDapper.ListsDIBasic.Controllers
       [HttpGet]
       public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
       {
+         // return this.Ok(await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02';", commandType: CommandType.Text));
          return this.Ok(await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text));
-      }
+       }
 
 
-      [HttpGet("{id}")]
+        [HttpGet("{id}")]
       public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
       {
          Model.StockItemGetDtoV1 response;
