@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//	The polly project looks like the best option, similar approach to the Microsoft Entperprise libraries
+//	The polly project looks like the best option, similar approach to the Microsoft Enterprise libraries
 //		http://www.thepollyproject.org/ (mid June 2021 https was borked)
 //		https://github.com/App-vNext/Polly
 //
@@ -98,8 +98,8 @@ namespace devMobile.Azure.DapperTransient
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => RetryPolicy.ExecuteAsync(() => connection.QueryAsync(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<IEnumerable<T>> QueryWithRetryAsync<T>(
-			 this IDbConnection connection,
+        public static Task<IEnumerable<T>> QueryWithRetryAsync<T>(
+             this IDbConnection connection,
 			 string sql,
 			 object param = null,
 			 IDbTransaction transaction = null,
@@ -391,7 +391,7 @@ namespace devMobile.Azure.DapperTransient
 			this SqlMapper.GridReader gridReader,
 			Type type) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync(type));
 
-		public static Task<dynamic> ReadSingleOrDefaulWithRetryAsync(
+		public static Task<dynamic> ReadSingleOrDefaultWithRetryAsync(
 			this SqlMapper.GridReader gridReader) => RetryPolicy.ExecuteAsync(() => gridReader.ReadSingleOrDefaultAsync<dynamic>());
 
 		public static Task<T> ReadSingleOrDefaultWithRetryAsync<T>(
