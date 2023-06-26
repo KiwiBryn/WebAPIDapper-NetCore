@@ -11,7 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DINasty", "DINasty\DINasty.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationAndAuthorisationJWTDatabase", "AuthenticationAndAuthorisationJWTDatabase\AuthenticationAndAuthorisationJWTDatabase.csproj", "{CE8450C1-936E-45EF-9AEF-13162778D5AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swagger", "Swagger\Swagger.csproj", "{6868200E-3A65-496D-AA85-374F4E743C77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swagger", "Swagger\Swagger.csproj", "{6868200E-3A65-496D-AA85-374F4E743C77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryPattern", "RepositoryPattern\RepositoryPattern.csproj", "{21190F2F-F595-4CE9-937A-52EE75A8EBE3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpPatch", "HttpPatch\HttpPatch.csproj", "{BA368AD2-5F3F-495E-AFCD-26751098FF95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLProfiling", "SQLProfiling\SQLProfiling.csproj", "{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{6868200E-3A65-496D-AA85-374F4E743C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6868200E-3A65-496D-AA85-374F4E743C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6868200E-3A65-496D-AA85-374F4E743C77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21190F2F-F595-4CE9-937A-52EE75A8EBE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21190F2F-F595-4CE9-937A-52EE75A8EBE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21190F2F-F595-4CE9-937A-52EE75A8EBE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21190F2F-F595-4CE9-937A-52EE75A8EBE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
