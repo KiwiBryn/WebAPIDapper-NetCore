@@ -62,7 +62,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         [HttpGet(), Authorize(Roles = "SalesPerson,SalesAdministrator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.CustomerListDtoV1>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>> Get()
+        public async Task<ActionResult<IEnumerable<Models.CustomerListDtoV1>>> Get()
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 
@@ -76,7 +76,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [HttpGet("SearchUnion"), Authorize(Roles = "SalesPerson,SalesAdministrator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.CustomerListDtoV1>))]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>> GetUnion([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        public async Task<ActionResult<IEnumerable<Models.CustomerListDtoV1>>> GetUnion([FromQuery] Models.CustomerNameSearchDtoV1 request)
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 
@@ -97,7 +97,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [HttpGet("SearchView"), Authorize(Roles = "SalesPerson,SalesAdministrator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.CustomerListDtoV1>))]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerListDtoV1>>>GetView([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        public async Task<ActionResult<IEnumerable<Models.CustomerListDtoV1>>>GetView([FromQuery] Models.CustomerNameSearchDtoV1 request)
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 
@@ -118,7 +118,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [HttpGet("SearchAll"), Authorize(Roles = "Administrator,SalesAdministrator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.CustomerListDtoV1>))]
-        public async Task<ActionResult<IAsyncEnumerable<Models.CustomerNameSearchDtoV1>>> GetAll([FromQuery] Models.CustomerNameSearchDtoV1 request)
+        public async Task<ActionResult<IEnumerable<Models.CustomerNameSearchDtoV1>>> GetAll([FromQuery] Models.CustomerNameSearchDtoV1 request)
         {
             IEnumerable<Models.CustomerListDtoV1> response;
 
