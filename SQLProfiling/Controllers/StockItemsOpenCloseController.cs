@@ -59,7 +59,6 @@ namespace devMobile.WebAPIDapper.SQLProfiling.Controllers
                     //await profiledDbConnection.OpenAsync();
 
                     response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
-                    //response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
                 }
             }
 
