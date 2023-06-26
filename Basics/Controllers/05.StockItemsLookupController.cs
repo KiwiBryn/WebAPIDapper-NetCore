@@ -74,7 +74,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([FromQuery] Model.StockItemNameSearchDtoV1 request)
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 

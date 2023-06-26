@@ -46,7 +46,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemsHistoryListDtoV1>>> Get([FromQuery]DateTime? asAt)
+		public async Task<ActionResult<IEnumerable<Model.StockItemsHistoryListDtoV1>>> Get([FromQuery]DateTime? asAt)
 		{
 			IEnumerable<Model.StockItemsHistoryListDtoV1> response = null;
 

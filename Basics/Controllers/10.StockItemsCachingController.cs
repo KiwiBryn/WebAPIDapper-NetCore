@@ -52,7 +52,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 
 		[HttpGet("Response")]
 		[ResponseCache(Duration = StockItemsListResponseCacheDuration)]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetResponse()
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetResponse()
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -101,7 +101,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 		}
 
 		[HttpGet("DapperMemory")]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDapper()
+		public async Task<ActionResult<	IEnumerable<Model.StockItemListDtoV1>>> GetDapper()
 		{
 			List<Model.StockItemListDtoV1> response;
 

@@ -45,7 +45,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 			this.logger = logger;
 		}
 
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> Get500()
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get500()
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 

@@ -38,7 +38,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 			this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
 		}
 
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetException()
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetException()
 		{
 			IEnumerable<Model.StockItemListDtoV1> response = null;
 

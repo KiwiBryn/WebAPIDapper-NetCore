@@ -109,7 +109,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
         }
 
 		[HttpGet("Dapper")]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDapper()
+		public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapper()
         {
             IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -144,7 +144,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
         }
 
         [HttpGet("AdoNet")]
-        public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAdoNet()
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoNet()
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 

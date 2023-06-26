@@ -89,7 +89,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IAsyncEnumerable<Model.StockGroupListDtoV1>>> Get()
+		public async Task<ActionResult<IEnumerable<Model.StockGroupListDtoV1>>> Get()
 		{
 			IEnumerable<Model.StockGroupListDtoV1> response = null;
 

@@ -48,7 +48,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
       // https://localhost:5001/api/StockItemsParameter/dynamic?SearchText=USB&stockItemsMaximum=5
       //
       [HttpGet("Dynamic")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDynamic(
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDynamic(
                   [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
                   [Required][Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2}")] int stockItemsMaximum)
       {
@@ -71,7 +71,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
       // https://localhost:5001/api/StockItemsParameter/Anonymous?SearchText=USB&StockItemsMaximum=5
       //
       [HttpGet("Anonymous")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetAnonymous(
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAnonymous(
                   [Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long"), MaxLength(20, ErrorMessage = "The name search text must be no more that {1} characters long")] string searchText,
                   [Required][Range(1, 100, ErrorMessage = "The maximum number of stock items to return must be greater than or equal to {1} and less then or equal {2}")] int stockItemsMaximum)
       {
@@ -89,7 +89,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
       // https://localhost:5001/api/StockItemsParameter/AutomagicDefault?SearchText=USB&MaximumRowsToReturn=5
       //
       [HttpGet("AutomagicDefault")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetDefault([FromQuery] Model.StockItemNameSearchDtoV1 request)
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDefault([FromQuery] Model.StockItemNameSearchDtoV1 request)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -105,7 +105,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
       // https://localhost:5001/api/StockItemsParameter/AutomagicMapped?SearchText=USB&StockItemsMaximum=20
       //
       [HttpGet("AutomagicMapped")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetMapperDecorated([FromQuery] Model.StockItemNameSearchDtoV2 request)
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetMapperDecorated([FromQuery] Model.StockItemNameSearchDtoV2 request)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
 
@@ -121,7 +121,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
       // https://localhost:5001/api/StockItemsParameter/Array?StockItemId=1&StockItemId=5&StockItemId=10
       //
       [HttpGet("Array")]
-      public async Task<ActionResult<IAsyncEnumerable<Model.StockItemListDtoV1>>> GetArray(
+      public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetArray(
           [FromQuery(Name = "stockItemID")][Required(), MinLength(1, ErrorMessage = "Minimum of {1} StockItem ids"), MaxLength(100, ErrorMessage = "Maximum {1} StockItem ids")] int[] stockItemIDs)
       {
          IEnumerable<Model.StockItemListDtoV1> response = null;
