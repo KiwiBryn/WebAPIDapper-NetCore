@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "PerformanceProfiling": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/StockItemsOpenClose",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7054;http://localhost:5111"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:45350",
+      "sslPort": 44382
+    }
+  }
+}
