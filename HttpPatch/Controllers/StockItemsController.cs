@@ -14,20 +14,20 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-using System.Data;
-using System.Threading.Tasks;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 
+using AutoMapper;
+
 using devMobile.Azure.Dapper;
 using devMobile.Azure.DapperTransient;
-//using devMobile.WebAPIDapper.HttpPatch.Model;
-
-
-using AutoMapper;
 
 namespace devMobile.WebAPIDapper.HttpPatch.Controllers
 {
@@ -53,7 +53,7 @@ namespace devMobile.WebAPIDapper.HttpPatch.Controllers
 
             using (IDbConnection db = dapperContext.ConnectionCreate())
             {
-                response = await dapperContext.ConnectionCreate().QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
+                response = await db.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [UnitPrice] as ""UnitPrice"",[RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
             }
 
             return this.Ok(response);
@@ -81,34 +81,35 @@ namespace devMobile.WebAPIDapper.HttpPatch.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<Model.StockItemGetDtoV1>> Patch([FromBody] JsonPatchDocument<Model.StockItemPatchDtoV1> patch, int id)
+        public async Task<ActionResult<Model.StockItemGetDtoV1>> Patch([FromBody] JsonPatchDocument<Model.StockItemPatchDtoV1> stockItemPatch, int id)
         {
-            Model.StockItemGetDtoV1 response;
+            Model.StockItemGetDtoV1 stockItem;
 
             using (IDbConnection db = dapperContext.ConnectionCreate())
             {
-                response = await db.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
+                stockItem = await db.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
 
-                if (response == default)
+                if (stockItem == default)
                 {
                     logger.LogInformation("StockItem:{id} not found", id);
 
                     return this.NotFound($"StockItem:{id} not found");
                 }
 
-                Model.StockItemPatchDtoV1 stockItemPatchDto = new Model.StockItemPatchDtoV1() ;
+                Model.StockItemPatchDtoV1 stockItemPatchDto = mapper.Map<Model.StockItemPatchDtoV1>(stockItem);
 
-                mapper.Map(response, stockItemPatchDto);
+                stockItemPatch.ApplyTo(stockItemPatchDto, ModelState);
 
-                patch.ApplyTo(stockItemPatchDto);
-                if (!ModelState.IsValid)
+                if (!ModelState.IsValid || !TryValidateModel(stockItemPatchDto))
                 {
+                    logger.LogInformation("stockItemPatchDto invalid {0}", string.Join(Environment.NewLine, ModelState.Values.SelectMany(v => v.Errors).Select(v => v.ErrorMessage + " " + v.Exception))); // would extract this out into shared module
+
                     return BadRequest(ModelState);
                 }
 
-                mapper.Map( stockItemPatchDto, response);
+                mapper.Map(stockItemPatchDto, stockItem);
 
-                await db.ExecuteWithRetryAsync(sql: "UPDATE Warehouse.StockItems SET StockItemName=@Name, UnitPrice=@UnitPrice, RecommendedRetailPrice=@RecommendedRetailPrice WHERE StockItemId=@Id", param: response, commandType: CommandType.Text);
+                await db.ExecuteWithRetryAsync(sql: "UPDATE Warehouse.StockItems SET StockItemName=@Name, UnitPrice=@UnitPrice, RecommendedRetailPrice=@RecommendedRetailPrice WHERE StockItemId=@Id", param: stockItem, commandType: CommandType.Text);
             }
 
             return this.Ok();
