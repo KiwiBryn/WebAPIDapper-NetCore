@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryPattern", "Reposi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpPatch", "HttpPatch\HttpPatch.csproj", "{BA368AD2-5F3F-495E-AFCD-26751098FF95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLProfiling", "SQLProfiling\SQLProfiling.csproj", "{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceProfiling", "PerformanceProfiling\PerformanceProfiling.csproj", "{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA368AD2-5F3F-495E-AFCD-26751098FF95}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5C9094D-2406-4D91-8305-5C7C8A00EDFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
