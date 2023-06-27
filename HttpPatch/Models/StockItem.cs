@@ -24,7 +24,9 @@ namespace devMobile.WebAPIDapper.HttpPatch.Model
 
 		public string Name { get; set; }
 
-		public decimal RecommendedRetailPrice { get; set; }
+        public decimal UnitPrice { get; set; }
+
+        public decimal RecommendedRetailPrice { get; set; }
 
 		public decimal TaxRate { get; set; }
 	}
@@ -56,10 +58,16 @@ namespace devMobile.WebAPIDapper.HttpPatch.Model
 
     public class StockItemPatchDtoV1
     {
+        [Required]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "The name text must be at least {2} and no more than {1} characters long")]  // These would be constants in a real application
         public string Name { get; set; }
 
+        [Required]
+        [Range(0.0, 100.0)] // These would be constants in a real application
         public decimal UnitPrice { get; set; }
 
+        [Required]
+        [Range(0.0, 1000000.0)] // These would be constants in a real application
         public decimal RecommendedRetailPrice { get; set; }
     }
 }
