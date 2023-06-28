@@ -47,7 +47,8 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
 
             using (DbConnection profiledDbConnection = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
             {
-                response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
+                //response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
+                response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
             }
 
             return this.Ok(response);
@@ -62,7 +63,8 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
             {
                 await profiledDbConnection.OpenAsync();
 
-                response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
+                //response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
+                response = await profiledDbConnection.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
             }
 
             return this.Ok(response);
@@ -79,7 +81,8 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
 
                 using (DbCommand command = profiledDbConnection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
+                    //command.CommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
+                    command.CommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
                     command.CommandType = CommandType.Text;
 
                     //using (var reader = command.ExecuteReader(CommandBehavior.CloseConnection))
@@ -153,7 +156,7 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
                 using (MiniProfiler.Current.Step("db.QueryAsync"))
                 {
                     //response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'", commandType: CommandType.Text);
-                    response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY", commandType: CommandType.Text);
+                    response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
                 }
             }
 
