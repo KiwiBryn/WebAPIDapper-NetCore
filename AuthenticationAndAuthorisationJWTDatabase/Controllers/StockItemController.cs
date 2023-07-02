@@ -24,6 +24,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -51,6 +52,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [Authorize(Roles = "SalesPerson,SalesAdministrator,Administrator")]
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Models.StockItemGetDtoV1))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<ActionResult<Models.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
         {
             Models.StockItemGetDtoV1 response;
@@ -72,7 +76,8 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [Authorize(Roles = "SalesPerson,SalesAdministrator,Administrator")]
         [HttpGet("Search")]
-        public async Task<ActionResult<IAsyncEnumerable<Models.StockItemListDtoV1>>> Get([FromQuery] Models.StockItemNameSearchDtoV1 request)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.StockItemListDtoV1>))]
+        public async Task<ActionResult<IEnumerable<Models.StockItemListDtoV1>>> Get([FromQuery] Models.StockItemNameSearchDtoV1 request)
         {
             IEnumerable<Models.StockItemListDtoV1> response;
 

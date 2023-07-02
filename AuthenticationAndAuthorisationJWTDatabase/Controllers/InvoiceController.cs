@@ -64,6 +64,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         [Authorize(Roles = "SalesPerson,SalesAdministrator,Administrator")]
         [HttpGet("{invoiceId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(Models.InvoiceSummaryGetDtoV1))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Models.InvoiceSummaryGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int invoiceId)
         {
             Models.InvoiceSummaryGetDtoV1 response ;

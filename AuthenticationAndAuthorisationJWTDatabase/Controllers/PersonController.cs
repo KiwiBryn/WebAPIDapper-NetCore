@@ -24,6 +24,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
 
     using devMobile.Azure.DapperTransient;
@@ -57,6 +58,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         /// <response code="409">Specified Person not found</response> 
         [Authorize(Roles = "Administrator")]
         [HttpPut("{personId:int}", Name = "PasswordReset")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> PasswordReset([Range(1, int.MaxValue, ErrorMessage = "Person id must greater than 0")] int personId, [FromBody] Models.PersonPasswordResetRequest request)
         {
             request.UserId = HttpContext.PersonId();
@@ -84,6 +88,9 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
         /// <response code="409">Previous password invalid.</response>
         [Authorize()]
         [HttpPut(Name = "PasswordChange")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult> PasswordChange([FromBody] Models.PersonPasswordChangeRequest request)
         {
             request.UserID = HttpContext.PersonId();

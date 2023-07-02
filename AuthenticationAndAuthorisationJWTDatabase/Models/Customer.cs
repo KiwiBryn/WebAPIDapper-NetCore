@@ -71,6 +71,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Model
         /// <summary>
         /// Numeric ID used for reference to a customer within the database.
         /// </summary>
+        [JsonIgnore]
         public int CustomerId { get; set; }
 
         /// <summary>

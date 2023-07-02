@@ -17,18 +17,19 @@
 namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     using devMobile.Azure.DapperTransient;
-    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// WebAPI controller for warehouse functionality.
@@ -55,7 +56,8 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [Authorize(Roles = "WarehousePerson,WarehouseAdministrator,Administrator")]
         [HttpGet("NextToPick")]
-        public async Task<ActionResult<IAsyncEnumerable<Models.OrderToPickListDtoV1>>> Get()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Models.OrderToPickListDtoV1>))]
+        public async Task<ActionResult<IEnumerable<Models.OrderToPickListDtoV1>>> Get()
         {
             IEnumerable<Models.OrderToPickListDtoV1> response;
 
@@ -74,6 +76,10 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Contr
 
         [Authorize(Roles = "WarehousePerson,WarehouseAdministrator,Administrator")]
         [HttpGet("OrderToPick")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Models.OrderToPickGetDtoV1))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Models.OrderToPickGetDtoV1>> Get([Required][Range(1, int.MaxValue, ErrorMessage = "Order id must greater than 0")] int orderId)
         {
             Models.OrderToPickGetDtoV1 response;
