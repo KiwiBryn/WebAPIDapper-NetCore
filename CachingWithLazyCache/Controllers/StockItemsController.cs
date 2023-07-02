@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------------------
-// Copyright (c) July 2022, devMobile Software
+// Copyright (c) July 2023, devMobile Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ using Microsoft.Extensions.Logging;
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
 
-namespace devMobile.WebAPIDapper.LazyCache.Controllers
+namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

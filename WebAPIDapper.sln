@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpPatch", "HttpPatch\Http
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceProfiling", "PerformanceProfiling\PerformanceProfiling.csproj", "{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LazyCache", "LazyCache\LazyCache.csproj", "{42FF609B-30B3-4E6A-86ED-A330CBEF024D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingWithLazyCache", "CachingWithLazyCache\CachingWithLazyCache.csproj", "{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,10 @@ Global
 		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47BA11DA-24DD-4331-92F7-EBDFF67B59D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42FF609B-30B3-4E6A-86ED-A330CBEF024D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42FF609B-30B3-4E6A-86ED-A330CBEF024D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42FF609B-30B3-4E6A-86ED-A330CBEF024D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42FF609B-30B3-4E6A-86ED-A330CBEF024D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

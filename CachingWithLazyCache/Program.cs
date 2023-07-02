@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using devMobile.Dapper;
 
 
-namespace devMobile.WebAPIDapper.LazyCache
+namespace devMobile.WebAPIDapper.CachingWithLazyCache
 {
     public class Program
     {

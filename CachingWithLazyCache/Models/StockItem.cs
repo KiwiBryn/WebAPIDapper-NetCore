@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------------------
-// Copyright (c) July 2022, devMobile Software
+// Copyright (c) July 2023, devMobile Software
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-namespace devMobile.WebAPIDapper.LazyCache.Model
+namespace devMobile.WebAPIDapper.CachingWithLazyCache.Model
 {
 	using System.ComponentModel.DataAnnotations;
 
