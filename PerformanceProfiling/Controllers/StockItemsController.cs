@@ -75,9 +75,16 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
                     return this.NotFound($"Invoice:{id} not found");
                 }
 
-                response.InvoiceLines = (await invoiceSummary.ReadAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
+                using (MiniProfiler.Current.Step("invoiceSummaryLine.ReadAsync"))
+                {
+                    response.InvoiceLines = (await invoiceSummary.ReadAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
+                }
 
-                response.StockItemTransactions = (await invoiceSummary.ReadAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
+                using (MiniProfiler.Current.Step("TransactionSummary.ReadAsync"))
+                {
+
+                    response.StockItemTransactions = (await invoiceSummary.ReadAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
+                }
             }
 
             return this.Ok(response);

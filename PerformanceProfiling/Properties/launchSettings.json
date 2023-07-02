@@ -3,7 +3,7 @@
     "PerformanceProfiling": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/StockItemsOpenClose",
+      "launchUrl": "api/StockItems",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
