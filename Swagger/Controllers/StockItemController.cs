@@ -29,6 +29,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
 
     using devMobile.Azure.DapperTransient;
 
+    /// <summary>
+    /// WebAPI controller for handling StockItem functionality.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class StockItemController : ControllerBase
@@ -36,12 +39,24 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         private readonly string connectionString;
         private readonly ILogger<StockItemController> logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StockItemController"/> class.
+        /// </summary>
+        /// <param name="configuration">DI configuration provider.</param>
+        /// <param name="logger">DI logging provider.</param>/// 
         public StockItemController(IConfiguration configuration, ILogger<StockItemController> logger)
         {
             this.connectionString = configuration.GetConnectionString("WorldWideImportersDatabase");
             this.logger = logger;
         }
 
+        /// <summary>
+        /// Gets a summary of the specified invoice plus associated invoice lines and stock item transactions.
+        /// </summary>
+        /// <param name="id">Numeric ID used for referencing a stockitem within the database.</param>
+        /// <response code="200">StockItem information returned.</response>
+        /// <response code="404">StockItem ID not found.</response>
+        /// <returns>Invoice information with associated invoice lines and item transaction.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Swagger.Models.StockItemGetDtoV1>> Get([Range(1, int.MaxValue, ErrorMessage = "Stock item id must greater than 0")] int id)
         {
@@ -63,7 +78,7 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<ActionResult<IAsyncEnumerable<Swagger.Models.StockItemListDtoV1>>> Get([FromQuery] Swagger.Models.StockItemNameSearchDtoV1 request)
+        public async Task<ActionResult<IEnumerable<Swagger.Models.StockItemListDtoV1>>> Get([FromQuery] Swagger.Models.StockItemNameSearchDtoV1 request)
         {
             IEnumerable<Swagger.Models.StockItemListDtoV1> response;
 

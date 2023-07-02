@@ -21,6 +21,9 @@ namespace devMobile.WebAPIDapper.Swagger.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
+    /// <summary>
+    /// WebAPI controller for handling system information functionality.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class SystemController : ControllerBase
