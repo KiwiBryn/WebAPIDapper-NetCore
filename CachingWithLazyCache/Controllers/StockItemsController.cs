@@ -14,20 +14,21 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
 
 using LazyCache;
-using System;
-using Microsoft.Extensions.Caching.Memory;
+
 
 namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
 {
