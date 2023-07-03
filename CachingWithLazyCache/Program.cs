@@ -37,6 +37,9 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache
 
             builder.Services.AddControllers();
 
+            // Register IAppCache as a singleton CachingService
+            builder.Services.AddLazyCache();
+
             var app = builder.Build();
 
 
