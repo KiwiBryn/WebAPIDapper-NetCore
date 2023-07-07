@@ -1,9 +1,570 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Swagger</name>
+        <name>AuthenticationAndAuthorisationJWTDatabase</name>
     </assembly>
     <members>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants">
+            <summary>
+            Constants used in the validation of Swagger strings etc.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.LogonNameLengthMinimum">
+            <summary>
+            Minimum length of a person login name.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.LogonNameLengthMaximum">
+            <summary>
+            Maximum length of a person login name.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.PasswordLengthMinimum">
+            <summary>
+            Minimum length of a person's password.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.PasswordLengthMaximum">
+            <summary>
+            Maximum length of a person's password.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.CustomerNameLengthMaximum">
+            <summary>
+            Maximum length of a customer's name.
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.CustomerSearchMaximumRowsToReturn">
+            <summary>
+            Maximum number of customers returned by a name search
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.StockItemNameMaximumLength">
+            <summary>
+            Maximum length of StockItem name
+            </summary>
+        </member>
+        <member name="F:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Constants.StockItemSearchMaximumRowsToReturn">
+            <summary>
+            Maximum number of customers returned by a name search
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthenticationController">
+            <summary>
+            WebAPI controller for handling Authentication functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthenticationController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthenticationController},Microsoft.Extensions.Options.IOptions{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.JwtIssuerOptions})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthenticationController"/> class.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthenticationController.Logon(devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.LogonRequest)">
+            <summary>
+            Validates User's LogonName and password, then returns their permissions/claims
+            </summary>
+            <param name="request">LogonName and password POST payload.</param>
+            <response code="200">logon successful.</response>
+            <response code="400">Invalid LogonName or password format</response>
+            <response code="401">Invalid LogonName or password.</response>
+            <returns>Returns JavaScript Web Token(JWT) + expiry time.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthorisationController">
+            <summary>
+            WebAPI controller for handling Authorisation functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.AuthorisationController.Get">
+            <summary>
+            Gets a list of the current User's roles.
+            </summary>
+            <response code="200">List of claims returned.</response>
+            <response code="401">Unauthorised, bearer token missing or expired.</response>
+            <returns>list of claims.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.CustomerController">
+            <summary>
+            WebAPI controller for handling Customer functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.CustomerController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.CustomerController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.CustomerController"/> class.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.CustomerController.Get">
+            <summary>
+            
+            </summary>
+            <response code="200">logon successful.</response>
+            <response code="401">Invalid LogonName or password.</response>
+            <returns></returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.InvoiceController">
+            <summary>
+            WebAPI controller for handling Invoice functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.InvoiceController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.InvoiceController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.InvoiceController"/> class.
+            </summary>
+            <param name="configuration">DI configuration provider.</param>
+            <param name="logger">DI logging provider.</param>/// 
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.InvoiceController.Get(System.Int32)">
+            <summary>
+            Gets a summary of the specified invoice plus associated invoice lines and stock item transactions.
+            </summary>
+            <param name="invoiceId">Numeric ID used for referencing an invoice within the database.</param>
+            <response code="200">Summary of Invoice plus associated InvoiceLines and StockItemTransactions returned.</response>
+            <response code="404">Invoice ID not found.</response>
+            <returns>Invoice information with associated invoice lines and item transaction.</returns>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.OrdersController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.OrdersController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.OrdersController"/> class.
+            </summary>
+            <param name="configuration">DI configuration provider.</param>
+            <param name="logger">DI logging provider.</param>/// 
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController">
+            <summary>
+            WebAPI controller with functionality for managing People.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController"/> class.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController.PasswordReset(System.Int32,devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordResetRequest)">
+            <summary>
+            Resets the specified user's password (System administrator)
+            </summary>
+            <param name="personId">Person whose password will be reset</param>
+            <param name="request">New password</param>
+            <response code="200">Password reset.</response>
+            <response code="401">Unauthorised, bearer token missing or expired.</response>
+            <response code="409">Specified Person not found</response> 
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.PersonController.PasswordChange(devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordChangeRequest)">
+            <summary>
+            Changes current user's password.
+            </summary>
+            <param name="request">Current password and new password</param>
+            <response code="200">Password changed.</response>
+            <response code="401">Unauthorised, bearer token missing or expired.</response>
+            <response code="409">Previous password invalid.</response>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.StockItemController">
+            <summary>
+            WebAPI controller with functionality for managing StockItems.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.StockItemController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.StockItemController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.StockItemController"/> class.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.SystemController">
+            <summary>
+            WebAPI controller for handling System functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.SystemController.DeploymentVersion">
+            <summary>
+            Returns the Application version in [Major].[Minor].[Build].Revision] format.
+            </summary>
+            <response code="200">Application version returned.</response>
+            <response code="401">Unauthorised, bearer token missing, invalid or expired.</response>
+            <returns>Returns the Application version in [Major].[Minor].[Build].Revision] format.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.WarehouseController">
+            <summary>
+            WebAPI controller for warehouse functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.WarehouseController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.WarehouseController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers.WarehouseController"/> class.
+            </summary>
+            <param name="configuration">DI configuration provider.</param>
+            <param name="logger">DI logging provider.</param>/// 
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.HttpContextExtension">
+            <summary>
+            Helper extension methods for extracting clains HttpContext.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.HttpContextExtension.PersonId(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Extracts PeronID  from PrimarySid in httpContext.
+            </summary>
+            <param name="httpContext">HTTP request context which has PrimarySid .</param>
+            <returns>Swagger PersonId UserID.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerListDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerListDtoV1.Id">
+            <summary>
+            Numeric ID used for reference to a customer within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerListDtoV1.Name">
+            <summary>
+            Full name of a stock item (but not a full description).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerNameSearchDtoV1.SearchText">
+            <summary>
+            Text in stock item name to search for.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerNameSearchDtoV1.MaximumRowsToReturn">
+            <summary>
+            Maximum number of search result to return for a query.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerCreditHoldUpdateV1.UserId">
+            <summary>
+            The personId of the user updating the Customer's credit status.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerCreditHoldUpdateV1.CustomerId">
+            <summary>
+            Numeric ID used for reference to a customer within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.CustomerCreditHoldUpdateV1.IsOnCreditHold">
+            <summary>
+            Boolean flag which indicates Customer's credit status.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1">
+            <summary>
+            Invoice line summary DTO with reduced number of fields some of which have been "flattened" for easy of display in lists.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.InvoiceLineID">
+            <summary>
+            Numeric ID used for reference to a line on an Order within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.StockItemID">
+            <summary>
+            Numeric ID used for reference to a stock item within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.StockItemDescription">
+            <summary>
+            Description of the item supplied (Usually the stock item name but can be overridden).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.PackageTypeID">
+            <summary>
+            Numeric ID of type of package to be supplied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.PackageTypeName">
+            <summary>
+            Name of type of package to be supplied
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.Quantity">
+            <summary>
+            Quantity to be supplied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.UnitPrice">
+            <summary>
+            Unit price to be charged.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.TaxAmount">
+            <summary>
+            Tax amount calculated.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceLineSummaryListDtoV1.ExtendedPrice">
+            <summary>
+            Extended line price charged.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1">
+             <summary>
+             Invoice summary DTO with reduced number of fields some of which have been "flattened" for easy of display in lists.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.InvoiceId">
+            <summary>
+            Numeric ID used for reference to an invoice within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.OrderId">
+            <summary>
+            Numeric ID used for reference to an order within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveryMethodId">
+            <summary>
+            Numeric ID used for reference to a delivery method within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveryMethodName">
+            <summary>
+            Full name of methods that can be used for delivery of customer orders.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.SalesPersonId">
+            <summary>
+            Numeric ID used for reference to a sales person within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.SalesPersonName">
+            <summary>
+            Full name of the salesperson.
+            
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.InvoicedOn">
+            <summary>
+            Date that this invoice was raised.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.CustomerPurchaseOrderNumber">
+            <summary>
+            Purchase Order Number received from customer.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.IsCreditNote">
+            <summary>
+            Is this a credit note (rather than an invoice).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.CreditNoteReason">
+            <summary>
+            eason that this credit note needed to be generated (if applicable).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.Comments">
+            <summary>
+            Any comments related to this invoice (sent to customer).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveryInstructions">
+            <summary>
+            Any comments related to delivery (sent to customer)'.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveryRun">
+            <summary>
+            Delivery run for this shipment.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveredAt">
+            <summary>
+            Confirmed delivery date and time promoted from JSON delivery data.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.DeliveredTo">
+            <summary>
+            Confirmed receiver promoted from JSON delivery data.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.InvoiceLines">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.InvoiceSummaryGetDtoV1.StockItemTransactions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.OrderToPickListDtoV1.OrderId">
+            <summary>
+            Numeric ID used for reference to a order within the database
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.OrderToPickGetDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.OrderToPickGetDtoV1.OrderId">
+            <summary>
+            Numeric ID used for reference to a order within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordResetRequest.PersonID">
+            <summary>
+            The personId of the user whose password will be reset.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordResetRequest.Password">
+            <summary>
+            The new password for the specified user.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordChangeRequest.PasswordOld">
+            <summary>
+            Current user's old password.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.PersonPasswordChangeRequest.PasswordNew">
+            <summary>
+            Current user's new password.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemListDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemListDtoV1.Id">
+            <summary>
+            Numeric ID used for reference to a stock item within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemListDtoV1.Name">
+            <summary>
+            Full name of a stock item (but not a full description).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemListDtoV1.RecommendedRetailPrice">
+            <summary>
+            Recommended retail price for this stock item.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemListDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1">
+            <summary>
+            DTO for returning summarised stock item information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.Id">
+            <summary>
+            Numeric ID used for reference to a stock item within the database
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.Name">
+            <summary>
+            Full name of a stock item (but not a full description).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.UnitPrice">
+            <summary>
+            Selling price (ex-tax) for one unit of this product.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.RecommendedRetailPrice">
+            <summary>
+            Recommended retail price for this stock item.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.TaxRate">
+            <summary>
+            Tax rate to be applied.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.QuantityPerOuter">
+            <summary>
+            Quantity of the stock item in an outer package.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.TypicalWeightPerUnit">
+            <summary>
+            Typical weight for one unit of this product (packaged).
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.UnitPackageName">
+            <summary>
+            Full name of unit package that stock items can be purchased in or sold in.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.OuterPackageName">
+            <summary>
+            Full name of outer package that stock items can be purchased in or sold in.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.SupplierID">
+            <summary>
+            Numeric ID used for reference to a supplier within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemGetDtoV1.SupplierName">
+            <summary>
+            Supplier's full name (usually a trading name).
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemNameSearchDtoV1">
+            <summary>
+            DTO for stock item search parameters.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemNameSearchDtoV1.SearchText">
+            <summary>
+            Text in stock item name to search for.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemNameSearchDtoV1.MaximumRowsToReturn">
+            <summary>
+            Maximum number of search result to return for a query.
+            </summary>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1">
+            <summary>
+            DTO for returning summarised list of stock item transaction information.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.StockItemTransactionID">
+            <summary>
+            Numeric ID used to refer to a stock item transaction within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.StockItemID">
+            <summary>
+            Numeric ID used for reference to a stock item within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.StockItemName">
+            <summary>
+            Full name of a stock item (but not a full description)
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.TransactionTypeID">
+            <summary>
+            Numeric ID used for reference to a transaction type within the database.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.TransactionTypeName">
+            <summary>
+            Full name of the transaction type.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.TransactionAt">
+            <summary>
+            Date and time when the transaction occurred.
+            </summary>
+        </member>
+        <member name="P:devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Models.StockItemTransactionSummaryListDtoV1.Quantity">
+            <summary>
+            Quantity of stock movement (positive is incoming stock, negative is outgoing).
+            </summary>
+        </member>
         <member name="M:devMobile.Azure.DapperTransient.DapperExtensions.ShouldRetryOn(System.Exception)">
             <summary>
                 This is an internal API that supports the Entity Framework Core infrastructure and not subject to
