@@ -98,7 +98,7 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
 
                 cached = JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(await dapperContext.ConnectionCreate().QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure));
 
-                await cache.SetAsync("StockItems", cached, new DistributedCacheEntryOptions()
+                await cache.SetAsync("StockItems{id}", cached, new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpiration = DateTimeOffset.Now.Add(StockItemListAbsoluteExpiration)
                 });
