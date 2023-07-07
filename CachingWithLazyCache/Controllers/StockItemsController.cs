@@ -41,21 +41,21 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
         private readonly TimeSpan StockItemSearchSlidingExpiration = new TimeSpan(0, 1, 0);
 
         private readonly ILogger<StockItemsController> logger;
-        private readonly IDapperContext dapperContext;
+        private readonly IDbConnection dbConnection;
         private readonly IAppCache cache;
 
         public StockItemsController(ILogger<StockItemsController> logger, IDapperContext dapperContext, IAppCache cache)
         {
             this.logger = logger;
 
-            this.dapperContext = dapperContext;
+            this.dbConnection = dapperContext.ConnectionCreate();
 
             this.cache = cache;
         }
 
         private async Task<IEnumerable<Model.StockItemListDtoV1>> GetStockItemsAsync()
         {
-            return await dapperContext.ConnectionCreate().QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
+            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
         }
 
         [HttpGet]
@@ -79,7 +79,7 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
 
         private async Task<Model.StockItemGetDtoV1> GetStockItemByIdAsync(int id)
         {
-            return await dapperContext.ConnectionCreate().QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
+            return await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
         }
 
         [HttpGet("{id}")]
@@ -107,7 +107,7 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
 
         private async Task<IEnumerable<Model.StockItemListDtoV1>> GetStockItemsSearch(string searchText)
         {
-            return await dapperContext.ConnectionCreate().QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = SearchMaximumRowsToReturn}, commandType: CommandType.StoredProcedure);
+            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = SearchMaximumRowsToReturn}, commandType: CommandType.StoredProcedure);
         }
 
         [HttpGet("search")]
