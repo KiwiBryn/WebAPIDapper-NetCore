@@ -16,10 +16,15 @@
 // https://localhost:7054/profiler/results-index
 //---------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Builder;
+#if DISTRIBUTED_CACHE_REDIS || DISTRIBUTED_CACHE_SQL_SERVER
+    using Microsoft.Extensions.Configuration;
+#endif
 using Microsoft.Extensions.DependencyInjection;
+#if DISTRIBUTED_CACHE_REDIS
+    using StackExchange.Redis;
+#endif
 
 using devMobile.Dapper;
-using Microsoft.Extensions.Configuration;
 
 namespace devMobile.WebAPIDapper.CachingWithDistributedCache
 {
@@ -37,13 +42,38 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
 
             builder.Services.AddControllers();
 
+#if DISTRIBUTED_CACHE_MEMORY
+            builder.Services.AddDistributedMemoryCache();
+#endif
+
+#if DISTRIBUTED_CACHE_REDIS
+            var configurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { builder.Configuration.GetSection("RedisConnection").GetValue<string>("EndPoints") },
+                AllowAdmin = true,
+                Password = builder.Configuration.GetSection("RedisConnection").GetValue<string>("Password"),
+                Ssl = true,
+                ConnectRetry = 5,
+                ConnectTimeout = 10000,
+                SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                AbortOnConnectFail = false,
+            };
+
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = builder.Configuration.GetConnectionString("RedisCache");
                 options.InstanceName = "Dapper WebAPI Instance";
+                options.ConfigurationOptions = configurationOptions;
             });
+#endif
 
-            //builder.Services.AddDistributedMemoryCache();
+#if DISTRIBUTED_CACHE_SQL_SERVER
+            builder.Services.AddDistributedSqlServerCache(options =>
+            {
+                options.ConnectionString = builder.Configuration.GetConnectionString("DBConnectionString");
+                options.SchemaName = "dbo";
+                options.TableName = "CacheItems";
+            });
+#endif
 
             var app = builder.Build();
 
@@ -55,6 +85,6 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
             app.MapControllers();
 
             app.Run();
-        }
+        }      
     }
 }
