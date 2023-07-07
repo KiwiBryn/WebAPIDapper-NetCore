@@ -69,9 +69,9 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
 #if DISTRIBUTED_CACHE_SQL_SERVER
             builder.Services.AddDistributedSqlServerCache(options =>
             {
-                options.ConnectionString = builder.Configuration.GetConnectionString("DBConnectionString");
+                options.ConnectionString = builder.Configuration.GetConnectionString("CacheDatabase");
                 options.SchemaName = "dbo";
-                options.TableName = "CacheItems";
+                options.TableName = "StockItemsCache";
             });
 #endif
 
