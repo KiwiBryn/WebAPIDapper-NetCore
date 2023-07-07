@@ -24,5 +24,5 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 19. [Swagger](http://blog.devmobile.co.nz/2022/10/26/net-core-web-api-dapper-swagger/)
 20. [Authentication](http://blog.devmobile.co.nz/2022/10/27/net-core-web-api-dapper-authentication/)
 21. [Authorisation Permissions](http://blog.devmobile.co.nz/2022/11/06/net-core-web-api-dapper-authorisation-permissions/)
-22. [Dependency Injection](http://blog.devmobile.co.nz/2023/06/08/net-core-web-api-dapper-dependency-injection/)
+22. [Dapper Context Dependency Injection](http://blog.devmobile.co.nz/2023/06/08/net-core-web-api-dapper-dependency-injection/)
 23. [HTTP Patch](http://blog.devmobile.co.nz/2023/06/27/net-core-web-api-dapper-http-patch/)
