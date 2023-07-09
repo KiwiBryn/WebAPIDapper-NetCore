@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.Configuration;
 #endif
 using Microsoft.Extensions.DependencyInjection;
+using MessagePack;
 #if DISTRIBUTED_CACHE_REDIS
     using StackExchange.Redis;
 #endif
@@ -41,6 +42,8 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
             builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
             builder.Services.AddControllers();
+
+            MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4BlockArray);
 
 #if DISTRIBUTED_CACHE_MEMORY
             builder.Services.AddDistributedMemoryCache();

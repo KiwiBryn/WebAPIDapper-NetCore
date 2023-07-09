@@ -18,12 +18,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+
+using MessagePack;
 
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
@@ -60,12 +61,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync("StockItems");
             if (cached != null)
             {
-                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+                return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
 
-            await distributedCache.SetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
+            await distributedCache.SetAsync("StockItems", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
             {
                 AbsoluteExpiration = new DateTime(utcNow.Year, utcNow.Month, DateTime.DaysInMonth(utcNow.Year, utcNow.Month), 23, 59, 59)
             });
@@ -89,7 +90,7 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync($"StockItem:{id}");
             if (cached != null)
             {
-                return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
+                return this.Ok(MessagePackSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
             }
 
             var stockItem = await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
@@ -100,7 +101,7 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-            await distributedCache.SetAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes(stockItem), new DistributedCacheEntryOptions()
+            await distributedCache.SetAsync($"StockItem:{id}", MessagePackSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem), new DistributedCacheEntryOptions()
             {
                 AbsoluteExpirationRelativeToNow = StockItemGetByIdRelativeToNowExpiration
             });
@@ -124,12 +125,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync($"StockItemsSearch:{searchText.ToLower()}");
             if (cached != null)
             {
-                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+                return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
-            await distributedCache.SetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
+            await distributedCache.SetAsync($"StockItemsSearch:{searchText.ToLower()}", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
             {
                 SlidingExpiration = StockItemsSearchSlidingExpiration
             });
