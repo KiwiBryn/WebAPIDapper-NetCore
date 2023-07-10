@@ -220,27 +220,21 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 
-            using (SqlConnection connection = (SqlConnection)dapperContext.ConnectionCreate())
+            using (ProfiledDbConnection profiledDbConnection = new ProfiledDbConnection((SqlConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
             {
-                using (ProfiledDbConnection profiledDbConnection = new ProfiledDbConnection(connection, MiniProfiler.Current))
+                await profiledDbConnection.OpenAsync();
+
+                using (ProfiledDbCommand profiledDbCommand = new ProfiledDbCommand(new SqlCommand(sqlCommandText), profiledDbConnection, MiniProfiler.Current))
                 {
-                    await profiledDbConnection.OpenAsync();
+                    DbDataReader reader = await profiledDbCommand.ExecuteReaderAsync();
 
-                    using (SqlCommand command = new SqlCommand(sqlCommandText, connection))
+                    using (ProfiledDbDataReader profiledDbDataReader = new ProfiledDbDataReader(reader, MiniProfiler.Current))
                     {
-                        using (ProfiledDbCommand profiledDbCommand = new ProfiledDbCommand(command, connection, MiniProfiler.Current))
+                        var rowParser = profiledDbDataReader.GetRowParser<Model.StockItemListDtoV1>();
+
+                        while (await profiledDbDataReader.ReadAsync())
                         {
-                            DbDataReader reader = await profiledDbCommand.ExecuteReaderAsync();
-
-                            using (ProfiledDbDataReader profiledDbDataReader = new ProfiledDbDataReader(reader, MiniProfiler.Current))
-                            {
-                                var rowParser = profiledDbDataReader.GetRowParser<Model.StockItemListDtoV1>();
-
-                                while (await profiledDbDataReader.ReadAsync())
-                                {
-                                    response.Add(rowParser(profiledDbDataReader));
-                                }
-                            }
+                            response.Add(rowParser(profiledDbDataReader));
                         }
                     }
                 }
