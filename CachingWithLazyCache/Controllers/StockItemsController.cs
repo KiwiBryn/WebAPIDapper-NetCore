@@ -36,9 +36,12 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
     [Route("api/[controller]")]
     public class StockItemsController : ControllerBase
     {
-        private const int SearchMaximumRowsToReturn = 15;
-        private readonly TimeSpan StockItemListAbsoluteExpiration = new TimeSpan(0, 5, 0);
-        private readonly TimeSpan StockItemSearchSlidingExpiration = new TimeSpan(0, 1, 0);
+        private const int StockItemSearchMaximumRowsToReturn = 15;
+        private readonly TimeSpan StockItemListAbsoluteExpirationTime = new TimeSpan(23, 59, 59);
+        private readonly TimeSpan StockItemsSearchSlidingExpiration = new TimeSpan(0, 1, 0);
+
+        private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
+        //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
 
         private readonly ILogger<StockItemsController> logger;
         private readonly IDbConnection dbConnection;
@@ -55,7 +58,7 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
 
         private async Task<IEnumerable<Model.StockItemListDtoV1>> GetStockItemsAsync()
         {
-            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]", commandType: CommandType.Text);
+            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
         }
 
         [HttpGet]
@@ -63,21 +66,22 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
         {
             MemoryCacheEntryOptions memoryCacheEntryOptions = new MemoryCacheEntryOptions()
             {
-                Priority = CacheItemPriority.NeverRemove 
+                Priority = CacheItemPriority.NeverRemove,
+                AbsoluteExpiration = DateTime.UtcNow.Date.Add(StockItemListAbsoluteExpirationTime)
             };
 
-            return this.Ok(await cache.GetOrAddAsync<IEnumerable<Model.StockItemListDtoV1>>("StockItems", () => GetStockItemsAsync(), memoryCacheEntryOptions));
+            return this.Ok(await cache.GetOrAddAsync("StockItems", () => GetStockItemsAsync(), memoryCacheEntryOptions));
         }
 
         [HttpDelete()]
-        public ActionResult ListCacheDelete()
+        public ActionResult Delete()
         {
             cache.Remove("StockItems");
 
-            return this.NoContent();
+            return this.Ok();
         }
 
-        private async Task<Model.StockItemGetDtoV1> GetStockItemByIdAsync(int id)
+        private async Task<Model.StockItemGetDtoV1> StockItemByIdAsync(int id)
         {
             return await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
         }
@@ -85,7 +89,9 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
         {
-            Model.StockItemGetDtoV1 response = await cache.GetOrAddAsync($"StockItem{id}", () => GetStockItemByIdAsync(id), DateTimeOffset.Now.Add(StockItemListAbsoluteExpiration));
+            var utcNow = DateTime.UtcNow;
+
+            Model.StockItemGetDtoV1 response = await cache.GetOrAddAsync($"StockItem{id}", () => StockItemByIdAsync(id), slidingExpiration: StockItemsSearchSlidingExpiration);
 
             if (response == default)
             {
@@ -102,18 +108,18 @@ namespace devMobile.WebAPIDapper.CachingWithLazyCache.Controllers
         {
             cache.Remove($"StockItem{id}");
 
-            return this.NoContent();
+            return this.Ok();
         }
 
-        private async Task<IEnumerable<Model.StockItemListDtoV1>> GetStockItemsSearch(string searchText)
+        private async Task<IEnumerable<Model.StockItemListDtoV1>> StockItemsSearch(string searchText)
         {
-            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = SearchMaximumRowsToReturn}, commandType: CommandType.StoredProcedure);
+            return await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
         }
 
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText)
         {
-            return this.Ok(await cache.GetOrAddAsync($"StockItemSearch{searchText}", () => GetStockItemsSearch(searchText.ToLower()), slidingExpiration: StockItemSearchSlidingExpiration));
+            return this.Ok(await cache.GetOrAddAsync($"StockItemSearch{searchText}", () => StockItemsSearch(searchText.ToLower()), slidingExpiration: StockItemsSearchSlidingExpiration ));
         }
     }
 }
