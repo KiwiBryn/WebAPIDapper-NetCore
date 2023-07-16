@@ -43,6 +43,8 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
 
             builder.Services.AddControllers();
 
+            //MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options;
+            //MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4Block);
             MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4BlockArray);
 
 #if DISTRIBUTED_CACHE_MEMORY
