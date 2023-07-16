@@ -17,8 +17,9 @@
 namespace devMobile.WebAPIDapper.PerformanceProfiling.Model
 {
 	using System;
+    using System.Collections.Generic;
 
-	public class InvoiceLineSummaryListDtoV1
+    public class InvoiceLineSummaryListDtoV1
 	{
 		public int InvoiceLineID { get; set; }
 
@@ -59,9 +60,11 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Model
 		public DateTime? DeliveredAt { get; set; }
 		public string DeliveredTo { get; set; }
 
-		public Model.InvoiceLineSummaryListDtoV1[] InvoiceLines { get; set; }
+		//public Model.InvoiceLineSummaryListDtoV1[] InvoiceLines { get; set; }
+        public IEnumerable<Model.InvoiceLineSummaryListDtoV1> InvoiceLines { get; set; }
 
-		public Model.StockItemTransactionSummaryListDtoV1[] StockItemTransactions { get; set; }
+        //public Model.StockItemTransactionSummaryListDtoV1[] StockItemTransactions { get; set; }
+        public IEnumerable<Model.StockItemTransactionSummaryListDtoV1> StockItemTransactions { get; set; }
 	}
 
 }
