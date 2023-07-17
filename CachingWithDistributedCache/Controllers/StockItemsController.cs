@@ -14,17 +14,30 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+//#define SERIALISATION_JSON or SERIALISATION_MESSAGE_PACK
+#if SERIALISATION_JSON && SERIALISATION_MESSAGE_PACK
+    #error Only one serialisation method can be defined
+#endif
+#if !SERIALISATION_JSON && !SERIALISATION_MESSAGE_PACK
+    #error At most one serialisation method can be defined
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+#if SERIALISATION_JSON
+    using System.Text.Json;
+#endif
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-using MessagePack;
+#if SERIALISATION_MESSAGE_PACK 
+    using MessagePack;
+#endif
 
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
@@ -69,7 +82,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
+#if SERIALISATION_JSON
+            await distributedCache.SetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
+#endif
+#if SERIALISATION_MESSAGE_PACK  
             await distributedCache.SetAsync("StockItems", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
+#endif
             {
                 AbsoluteExpiration = new DateTime(utcNow.Year, utcNow.Month, DateTime.DaysInMonth(utcNow.Year, utcNow.Month), StockItemListAbsoluteExpiration.Hours, StockItemListAbsoluteExpiration.Minutes, StockItemListAbsoluteExpiration.Seconds)
             });
@@ -77,12 +95,21 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             return this.Ok(stockItems);
         }
 
-        [HttpGet("GetNoLoad")]
+        [HttpGet("NoLoad")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetNoLoad()
         {
             var cached = await distributedCache.GetAsync("StockItems");
+            if (cached == null)
+            {
+                return this.NoContent();
+            }
 
-            return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#if SERIALISATION_JSON
+            return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
+#if SERIALISATION_MESSAGE_PACK
+             return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
         }
 
         [HttpPost("Load")]
@@ -92,7 +119,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
+#if SERIALISATION_JSON
+            await distributedCache.SetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
+#endif
+#if SERIALISATION_MESSAGE_PACK  
             await distributedCache.SetAsync("StockItems", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
+#endif
             {
                 AbsoluteExpiration = new DateTime(utcNow.Year, utcNow.Month, DateTime.DaysInMonth(utcNow.Year, utcNow.Month), StockItemListAbsoluteExpiration.Hours, StockItemListAbsoluteExpiration.Minutes, StockItemListAbsoluteExpiration.Seconds)
             });
@@ -116,7 +148,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync($"StockItem:{id}");
             if (cached != null)
             {
+#if SERIALISATION_JSON
+                return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
+#endif
+#if SERIALISATION_MESSAGE_PACK
                 return this.Ok(MessagePackSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
+#endif
             }
 
             var stockItem = await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
@@ -127,7 +164,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
+#if SERIALISATION_JSON
+            await distributedCache.SetAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(stockItem), new DistributedCacheEntryOptions()
+#endif
+#if SERIALISATION_MESSAGE_PACK
             await distributedCache.SetAsync($"StockItem:{id}", MessagePackSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem), new DistributedCacheEntryOptions()
+#endif
             {
                 SlidingExpiration = StockItemsSearchSlidingExpiration
             });
@@ -151,12 +193,22 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync($"StockItemsSearch:{searchText.ToLower()}");
             if (cached != null)
             {
+#if SERIALISATION_JSON
+                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
+#if SERIALISATION_MESSAGE_PACK
                 return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
+#if SERIALISATION_JSON
+            await distributedCache.SetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
+#endif
+#if SERIALISATION_MESSAGE_PACK
             await distributedCache.SetAsync($"StockItemsSearch:{searchText.ToLower()}", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
+#endif
             {
                 SlidingExpiration = StockItemsSearchSlidingExpiration
             });
