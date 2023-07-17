@@ -77,7 +77,12 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
             var cached = await distributedCache.GetAsync("StockItems");
             if (cached != null)
             {
+#if SERIALISATION_JSON
+                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
+#if SERIALISATION_MESSAGE_PACK
                 return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+#endif
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
@@ -85,7 +90,7 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
 #if SERIALISATION_JSON
             await distributedCache.SetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
 #endif
-#if SERIALISATION_MESSAGE_PACK  
+#if SERIALISATION_MESSAGE_PACK
             await distributedCache.SetAsync("StockItems", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
 #endif
             {
@@ -122,7 +127,7 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache.Controllers
 #if SERIALISATION_JSON
             await distributedCache.SetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), new DistributedCacheEntryOptions()
 #endif
-#if SERIALISATION_MESSAGE_PACK  
+#if SERIALISATION_MESSAGE_PACK
             await distributedCache.SetAsync("StockItems", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
 #endif
             {
