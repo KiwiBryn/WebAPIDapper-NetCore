@@ -15,21 +15,20 @@
 //
 //---------------------------------------------------------------------------------
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 using Dapper;
 using devMobile.Dapper;
 
 using StackExchange.Profiling.Data;
 using StackExchange.Profiling;
-using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
 {
@@ -40,11 +39,26 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
 
+        private readonly IConfiguration configuration;
         private readonly IDapperContext dapperContext;
 
-        public StockItemsController(IDapperContext dapperContext)
+        public StockItemsController(IConfiguration configuration, IDapperContext dapperContext)
         {
+            this.configuration = configuration;
             this.dapperContext = dapperContext;
+        }
+
+        [HttpGet("Dapper")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapper()
+        {
+            IEnumerable<Model.StockItemListDtoV1> response;
+
+            using (IDbConnection db = dapperContext.ConnectionCreate())
+            {
+                response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
+            }
+
+            return this.Ok(response);
         }
 
         [HttpGet("DapperProfiled")]
@@ -60,37 +74,24 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
             return this.Ok(response);
         }
 
-        [HttpGet("DapperProfiledQueryMultiple")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapperProfiledQueryMultiple([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
+        [HttpGet("DapperProfiledOpenClose")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapperProfiledOpenClose()
         {
-            Model.InvoiceSummaryGetDtoV1 response = null;
+            IEnumerable<Model.StockItemListDtoV1> response;
 
-            using (IDbConnection db = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
+            using (ProfiledDbConnection db = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
             {
-                var invoiceSummary = await db.QueryMultipleAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
+                await db.OpenAsync();
 
-                response = await invoiceSummary.ReadSingleOrDefaultAsync<Model.InvoiceSummaryGetDtoV1>();
-                if (response == default)
-                {
-                    return this.NotFound($"Invoice:{id} not found");
-                }
+                response = await db.QueryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-                using (MiniProfiler.Current.Step("invoiceSummaryLine.ReadAsync"))
-                {
-                    response.InvoiceLines = (await invoiceSummary.ReadAsync<Model.InvoiceLineSummaryListDtoV1>()).ToArray();
-                }
-
-                using (MiniProfiler.Current.Step("TransactionSummary.ReadAsync"))
-                {
-
-                    response.StockItemTransactions = (await invoiceSummary.ReadAsync<Model.StockItemTransactionSummaryListDtoV1>()).ToArray();
-                }
+                await db.CloseAsync();
             }
 
             return this.Ok(response);
         }
 
-        [HttpGet("DapperStep")]
+        [HttpGet("DapperProfiledOpenCloseStep")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapperStep()
         {
             IEnumerable<Model.StockItemListDtoV1> response;
@@ -116,8 +117,94 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
             return this.Ok(response);
         }
 
-        [HttpGet("Profiled")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetProfiled()
+        [HttpGet("DapperProfiledQueryMultiple")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapperProfiledQueryMultiple([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
+        {
+            Model.InvoiceSummaryGetDtoV1 response = null;
+
+            using (ProfiledDbConnection db = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
+            {
+                var invoiceSummary = await db.QueryMultipleAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
+
+                response = await invoiceSummary.ReadSingleOrDefaultAsync<Model.InvoiceSummaryGetDtoV1>();
+                if (response == default)
+                {
+                    return this.NotFound($"Invoice:{id} not found");
+                }
+
+                response.InvoiceLines = await invoiceSummary.ReadAsync<Model.InvoiceLineSummaryListDtoV1>();
+
+                response.StockItemTransactions = await invoiceSummary.ReadAsync<Model.StockItemTransactionSummaryListDtoV1>();
+            }
+
+            return this.Ok(response);
+        }
+
+        [HttpGet("DapperProfiledQueryMultipleStep")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetDapperProfiledQueryMultipleStep([Required][Range(1, int.MaxValue, ErrorMessage = "Invoice id must greater than 0")] int id)
+        {
+            Model.InvoiceSummaryGetDtoV1 response = null;
+
+            using (IDbConnection db = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
+            {
+                SqlMapper.GridReader invoiceSummary;
+
+                using (MiniProfiler.Current.Step("db.MiniProfiler results for StockItems query running in an Azure AppService"))
+                {
+                    invoiceSummary = await db.QueryMultipleAsync("[Sales].[InvoiceSummaryGetV1]", param: new { InvoiceId = id }, commandType: CommandType.StoredProcedure);
+                }
+
+                using (MiniProfiler.Current.Step("invoiceSummary.ReadSingleOrDefaultAsync"))
+                {
+                    response = await invoiceSummary.ReadSingleOrDefaultAsync<Model.InvoiceSummaryGetDtoV1>();
+                }
+                if (response == default)
+                {
+                    return this.NotFound($"Invoice:{id} not found");
+                }
+
+                using (MiniProfiler.Current.Step("invoiceSummaryLine.ReadAsync"))
+                {
+                    response.InvoiceLines = await invoiceSummary.ReadAsync<Model.InvoiceLineSummaryListDtoV1>();
+                }
+
+                using (MiniProfiler.Current.Step("TransactionSummary.ReadAsync"))
+                {
+                    response.StockItemTransactions = await invoiceSummary.ReadAsync<Model.StockItemTransactionSummaryListDtoV1>();
+                }
+            }
+
+            return this.Ok(response);
+        }
+
+        [HttpGet("Ado")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdo()
+        {
+            List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
+
+            using (SqlConnection connection = new SqlConnection(configuration.GetConnectionString("default")))
+            {
+                await connection.OpenAsync();
+
+                using (SqlCommand command = new SqlCommand(sqlCommandText, connection))
+                {
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess))
+                    {
+                        var rowParser = reader.GetRowParser<Model.StockItemListDtoV1>();
+
+                        while (await reader.ReadAsync())
+                        {
+                            response.Add(rowParser(reader));
+                        }
+                    }
+                }
+            }
+
+            return this.Ok(response);
+        }
+
+        [HttpGet("AdoProfiled")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoProfiled()
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 
@@ -130,7 +217,7 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
                     command.CommandText = sqlCommandText;
                     command.CommandType = CommandType.Text;
 
-                    using (ProfiledDbDataReader reader = (ProfiledDbDataReader)await command.ExecuteReaderAsync())
+                    using (ProfiledDbDataReader reader = new ProfiledDbDataReader(await command.ExecuteReaderAsync(CommandBehavior.SequentialAccess), MiniProfiler.Current))
                     {
                         var rowParser = reader.GetRowParser<Model.StockItemListDtoV1>();
 
@@ -138,19 +225,52 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
                         {
                             response.Add(rowParser(reader));
                         }
-
-                        await reader.CloseAsync();
                     }
                 }
-
-                await connection.CloseAsync();
             }
 
             return this.Ok(response);
         }
 
-        [HttpGet("AdoConnectionProfiled")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoConnectionProfiled()
+        [HttpGet("AdoProfiledOtt")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoProfiledOtt()
+        {
+            List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
+
+            using (SqlConnection connection = new SqlConnection(configuration.GetConnectionString("default")))
+            {
+                using (ProfiledDbConnection profiledDbConnection = new ProfiledDbConnection(connection, MiniProfiler.Current))
+                {
+                    await profiledDbConnection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand(sqlCommandText, connection))
+                    {
+                        using (ProfiledDbCommand profiledDbCommand = new ProfiledDbCommand(command, profiledDbConnection, MiniProfiler.Current))
+                        {
+                            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                            {
+                                using (ProfiledDbDataReader profiledDbDataReader = new ProfiledDbDataReader(reader, MiniProfiler.Current))
+                                {
+                                    var rowParser = profiledDbDataReader.GetRowParser<Model.StockItemListDtoV1>();
+
+                                    while (await profiledDbDataReader.ReadAsync())
+                                    {
+                                        response.Add(rowParser(profiledDbDataReader));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    await profiledDbConnection.CloseAsync();
+                }
+            }
+
+            return this.Ok(response);
+        }
+
+        [HttpGet("AdoProfiledConnection")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoProfiledConnection()
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 
@@ -178,66 +298,62 @@ namespace devMobile.WebAPIDapper.PerformanceProfiling.Controllers
             return this.Ok(response);
         }
 
-        [HttpGet("AdoStep")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoStep()
+        [HttpGet("AdoProfiledConnectionClose")]
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoProfiledConnectionClose()
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 
-            using (DbConnection connection = (DbConnection)dapperContext.ConnectionCreate())
+            using (ProfiledDbConnection connection = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
             {
-                using (MiniProfiler.Current.Step("dbConnection.OpenAsync"))
-                {
-                    await connection.OpenAsync();
-                }
+                await connection.OpenAsync();
 
-                using (DbCommand command = MiniProfiler.Current.Inline(() => connection.CreateCommand(), "dbConnection.CreateCommand"))
+                using (DbCommand command = connection.CreateCommand())
                 {
                     command.CommandText = sqlCommandText;
                     command.CommandType = CommandType.Text;
 
-                    using (DbDataReader reader = await MiniProfiler.Current.Inline(() => command.ExecuteReaderAsync(), "command.ExecuteReaderAsync"))
+                    using (DbDataReader sqlDataReader = await command.ExecuteReaderAsync())
                     {
-                        var rowParser = reader.GetRowParser<Model.StockItemListDtoV1>();
+                        var rowParser = sqlDataReader.GetRowParser<Model.StockItemListDtoV1>();
 
-                        while (await MiniProfiler.Current.Inline(() => reader.ReadAsync(), "reader.ReadAsync"))
+                        while (await sqlDataReader.ReadAsync())
                         {
-                            response.Add(rowParser(reader));
+                            response.Add(rowParser(sqlDataReader));
                         }
                     }
                 }
 
-                using (MiniProfiler.Current.Step("connection.CloseAsync"))
-                {
-                    await connection.CloseAsync();
-                }
+                await connection.CloseAsync();
             }
 
             return this.Ok(response);
         }
 
-        [HttpGet("AdoProfiled")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetProfiledAdo()
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetAdoProfiledConnectionStep()
         {
             List<Model.StockItemListDtoV1> response = new List<Model.StockItemListDtoV1>();
 
-            using (ProfiledDbConnection profiledDbConnection = new ProfiledDbConnection((SqlConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
+            using (ProfiledDbConnection connection = new ProfiledDbConnection((DbConnection)dapperContext.ConnectionCreate(), MiniProfiler.Current))
             {
-                await profiledDbConnection.OpenAsync();
+                await MiniProfiler.Current.Inline(async () => await connection.OpenAsync(), "connection.OpenAsync");
 
-                using (ProfiledDbCommand profiledDbCommand = new ProfiledDbCommand(new SqlCommand(sqlCommandText), profiledDbConnection, MiniProfiler.Current))
+                using (DbCommand command = connection.CreateCommand())
                 {
-                    DbDataReader reader = await profiledDbCommand.ExecuteReaderAsync();
+                    command.CommandText = sqlCommandText;
+                    command.CommandType = CommandType.Text;
 
-                    using (ProfiledDbDataReader profiledDbDataReader = new ProfiledDbDataReader(reader, MiniProfiler.Current))
+                    using (DbDataReader sqlDataReader = await command.ExecuteReaderAsync())
                     {
-                        var rowParser = profiledDbDataReader.GetRowParser<Model.StockItemListDtoV1>();
+                        var rowParser = sqlDataReader.GetRowParser<Model.StockItemListDtoV1>();
 
-                        while (await profiledDbDataReader.ReadAsync())
+                        while (await sqlDataReader.ReadAsync())
                         {
-                            response.Add(rowParser(profiledDbDataReader));
+                            response.Add(rowParser(sqlDataReader));
                         }
                     }
                 }
+
+                await MiniProfiler.Current.Inline(async () => await connection.CloseAsync(), "connection.CloseAsync");
             }
 
             return this.Ok(response);
