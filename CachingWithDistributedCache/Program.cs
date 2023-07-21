@@ -50,6 +50,10 @@ namespace devMobile.WebAPIDapper.CachingWithDistributedCache
 #endif
 
 #if DISTRIBUTED_CACHE_MEMORY
+            //builder.Services.AddDistributedMemoryCache(options =>
+            //{
+            //    options.SizeLimit = 1000 * 1024 * 1024; // 1000MB
+            //});
             builder.Services.AddDistributedMemoryCache();
 #endif
 
