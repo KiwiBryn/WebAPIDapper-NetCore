@@ -14,12 +14,12 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-using devMobile.Azure.Dapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 using AutoMapper;
 
+using devMobile.Dapper;
 using devMobile.WebAPIDapper.HttpPatch.Model;
 
 namespace devMobile.WebAPIDapper.HttpPatch

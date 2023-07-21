@@ -26,8 +26,8 @@ using Microsoft.Extensions.Logging;
 
 using AutoMapper;
 
-using devMobile.Azure.Dapper;
 using devMobile.Azure.DapperTransient;
+using devMobile.Dapper;
 
 namespace devMobile.WebAPIDapper.HttpPatch.Controllers
 {

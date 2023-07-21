@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using devMobile.Azure.DapperTransient;
-
+using devMobile.Dapper;
 
 namespace devMobile.WebAPIDapper.ListsDIBasic.Controllers
 {

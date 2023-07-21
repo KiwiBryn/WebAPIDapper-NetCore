@@ -17,6 +17,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
+using devMobile.Dapper;
+
 namespace devMobile.WebAPIDapper.ListsDIBasic
 {
     public class Program
