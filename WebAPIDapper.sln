@@ -25,6 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingWithDistributedCache
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles", "{F06A7AC2-FFA7-4262-8A87-1476A805549D}"
 	ProjectSection(SolutionItems) = preProject
+		SharedFiles\DapperContext.cs = SharedFiles\DapperContext.cs
 		AuthenticationAndAuthorisationJWTDatabase\DapperTransient.cs = AuthenticationAndAuthorisationJWTDatabase\DapperTransient.cs
 	EndProjectSection
 EndProject
