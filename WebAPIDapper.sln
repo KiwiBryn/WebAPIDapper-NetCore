@@ -21,7 +21,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerformanceProfiling", "Per
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingWithLazyCache", "CachingWithLazyCache\CachingWithLazyCache.csproj", "{5FFC2A0C-72CC-4B48-989A-CBAF3D16A330}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingWithDistributedCache", "CachingWithDistributedCache\CachingWithDistributedCache.csproj", "{A557E29E-E71F-406D-9935-E96424F146DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingWithDistributedCache", "CachingWithDistributedCache\CachingWithDistributedCache.csproj", "{A557E29E-E71F-406D-9935-E96424F146DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles", "{F06A7AC2-FFA7-4262-8A87-1476A805549D}"
+	ProjectSection(SolutionItems) = preProject
+		AuthenticationAndAuthorisationJWTDatabase\DapperTransient.cs = AuthenticationAndAuthorisationJWTDatabase\DapperTransient.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

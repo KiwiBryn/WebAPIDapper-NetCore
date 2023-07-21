@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);DISTRIBUTED_CACHE_REDIS</DefineConstants>
+    <DefineConstants>$(DefineConstants);DISTRIBUTED_CACHE_REDIS;SERIALISATION_MESSAGE_PACK</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.143" />

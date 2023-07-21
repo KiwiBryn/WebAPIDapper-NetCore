@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="4.1.0" />
     <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="4.1.0" />
