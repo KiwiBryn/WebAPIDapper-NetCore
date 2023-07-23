@@ -3,47 +3,48 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace WebAppIdentity;
-
-public class SendGridEmailSender : IEmailSender
+namespace devMobile.WebAPIDapper.WebAppCoreIdentity
 {
-    private readonly IConfiguration configuration;
-    private readonly ILogger logger;
-
-    public SendGridEmailSender(IConfiguration configuration, ILogger<SendGridEmailSender> logger)
+    public class SendGridEmailSender : IEmailSender
     {
-        this.configuration = configuration;
-        this.logger = logger;
-    }
+        private readonly IConfiguration configuration;
+        private readonly ILogger logger;
 
-    public async Task SendEmailAsync(string toEmail, string subject, string message)
-    {
-        string sendGridApiKey = configuration["SendGridApiKey"];
-        if (string.IsNullOrEmpty(sendGridApiKey))
+        public SendGridEmailSender(IConfiguration configuration, ILogger<SendGridEmailSender> logger)
         {
-            throw new Exception("The 'SendGridApiKey' is not configured");
+            this.configuration = configuration;
+            this.logger = logger;
         }
 
-        var client = new SendGridClient(sendGridApiKey);
-        var msg = new SendGridMessage()
+        public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            From = new EmailAddress(configuration["EmailAddressFrom"], configuration["WebSiteFrom"]),
-            Subject = subject,
-            PlainTextContent = message,
-            HtmlContent = message
-        };
-        msg.AddTo(new EmailAddress(toEmail));
+            string sendGridApiKey = configuration["SendGridApiKey"];
+            if (string.IsNullOrEmpty(sendGridApiKey))
+            {
+                throw new Exception("The 'SendGridApiKey' is not configured");
+            }
 
-        var response = await client.SendEmailAsync(msg);
-        if (response.IsSuccessStatusCode)
-        {
-            logger.LogInformation("Email queued successfully");
-        }
-        else
-        {
-            logger.LogError("Failed to send email");
-            // Adding more information related to the failed email could be helpful in debugging failure,
-            // but be careful about logging PII, as it increases the chance of leaking PII
+            var client = new SendGridClient(sendGridApiKey);
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(configuration["EmailAddressFrom"], configuration["WebSiteFrom"]),
+                Subject = subject,
+                PlainTextContent = message,
+                HtmlContent = message
+            };
+            msg.AddTo(new EmailAddress(toEmail));
+
+            var response = await client.SendEmailAsync(msg);
+            if (response.IsSuccessStatusCode)
+            {
+                logger.LogInformation("Email queued successfully");
+            }
+            else
+            {
+                logger.LogError("Failed to send email");
+                // Adding more information related to the failed email could be helpful in debugging failure,
+                // but be careful about logging PII, as it increases the chance of leaking PII
+            }
         }
     }
 }

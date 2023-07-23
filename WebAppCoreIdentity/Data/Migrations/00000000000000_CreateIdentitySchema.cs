@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace WebAppCoreIdentity.Data.Migrations
+namespace devMobile.WebAPIDapper.WebAppCoreIdentity.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

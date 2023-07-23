@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using WebAppCoreIdentity.Data;
-using WebAppIdentity;
+using devMobile.WebAPIDapper.WebAppCoreIdentity.Data;
 
-namespace WebAppCoreIdentity
+namespace devMobile.WebAPIDapper.WebAppCoreIdentity
 {
     public class Program
     {
