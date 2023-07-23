@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace WebAppCoreIdentity.Pages
+namespace devMobile.WebAPIDapper.WebAppCoreIdentity.Pages
 {
     public class PrivacyModel : PageModel
     {

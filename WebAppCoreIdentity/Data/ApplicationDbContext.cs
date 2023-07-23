@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebAppCoreIdentity.Data
+namespace devMobile.WebAPIDapper.WebAppCoreIdentity.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
