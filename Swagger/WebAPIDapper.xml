@@ -25,6 +25,32 @@
             <response code="404">Invoice ID not found.</response>
             <returns>Invoice information with associated invoice lines and item transaction.</returns>
         </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Controllers.StockItemController">
+            <summary>
+            WebAPI controller for handling StockItem functionality.
+            </summary>
+        </member>
+        <member name="M:devMobile.WebAPIDapper.Swagger.Controllers.StockItemController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{devMobile.WebAPIDapper.Swagger.Controllers.StockItemController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:devMobile.WebAPIDapper.Swagger.Controllers.StockItemController"/> class.
+            </summary>
+            <param name="configuration">DI configuration provider.</param>
+            <param name="logger">DI logging provider.</param>/// 
+        </member>
+        <member name="M:devMobile.WebAPIDapper.Swagger.Controllers.StockItemController.Get(System.Int32)">
+            <summary>
+            Gets a summary of the specified invoice plus associated invoice lines and stock item transactions.
+            </summary>
+            <param name="id">Numeric ID used for referencing a stockitem within the database.</param>
+            <response code="200">StockItem information returned.</response>
+            <response code="404">StockItem ID not found.</response>
+            <returns>Invoice information with associated invoice lines and item transaction.</returns>
+        </member>
+        <member name="T:devMobile.WebAPIDapper.Swagger.Controllers.SystemController">
+            <summary>
+            WebAPI controller for handling system information functionality.
+            </summary>
+        </member>
         <member name="T:devMobile.WebAPIDapper.Swagger.Models.InvoiceLineSummaryListDtoV1">
             <summary>
             Invoice line summary DTO with reduced number of fields some of which have been "flattened" for easy of display in lists.
