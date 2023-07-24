@@ -26,3 +26,6 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 21. [Authorisation Permissions](http://blog.devmobile.co.nz/2022/11/06/net-core-web-api-dapper-authorisation-permissions/)
 22. [Dapper Context Dependency Injection](http://blog.devmobile.co.nz/2023/06/08/net-core-web-api-dapper-dependency-injection/)
 23. [HTTP Patch](http://blog.devmobile.co.nz/2023/06/27/net-core-web-api-dapper-http-patch/)
+24. [MiniProfiler](http://blog.devmobile.co.nz/2023/07/11/net-core-web-api-dapper-miniprofiler/)
+25. [LazyCache](http://blog.devmobile.co.nz/2023/07/16/net-core-web-api-dapper-lazycache/)
+26. [DistributedCache](http://blog.devmobile.co.nz/2023/07/23/net-core-web-api-dapper-distributed-cache/)
