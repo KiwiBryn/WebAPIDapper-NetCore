@@ -16,7 +16,13 @@
 // https://www.twilio.com/blog/how-to-send-asp-net-core-identity-emails-with-twilio-sendgrid
 //
 //---------------------------------------------------------------------------------
+using System;
+using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 using SendGrid;
 using SendGrid.Helpers.Mail;
 

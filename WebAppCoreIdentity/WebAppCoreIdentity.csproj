@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <UserSecretsId>aspnet-WebAppCoreIdentity-c5403bda-8416-4e3d-863f-1264df95bccb</UserSecretsId>
   </PropertyGroup>
 
