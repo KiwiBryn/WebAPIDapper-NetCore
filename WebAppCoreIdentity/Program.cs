@@ -14,9 +14,16 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
+using System;
+
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 using devMobile.WebAPIDapper.WebAppCoreIdentity.Data;
 
 namespace devMobile.WebAPIDapper.WebAppCoreIdentity
