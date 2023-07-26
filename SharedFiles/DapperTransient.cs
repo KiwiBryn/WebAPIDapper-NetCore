@@ -64,7 +64,7 @@ namespace devMobile.Azure.DapperTransient
 
 		public static Task CloseWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.CloseAsync());
 
-#if NET5_0 || NET6_0
+#if NET5_0 || NET6_0 || NET7_0
 		public static Task<DataTable> GetSchemaWithRetryAsync(this SqlConnection connection) => RetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
 #elif NETCOREAPP3_1
 #else
