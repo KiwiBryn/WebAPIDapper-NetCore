@@ -28,14 +28,14 @@ namespace devMobile.AspNetCore.Identity.Dapper.Controller
     {
         public List<string> Get()
         {
-            List<string> claimNames = new List<string>();
+            List<string> roleNames = new List<string>();
 
-            foreach (var claim in this.User.Claims.Where(c => c.Type == ClaimTypes.Role))
+            foreach (var role in this.User.Claims.Where(c => c.Type == ClaimTypes.Role))
             {
-                claimNames.Add(claim.Value);
+                roleNames.Add(role.Value);
             }
 
-            return claimNames;
+            return roleNames;
         }
     }
 }
