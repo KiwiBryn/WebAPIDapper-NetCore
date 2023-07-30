@@ -51,6 +51,8 @@ namespace devMobile.AspNetCore.Identity.Dapper
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            builder.Services.AddControllersWithViews();
+
             builder.Services.Configure<Models.SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 
             builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
@@ -69,6 +71,7 @@ namespace devMobile.AspNetCore.Identity.Dapper
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.MapDefaultControllerRoute();
 
             app.UseAuthentication(); ;
             app.UseAuthorization();
