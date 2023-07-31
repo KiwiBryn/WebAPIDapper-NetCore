@@ -15,15 +15,14 @@
 //
 //---------------------------------------------------------------------------------
 using System;
-
-using devMobile.AspNetCore.Identity.Dapper.Data;
+using System.Data.SqlClient;
+using devMobile.AspNetCore.Identity.Dapper.CustomProvider;
+using devMobile.AspNetCore.Identity.Dapper.Models;
 using devMobile.AspNetCore.Identity.Dapper.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,16 +37,18 @@ namespace devMobile.AspNetCore.Identity.Dapper
 
             builder.Services.AddApplicationInsightsTelemetry();
 
-            var connectionString = builder.Configuration.GetConnectionString("AspNetCoreIdentityDapperContextConnection") ?? throw new InvalidOperationException("Connection string 'AspNetCoreIdentityDapperContextConnection' not found.");
+            // Add identity types
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddRoles<ApplicationRole>()
+                .AddDefaultTokenProviders();
 
-            builder.Services.AddDbContext<AspNetCoreIdentityDapperContext>(options =>
-                options.UseSqlServer(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            // Identity Services
+            builder.Services.AddTransient<IUserStore<ApplicationUser>, CustomUserStore>();
+            builder.Services.AddTransient<IRoleStore<ApplicationRole>, CustomRoleStore>();
+            string connectionString = builder.Configuration.GetConnectionString("Default");
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-               .AddRoles<IdentityRole>()
-               .AddEntityFrameworkStores<AspNetCoreIdentityDapperContext>();
-
+            builder.Services.AddTransient<SqlConnection>(e => new SqlConnection(connectionString));
+  
             // Add services to the container.
             builder.Services.AddRazorPages();
 
