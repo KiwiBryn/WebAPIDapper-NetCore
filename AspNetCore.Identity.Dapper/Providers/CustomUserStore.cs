@@ -23,7 +23,7 @@ namespace devMobile.AspNetCore.Identity.Dapper.CustomProvider
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            string sql = "INSERT INTO dbo.CustomUser VALUES (@id, @Email, @EmailConfirmed, @PasswordHash, @UserName)";
+            string sql = "INSERT INTO dbo.AspNetUsers VALUES (@id, @Email, @EmailConfirmed, @PasswordHash, @UserName)";
             int rows = await _connection.ExecuteAsync(sql, new { user.Id, user.Email, user.EmailConfirmed, user.PasswordHash, user.UserName });
             if (rows > 0)
             {
@@ -39,7 +39,7 @@ namespace devMobile.AspNetCore.Identity.Dapper.CustomProvider
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            string sql = "DELETE FROM dbo.CustomUser WHERE Id = @Id";
+            string sql = "DELETE FROM dbo.AspNetUsers WHERE Id = @Id";
             int rows = await _connection.ExecuteAsync(sql, new { user.Id });
 
             if (rows > 0)
@@ -60,12 +60,12 @@ namespace devMobile.AspNetCore.Identity.Dapper.CustomProvider
             cancellationToken.ThrowIfCancellationRequested();
             if (userId == null) throw new ArgumentNullException(nameof(userId));
             Guid idGuid;
-            if (!Guid.TryParse(userId, out idGuid))
-            {
-                throw new ArgumentException("Not a valid Guid id", nameof(userId));
-            }
+            //if (!Guid.TryParse(userId, out idGuid))
+            //{
+            //    throw new ArgumentException("Not a valid Guid id", nameof(userId));
+            //}
 
-            string sql = "SELECT * FROM dbo.CustomUsers WHERE Id = @Id;";
+            string sql = "SELECT * FROM dbo.AspNetUsers WHERE Id = @Id;";
 
             return await _connection.QuerySingleOrDefaultAsync<ApplicationUser>(sql, new
             {
@@ -80,7 +80,7 @@ namespace devMobile.AspNetCore.Identity.Dapper.CustomProvider
             cancellationToken.ThrowIfCancellationRequested();
             if (userName == null) throw new ArgumentNullException(nameof(userName));
 
-            string sql = "SELECT * FROM dbo.CustomUser WHERE UserName = @UserName;";
+            string sql = "SELECT * FROM dbo.AspNetUsers WHERE UserName = @UserName;";
 
             return await _connection.QuerySingleOrDefaultAsync<ApplicationUser>(sql, new
             {
