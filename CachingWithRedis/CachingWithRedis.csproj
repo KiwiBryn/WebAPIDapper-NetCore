@@ -7,4 +7,9 @@
     <UserSecretsId>ae06dbf7-5885-4f69-91bd-0b1006da29d4</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="..\SharedFiles\DapperContext.cs" Link="DapperContext.cs" />
+    <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
+  </ItemGroup>
+
 </Project>
