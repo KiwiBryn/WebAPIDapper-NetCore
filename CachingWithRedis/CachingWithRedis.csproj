@@ -3,13 +3,26 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <UserSecretsId>ae06dbf7-5885-4f69-91bd-0b1006da29d4</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);SERIALISATION_JSON</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\SharedFiles\DapperContext.cs" Link="DapperContext.cs" />
     <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.151" />
+    <PackageReference Include="MessagePack" Version="2.5.124" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Polly" Version="7.2.4" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
 </Project>
