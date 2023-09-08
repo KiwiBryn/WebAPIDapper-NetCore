@@ -29,3 +29,4 @@ Series of dotNet Core WEB API projects exploring the use of Dapper
 24. [MiniProfiler](http://blog.devmobile.co.nz/2023/07/11/net-core-web-api-dapper-miniprofiler/)
 25. [LazyCache](http://blog.devmobile.co.nz/2023/07/16/net-core-web-api-dapper-lazycache/)
 26. [DistributedCache](http://blog.devmobile.co.nz/2023/07/23/net-core-web-api-dapper-distributed-cache/)
+27. [Mini profiler revisited](http://blog.devmobile.co.nz/2023/08/06/net-core-web-api-dapper-miniprofiler-revisited/)
