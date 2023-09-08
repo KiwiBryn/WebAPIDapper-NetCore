@@ -14,34 +14,21 @@
 // limitations under the License.
 //
 //---------------------------------------------------------------------------------
-//#define SERIALISATION_JSON or SERIALISATION_MESSAGE_PACK
-#if SERIALISATION_JSON && SERIALISATION_MESSAGE_PACK
-    #error Only one serialisation method can be defined
-#endif
-#if !SERIALISATION_JSON && !SERIALISATION_MESSAGE_PACK
-    #error At most one serialisation method can be defined
-#endif
-
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
-#if SERIALISATION_JSON
-    using System.Text.Json;
-#endif
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-#if SERIALISATION_MESSAGE_PACK 
-    using MessagePack;
-#endif
-
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
 
 using StackExchange.Redis;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 {
@@ -50,8 +37,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
     public class StockItemsController : ControllerBase
     {
         private const int StockItemSearchMaximumRowsToReturn = 15;
-        //private readonly TimeSpan StockItemListAbsoluteExpiration = new TimeSpan(23, 59, 59);
-        //private readonly TimeSpan StockItemsSearchSlidingExpiration = new TimeSpan(0, 1, 0);
 
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
@@ -60,13 +45,13 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         private readonly IDbConnection dbConnection;
         private readonly IDatabase redisCache;
 
-        public StockItemsController(ILogger<StockItemsController> logger, IDapperContext dapperContext, IDatabase redisCache)
+        public StockItemsController(ILogger<StockItemsController> logger, IDapperContext dapperContext, IConnectionMultiplexer connectionMultiplexer)
         {
             this.logger = logger;
 
             this.dbConnection = dapperContext.ConnectionCreate();
 
-            this.redisCache = redisCache;
+            this.redisCache = connectionMultiplexer.GetDatabase();
         }
 
         [HttpGet]
@@ -77,25 +62,12 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             var cached = await redisCache.StringGetAsync("StockItems");
             if (cached.HasValue)
             {
-#if SERIALISATION_JSON
                 return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-                return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-#if SERIALISATION_JSON
             await redisCache.StringGetSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-            await redisCache.SetAddAsync("StockItems", MessagePackSerializer.Serialize(stockItems));
-#endif
-//            {
-//                AbsoluteExpiration = new DateTime(utcNow.Year, utcNow.Month, DateTime.DaysInMonth(utcNow.Year, utcNow.Month), StockItemListAbsoluteExpiration.Hours, StockItemListAbsoluteExpiration.Minutes, StockItemListAbsoluteExpiration.Seconds)
-//            });
 
             return this.Ok(stockItems);
         }
@@ -109,12 +81,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
                 return this.NoContent();
             }
 
-#if SERIALISATION_JSON
             return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-             return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
         }
 
 
@@ -125,15 +92,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-#if SERIALISATION_JSON
             await redisCache.SetAddAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-            await redisCache.SetAddAsync("StockItems", MessagePackSerializer.Serialize(stockItems));
-#endif
-//            {
-//                AbsoluteExpiration = new DateTime(utcNow.Year, utcNow.Month, DateTime.DaysInMonth(utcNow.Year, utcNow.Month), StockItemListAbsoluteExpiration.Hours, StockItemListAbsoluteExpiration.Minutes, StockItemListAbsoluteExpiration.Seconds)
-//            });
 
             return this.Ok();
         }
@@ -154,12 +113,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             var cached = await redisCache.StringGetAsync($"StockItem:{id}");
             if (!cached.HasValue)
             {
-#if SERIALISATION_JSON
                 return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-                return this.Ok(MessagePackSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
-#endif
             }
 
             var stockItem = await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
@@ -170,15 +124,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-#if SERIALISATION_JSON
-            await redisCache.SetAddAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(stockItem)); ///, new DistributedCacheEntryOptions()
-#endif
-#if SERIALISATION_MESSAGE_PACK
-            await distributedCache.SetAsync($"StockItem:{id}", MessagePackSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem), new DistributedCacheEntryOptions()
-#endif
-///            {
-///                SlidingExpiration = StockItemsSearchSlidingExpiration
-///            });
+            await redisCache.SetAddAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(stockItem)); 
 
             return this.Ok(stockItem);
         }
@@ -199,25 +145,12 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             var cached = await redisCache.StringGetAsync($"StockItemsSearch:{searchText.ToLower()}");
             if (!cached.HasValue)
             {
-#if SERIALISATION_JSON
                 return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
-#if SERIALISATION_MESSAGE_PACK
-                return this.Ok(MessagePackSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
-#endif
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
-#if SERIALISATION_JSON
-            await redisCache.StringSetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.SerializeToUtf8Bytes(stockItems));//, new DistributedCacheEntryOptions()
-#endif
-#if SERIALISATION_MESSAGE_PACK
-            await distributedCache.SetAsync($"StockItemsSearch:{searchText.ToLower()}", MessagePackSerializer.Serialize(stockItems), new DistributedCacheEntryOptions()
-#endif
-//            {
-//                SlidingExpiration = StockItemsSearchSlidingExpiration
-//            });
+            await redisCache.StringSetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.SerializeToUtf8Bytes(stockItems));
 
             return this.Ok(stockItems);
         }

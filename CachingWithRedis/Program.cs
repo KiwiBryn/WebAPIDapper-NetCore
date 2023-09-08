@@ -58,9 +58,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis
                 AbortOnConnectFail = false,
             };
 
-            var redis = ConnectionMultiplexer.Connect(configurationOptions);
-
-            builder.Services.AddSingleton<IDatabase>(s => redis.GetDatabase());
+            builder.Services.AddSingleton<IConnectionMultiplexer>(s => ConnectionMultiplexer.Connect(configurationOptions));
 
             var app = builder.Build();
 
