@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using MessagePack;
 using StackExchange.Redis;
 
 using devMobile.Dapper;
@@ -41,11 +40,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedis
 
             builder.Services.AddControllers();
 
-#if SERIALISATION_MESSAGE_PACK
-            //MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options;
-            //MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4Block);
-            MessagePackSerializer.DefaultOptions = MessagePack.Resolvers.ContractlessStandardResolver.Options.WithCompression(MessagePackCompression.Lz4BlockArray);
-#endif
             var configurationOptions = new ConfigurationOptions
             {
                 EndPoints = { builder.Configuration.GetSection("RedisConnection").GetValue<string>("EndPoints") },
@@ -63,10 +57,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
             app.MapControllers();
 
             app.Run();
