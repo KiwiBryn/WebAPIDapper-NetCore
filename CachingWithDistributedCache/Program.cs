@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// https://localhost:7054/profiler/results-index
 //---------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Builder;
 #if DISTRIBUTED_CACHE_REDIS || DISTRIBUTED_CACHE_SQL_SERVER
