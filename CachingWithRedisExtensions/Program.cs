@@ -27,7 +27,7 @@ using StackExchange.Redis.Extensions.MsgPack;
 using devMobile.Dapper;
 
 
-namespace CachingWithRedisExtensions
+namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
 {
     public class Program
     {
