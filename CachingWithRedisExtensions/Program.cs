@@ -37,7 +37,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
 
             builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
-            var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
 
             // Add services to the container.
             builder.Services.AddControllers();
@@ -46,10 +45,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
             builder.Services.AddSingleton<IRedisConnectionPoolManager, RedisConnectionPoolManager>();
             builder.Services.AddSingleton<ISerializer, MsgPackObjectSerializer>();
 
-            builder.Services.AddSingleton((provider) =>
-            {
-                return provider.GetRequiredService<IRedisClient>().GetDb(0);
-            });
+            var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
 
             builder.Services.AddSingleton(redisConfiguration);
 
