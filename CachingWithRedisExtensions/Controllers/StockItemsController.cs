@@ -52,7 +52,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
 
             this.dbConnection = dapperContext.ConnectionCreate();
 
-            this.redisClient = redisClient.Db0;
+            this.redisClient = redisClient.GetDefaultDatabase();
         }
 
         [HttpGet]
