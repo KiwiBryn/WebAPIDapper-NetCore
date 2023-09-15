@@ -107,7 +107,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
         {
             var cached = await redisCache.StringGetAsync($"StockItem:{id}");
-            if (!cached.HasValue)
+            if (cached.HasValue)
             {
                 return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
             }
