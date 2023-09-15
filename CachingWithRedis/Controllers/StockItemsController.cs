@@ -37,6 +37,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
     public class StockItemsController : ControllerBase
     {
         private const int StockItemSearchMaximumRowsToReturn = 15;
+        private readonly TimeSpan StockItemListExpiration = new TimeSpan(0, 5, 0);
 
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
@@ -57,8 +58,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
         {
-            var utcNow = DateTime.UtcNow;
-
             var cached = await redisCache.StringGetAsync("StockItems");
             if (cached.HasValue)
             {
@@ -67,7 +66,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-            await redisCache.StringSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems));
+            await redisCache.StringSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), expiry: StockItemListExpiration);
 
             return this.Ok(stockItems);
         }
@@ -84,15 +83,12 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
         }
 
-
         [HttpPost("Load")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> PostLoad()
         {
-            var utcNow = DateTime.UtcNow;
-
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-            await redisCache.StringSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems));
+            await redisCache.StringSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems), expiry: StockItemListExpiration);
 
             return this.Ok();
         }
@@ -124,7 +120,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-            await redisCache.StringSetAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(stockItem)); 
+            await redisCache.StringSetAsync($"StockItem:{id}", JsonSerializer.SerializeToUtf8Bytes<Model.StockItemGetDtoV1>(stockItem));
 
             return this.Ok(stockItem);
         }
@@ -156,4 +152,3 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         }
     }
 }
-
