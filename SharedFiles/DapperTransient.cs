@@ -41,6 +41,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -66,6 +67,7 @@ namespace devMobile.Azure.DapperTransient
              .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
         public static Task OpenWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync());
+        public static Task OpenWithRetryAsync(this SqlConnection connection, CancellationToken cancellationToken) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync(cancellationToken));
         public static void OpenWithRetry(this SqlConnection connection) => RetryPolicy.Execute(() => connection.Open());
 
         public static Task CloseWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.CloseAsync());
