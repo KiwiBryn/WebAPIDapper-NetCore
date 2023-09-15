@@ -60,12 +60,17 @@ namespace devMobile.Azure.DapperTransient
 			 .Or<TimeoutException>()
 			 .WaitAndRetryAsync(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-		public static Task OpenWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync());
+        private static readonly RetryPolicy RetryPolicy = Policy
+             .Handle<SqlException>(DapperExtensions.ShouldRetryOn)
+             .Or<TimeoutException>()
+             .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-		public static Task CloseWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.CloseAsync());
+        public static Task OpenWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync());
+
+        public static Task CloseWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.CloseAsync());
 
 #if NET5_0 || NET6_0 || NET7_0
-		public static Task<DataTable> GetSchemaWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
+        public static Task<DataTable> GetSchemaWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
 #elif NETCOREAPP3_1
 #else
 #error Unhandled TFM
