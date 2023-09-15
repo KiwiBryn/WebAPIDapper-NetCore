@@ -43,7 +43,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis
             var configurationOptions = new ConfigurationOptions
             {
                 EndPoints = { builder.Configuration.GetSection("RedisConnection").GetValue<string>("EndPoints") },
-                AllowAdmin = true,
+                AllowAdmin = false,
                 Password = builder.Configuration.GetSection("RedisConnection").GetValue<string>("Password"),
                 Ssl = true,
                 ConnectRetry = 5,
