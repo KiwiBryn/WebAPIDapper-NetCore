@@ -66,20 +66,28 @@ namespace devMobile.Azure.DapperTransient
              .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
         public static Task OpenWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync());
+        public static void OpenWithRetry(this SqlConnection connection) => RetryPolicy.Execute(() => connection.Open());
 
         public static Task CloseWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.CloseAsync());
+        public static void CloseWithRetry(this SqlConnection connection) => RetryPolicy.Execute(() => connection.Close());
 
 #if NET5_0 || NET6_0 || NET7_0
         public static Task<DataTable> GetSchemaWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.GetSchemaAsync());
+        public static DataTable GetSchemaWithRetry(this SqlConnection connection) => RetryPolicy.Execute(() => connection.GetSchema());
 #elif NETCOREAPP3_1
 #else
 #error Unhandled TFM
 #endif
-		public static Task<int> ExecuteWithRetryAsync(
+        public static Task<int> ExecuteWithRetryAsync(
 			this IDbConnection connection, 
 			CommandDefinition command) => AsyncRetryPolicy.ExecuteAsync(() => connection.ExecuteAsync(command));
 
-		public static Task<int> ExecuteWithRetryAsync(
+        public static int ExecuteWithRetry(
+            this IDbConnection connection,
+            CommandDefinition command) => RetryPolicy.Execute(() => connection.Execute(command));
+
+
+        public static Task<int> ExecuteWithRetryAsync(
 			  this IDbConnection connection,
 			  string sql,
 			  object param = null,
@@ -87,7 +95,16 @@ namespace devMobile.Azure.DapperTransient
 			  int? commandTimeout = null,
 			  CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.ExecuteAsync(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<T> ExecuteScalarWithRetryAsync<T>(
+        public static int ExecuteWithRetry(
+              this IDbConnection connection,
+              string sql,
+              object param = null,
+              IDbTransaction transaction = null,
+              int? commandTimeout = null,
+              CommandType? commandType = null) => RetryPolicy.Execute(() => connection.Execute(sql, param, transaction, commandTimeout, commandType));
+
+
+        public static Task<T> ExecuteScalarWithRetryAsync<T>(
 			 this IDbConnection connection,
 			 string sql,
 			 object param = null,
@@ -95,7 +112,16 @@ namespace devMobile.Azure.DapperTransient
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.ExecuteScalarAsync<T>(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<IEnumerable<dynamic>> QueryWithRetryAsync(
+        public static T ExecuteScalarWithRetry<T>(
+             this IDbConnection connection,
+             string sql,
+             object param = null,
+             IDbTransaction transaction = null,
+             int? commandTimeout = null,
+             CommandType? commandType = null) => RetryPolicy.Execute(() => connection.ExecuteScalar<T>(sql, param, transaction, commandTimeout, commandType));
+
+
+        public static Task<IEnumerable<dynamic>> QueryWithRetryAsync(
 			 this IDbConnection connection,
 			 string sql,
 			 object param = null,
