@@ -136,7 +136,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText)
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least {1} characters long")][MaxLength(100, ErrorMessage = "The name search text must be no more than {1} characters long")] string searchText)
         {
             var cached = await redisCache.StringGetAsync($"StockItemsSearch:{searchText.ToLower()}");
             if (!cached.HasValue)
