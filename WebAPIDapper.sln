@@ -31,7 +31,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingWithRedis", "CachingWithRedis\CachingWithRedis.csproj", "{3CE3B89A-C788-4DC5-93D0-4C3778D6E0BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingWithRedisExtensions", "CachingWithRedisExtensions\CachingWithRedisExtensions.csproj", "{CF9BE6FF-A572-4346-853A-1002FB01E9D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CachingWithRedisExtensions", "CachingWithRedisExtensions\CachingWithRedisExtensions.csproj", "{CF9BE6FF-A572-4346-853A-1002FB01E9D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CachingWithRedisOM", "CachingWithRedisOM\CachingWithRedisOM.csproj", "{30AD4EEC-4E7E-40B6-97CC-010E6D6F2D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{CF9BE6FF-A572-4346-853A-1002FB01E9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF9BE6FF-A572-4346-853A-1002FB01E9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF9BE6FF-A572-4346-853A-1002FB01E9D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30AD4EEC-4E7E-40B6-97CC-010E6D6F2D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30AD4EEC-4E7E-40B6-97CC-010E6D6F2D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30AD4EEC-4E7E-40B6-97CC-010E6D6F2D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30AD4EEC-4E7E-40B6-97CC-010E6D6F2D4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
