@@ -342,14 +342,6 @@ namespace devMobile.Azure.DapperTransient
              int? commandTimeout = null,
              CommandType? commandType = null) => RetryPolicy.Execute(() => connection.QuerySingleOrDefault<T>(sql, param, transaction, commandTimeout, commandType));
 
-        public static Task<SqlMapper.GridReader> QueryMultipleWithRetryAsync(
-             this IDbConnection connection,
-             string sql,
-             object param = null,
-             IDbTransaction transaction = null,
-             int? commandTimeout = null,
-             CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
-
         public static Task<dynamic> QuerySingleWithRetryAsync(
 			this IDbConnection connection,
 			string sql,
@@ -414,7 +406,16 @@ namespace devMobile.Azure.DapperTransient
 			this IDbConnection connection,
 			CommandDefinition command) => AsyncRetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(command));
 
-		public static Task<IEnumerable<dynamic>> ReadWithRetryAsync(
+
+        public static Task<SqlMapper.GridReader> QueryMultipleWithRetryAsync(
+             this IDbConnection connection,
+             string sql,
+             object param = null,
+             IDbTransaction transaction = null,
+             int? commandTimeout = null,
+             CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryMultipleAsync(sql, param, transaction, commandTimeout, commandType));
+
+        public static Task<IEnumerable<dynamic>> ReadWithRetryAsync(
 			this SqlMapper.GridReader gridReader,
 			bool buffered = true) => AsyncRetryPolicy.ExecuteAsync(() => gridReader.ReadAsync(buffered));
 
