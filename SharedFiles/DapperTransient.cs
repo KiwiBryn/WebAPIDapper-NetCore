@@ -150,13 +150,13 @@ namespace devMobile.Azure.DapperTransient
 			int? commandTimeout = null,
 			CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TReturn>(sql, map, param, transaction, buffered, splitOn, commandTimeout, commandType));
 
-		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
+        public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
 			this IDbConnection connection, 
 			CommandDefinition command, 
 			Func<TFirst, TSecond, TReturn> map, 
 			string splitOn = "Id") => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync<TFirst, TSecond, TReturn>(command, map, splitOn));
 
-		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TReturn>(
+        public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TReturn>(
 			this IDbConnection connection, 
 			string sql, 
 			Func<TFirst, TSecond, TThird, TReturn> map, 
@@ -182,7 +182,7 @@ namespace devMobile.Azure.DapperTransient
 			int? commandTimeout = null, 
 			CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() =>connection.QueryAsync(type, sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(
+        public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TThird, TFourth, TReturn>(
 			this IDbConnection connection, 
 			string sql, 
 			Func<TFirst, TSecond, TThird, TFourth, TReturn> map, 
@@ -252,13 +252,6 @@ namespace devMobile.Azure.DapperTransient
 			this IDbConnection connection, 
 			CommandDefinition command) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync(command));
 
-		public static Task<T> QueryFirstWithRetryAsync<T>(
-			 this IDbConnection connection,
-			 string sql,
-			 object param = null,
-			 IDbTransaction transaction = null,
-			 int? commandTimeout = null,
-			 CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType));
 
 		public static Task<IDataReader> ExecuteReaderWithRetryAsync(
 			this IDbConnection connection,
@@ -281,7 +274,16 @@ namespace devMobile.Azure.DapperTransient
 				int? commandTimeout = null,
 				CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.ExecuteReaderAsync(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<T> QueryFirstOrDefaultWithRetryAsync<T>(
+
+        public static Task<T> QueryFirstWithRetryAsync<T>(
+             this IDbConnection connection,
+             string sql,
+             object param = null,
+             IDbTransaction transaction = null,
+             int? commandTimeout = null,
+             CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryFirstAsync<T>(sql, param, transaction, commandTimeout, commandType));
+
+        public static Task<T> QueryFirstOrDefaultWithRetryAsync<T>(
 			 this IDbConnection connection,
 			 string sql,
 			 object param = null,
