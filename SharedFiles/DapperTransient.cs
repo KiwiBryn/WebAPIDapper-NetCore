@@ -66,8 +66,7 @@ namespace devMobile.Azure.DapperTransient
              .Or<TimeoutException>()
              .WaitAndRetry(RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-        public static Task OpenWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync());
-        public static Task OpenWithRetryAsync(this SqlConnection connection, CancellationToken cancellationToken) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync(cancellationToken));
+        public static Task OpenWithRetryAsync(this SqlConnection connection, CancellationToken cancellationToken = default) => AsyncRetryPolicy.ExecuteAsync(() => connection.OpenAsync(cancellationToken));
         public static void OpenWithRetry(this SqlConnection connection) => RetryPolicy.Execute(() => connection.Open());
 
         public static Task CloseWithRetryAsync(this SqlConnection connection) => AsyncRetryPolicy.ExecuteAsync(() => connection.CloseAsync());
@@ -131,7 +130,7 @@ namespace devMobile.Azure.DapperTransient
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<IEnumerable<T>> QueryWithRetryAsync<T>(
+        public static Task<IEnumerable<T>> QueryWithRetryAsync<T>(
 			 this IDbConnection connection,
 			 string sql,
 			 object param = null,
@@ -139,7 +138,7 @@ namespace devMobile.Azure.DapperTransient
 			 int? commandTimeout = null,
 			 CommandType? commandType = null) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync<T>(sql, param, transaction, commandTimeout, commandType));
 
-		public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
+        public static Task<IEnumerable<TReturn>> QueryWithRetryAsync<TFirst, TSecond, TReturn>(
 			this IDbConnection connection,
 			string sql,
 			Func<TFirst, TSecond, TReturn> map,
@@ -253,7 +252,7 @@ namespace devMobile.Azure.DapperTransient
 			CommandDefinition command) => AsyncRetryPolicy.ExecuteAsync(() => connection.QueryAsync(command));
 
 
-		public static Task<IDataReader> ExecuteReaderWithRetryAsync(
+        public static Task<IDataReader> ExecuteReaderWithRetryAsync(
 			this IDbConnection connection,
 			CommandDefinition command,
 			CommandBehavior commandBehavior) => AsyncRetryPolicy.ExecuteAsync(() => connection.ExecuteReaderAsync(command, commandBehavior));
@@ -426,11 +425,6 @@ namespace devMobile.Azure.DapperTransient
 			this IDbConnection connection,
 			Type type,
 			CommandDefinition command) => AsyncRetryPolicy.ExecuteAsync(() => connection.QuerySingleOrDefaultAsync(type, command));
-
-        public static object QuerySingleOrDefaultWithRetry(
-            this IDbConnection connection,
-            Type type,
-            CommandDefinition command) => RetryPolicy.Execute(() => connection.QuerySingleOrDefault(type, command));
 
         public static Task<dynamic> QuerySingleOrDefaultWithRetryAsync(
 			this IDbConnection connection,
