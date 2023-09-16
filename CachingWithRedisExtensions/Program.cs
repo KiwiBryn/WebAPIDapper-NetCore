@@ -27,7 +27,7 @@ using StackExchange.Redis.Extensions.MsgPack;
 using devMobile.Dapper;
 
 
-namespace CachingWithRedisExtensions
+namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
 {
     public class Program
     {
@@ -37,12 +37,17 @@ namespace CachingWithRedisExtensions
 
             builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
-            var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
 
             // Add services to the container.
             builder.Services.AddControllers();
 
-            builder.Services.AddStackExchangeRedisExtensions<MsgPackObjectSerializer>(redisConfiguration);
+            builder.Services.AddSingleton<IRedisClient, RedisClient>();
+            builder.Services.AddSingleton<IRedisConnectionPoolManager, RedisConnectionPoolManager>();
+            builder.Services.AddSingleton<ISerializer, MsgPackObjectSerializer>();
+
+            var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+            builder.Services.AddSingleton(redisConfiguration);
 
             var app = builder.Build();
 
@@ -56,33 +61,6 @@ namespace CachingWithRedisExtensions
             app.MapControllers();
 
             app.Run();
-        }
-    }
-
-    static class StackExchangeRedisExtensions
-    {
-        /// <summary>
-        /// Add StackExchange.Redis with its serialization provider.
-        /// </summary>
-        /// <param name="services">The service collection.</param>
-        /// <param name="redisConfiguration">The redis configration.</param>
-        /// <typeparam name="T">The typof of serializer. <see cref="ISerializer" />.</typeparam>
-        public static IServiceCollection AddStackExchangeRedisExtensions<T>(this IServiceCollection services, RedisConfiguration redisConfiguration)
-            where T : class, ISerializer, new()
-        {
-
-            services.AddSingleton<IRedisClient, RedisClient>();
-            services.AddSingleton<IRedisConnectionPoolManager , RedisConnectionPoolManager>();
-            services.AddSingleton<ISerializer, T>();
-
-            services.AddSingleton((provider) =>
-            {
-                return provider.GetRequiredService<IRedisClient>().GetDb(0);
-            });
-
-            services.AddSingleton(redisConfiguration);
-
-            return services;
         }
     }
 }
