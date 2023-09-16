@@ -40,19 +40,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis
 
             builder.Services.AddControllers();
 
-            var configurationOptions = new ConfigurationOptions
-            {
-                EndPoints = { builder.Configuration.GetSection("RedisConnection").GetValue<string>("EndPoints") },
-                AllowAdmin = false,
-                Password = builder.Configuration.GetSection("RedisConnection").GetValue<string>("Password"),
-                Ssl = true,
-                ConnectRetry = 5,
-                ConnectTimeout = 10000,
-                SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                AbortOnConnectFail = false,
-            };
-
-            builder.Services.AddSingleton<IConnectionMultiplexer>(s => ConnectionMultiplexer.Connect(configurationOptions));
+            builder.Services.AddSingleton<IConnectionMultiplexer>(s => ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")));
 
             var app = builder.Build();
 
