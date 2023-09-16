@@ -57,8 +57,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
         {
-            var utcNow = DateTime.UtcNow;
-
             var cached = await redisCache.StringGetAsync("StockItems");
             if (cached.HasValue)
             {
@@ -88,8 +86,6 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpPost("Load")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> PostLoad()
         {
-            var utcNow = DateTime.UtcNow;
-
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
             await redisCache.StringSetAsync("StockItems", JsonSerializer.SerializeToUtf8Bytes(stockItems));
