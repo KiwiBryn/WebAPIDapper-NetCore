@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// https://localhost:7054/profiler/results-index
+// https://localhost:7059/api/stockitems
 //---------------------------------------------------------------------------------
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
