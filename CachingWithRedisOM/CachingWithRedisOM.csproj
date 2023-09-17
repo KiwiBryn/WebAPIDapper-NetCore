@@ -3,7 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UserSecretsId>ff745e5d-218d-4b59-bcdd-165f7f68f0b7</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SharedFiles\DapperContext.cs" Link="DapperContext.cs" />
+    <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.151" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Polly" Version="7.2.4" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
 
 </Project>
