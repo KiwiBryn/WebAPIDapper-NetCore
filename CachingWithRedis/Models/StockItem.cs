@@ -16,7 +16,8 @@
 //---------------------------------------------------------------------------------
 namespace devMobile.WebAPIDapper.CachingWithRedis.Model
 {
-    using System.ComponentModel.DataAnnotations;
+    using System.Collections.Generic;
+    using System.Text.Json.Serialization;
 
     public class StockItemListDtoV1
     {
@@ -28,6 +29,14 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Model
 
         public decimal TaxRate { get; set; }
     }
+
+#if SERIALISER_SOURCE_GENERATION
+    [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
+    [JsonSerializable(typeof(List<StockItemListDtoV1>))]
+    public partial class StockItemListDtoV1GenerationContext : JsonSerializerContext
+    {
+    }
+#endif
 
     public class StockItemGetDtoV1
     {
