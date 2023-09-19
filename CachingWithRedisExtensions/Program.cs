@@ -22,9 +22,22 @@ using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Core.Implementations;
-using StackExchange.Redis.Extensions.MsgPack;
+#if SERIALISER_MESSAGE_PACK
+    using StackExchange.Redis.Extensions.MsgPack;
+#endif
+#if SERIALISE_NEWTONSOFT
+    using StackExchange.Redis.Extensions.Newtonsoft;
+#endif
 
 using devMobile.Dapper;
+
+#if SERIALISER_MESSAGE_PACK && SERIALISE_NEWTONSOFT
+    #error Only one serialiser can be defined
+#endif
+
+#if !SERIALISER_MESSAGE_PACK && !SERIALISE_NEWTONSOFT
+    #error At least one serialiser must be defined
+#endif
 
 
 namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
@@ -43,9 +56,19 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
 
             builder.Services.AddSingleton<IRedisClient, RedisClient>();
             builder.Services.AddSingleton<IRedisConnectionPoolManager, RedisConnectionPoolManager>();
+#if SERIALISER_MESSAGE_PACK
             builder.Services.AddSingleton<ISerializer, MsgPackObjectSerializer>();
+#endif
+#if SERIALISE_NEWTONSOFT
+            builder.Services.AddSingleton<ISerializer, NewtonsoftSerializer>();
+#endif
 
-            var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            //var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+            var redisConfiguration = new RedisConfiguration()
+            { 
+                ConnectionString = builder.Configuration.GetConnectionString("Redis") 
+            };
 
             builder.Services.AddSingleton(redisConfiguration);
 

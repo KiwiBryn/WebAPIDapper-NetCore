@@ -7,6 +7,10 @@
     <UserSecretsId>89d9b7c1-aa41-415c-bf72-fa461589ed7d</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);SERIALISER_MESSAGE_PACK</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\SharedFiles\DapperContext.cs" Link="DapperContext.cs" />
     <Compile Include="..\SharedFiles\DapperTransient.cs" Link="DapperTransient.cs" />
@@ -19,6 +23,7 @@
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="9.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.MsgPack" Version="9.1.0" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="9.1.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
