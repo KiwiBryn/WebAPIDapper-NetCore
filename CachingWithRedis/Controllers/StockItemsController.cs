@@ -40,6 +40,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         private readonly TimeSpan StockItemListExpiration = new TimeSpan(0, 5, 0);
 
         private const string StackItemsListCompositeKey = "StockItems";
+        private const string StackItemsListIdCompositeKey = "StockItem:{0}";
 
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
@@ -118,7 +119,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
         {
-            var cached = await redisCache.StringGetAsync($"StockItem:{id}");
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
                 return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
@@ -132,7 +135,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-            await redisCache.StringSetAsync($"StockItem:{id}", JsonSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem));
+            await redisCache.StringSetAsync(compositeKey, JsonSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem));
 
             return this.Ok(stockItem);
         }
@@ -140,7 +143,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpDelete("{id}")]
         public ActionResult ItemCacheDelete(int id)
         {
-            redisCache.KeyDelete($"StockItem:{id}");
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            redisCache.KeyDelete(compositeKey);
 
             logger.LogInformation("StockItem:{id} removed", id);
 
