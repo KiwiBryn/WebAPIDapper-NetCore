@@ -39,6 +39,10 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         private const int StockItemSearchMaximumRowsToReturn = 15;
         private readonly TimeSpan StockItemListExpiration = new TimeSpan(0, 5, 0);
 
+        private const string StackItemsListCompositeKey = "StockItems";
+        private const string StackItemsListIdCompositeKey = "StockItem:{0}";
+        private const string StackItemsListSearchCompositeKey = "StockItemsSearch:{0}";
+
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
 
@@ -58,7 +62,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
         {
-            var cached = await redisCache.StringGetAsync("StockItems");
+            var cached = await redisCache.StringGetAsync(StackItemsListCompositeKey);
             if (cached.HasValue)
             {
                 return Content(cached, "application/json");
@@ -72,7 +76,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             string json = JsonSerializer.Serialize(stockItems);
 #endif
 
-            await redisCache.StringSetAsync("StockItems", json, expiry: StockItemListExpiration);
+            await redisCache.StringSetAsync(StackItemsListCompositeKey, json, expiry: StockItemListExpiration);
 
             return Content(json, "application/json");
         }
@@ -80,7 +84,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("NoLoad")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetNoLoad()
         {
-            var cached = await redisCache.StringGetAsync("StockItems");
+            var cached = await redisCache.StringGetAsync(StackItemsListCompositeKey);
             if (!cached.HasValue)
             {
                 return this.NoContent();
@@ -100,13 +104,15 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             string json = JsonSerializer.Serialize(stockItems);
 #endif
 
+            await redisCache.StringSetAsync(StackItemsListCompositeKey, json, expiry: StockItemListExpiration);
+
             return this.Ok();
         }
 
         [HttpDelete()]
         public async Task<ActionResult> ListCacheDelete()
         {
-            await redisCache.KeyDeleteAsync("StockItems");
+            await redisCache.KeyDeleteAsync(StackItemsListCompositeKey);
 
             logger.LogInformation("StockItems list removed");
 
@@ -116,7 +122,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
         {
-            var cached = await redisCache.StringGetAsync($"StockItem:{id}");
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
                 return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
@@ -130,7 +138,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-            await redisCache.StringSetAsync($"StockItem:{id}", JsonSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem));
+            await redisCache.StringSetAsync(compositeKey, JsonSerializer.Serialize<Model.StockItemGetDtoV1>(stockItem));
 
             return this.Ok(stockItem);
         }
@@ -138,7 +146,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpDelete("{id}")]
         public ActionResult ItemCacheDelete(int id)
         {
-            redisCache.KeyDelete($"StockItem:{id}");
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            redisCache.KeyDelete(compositeKey);
 
             logger.LogInformation("StockItem:{id} removed", id);
 
@@ -148,7 +158,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText, [Range(1, StockItemSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be between {1} and {2}")] int maximumRowsToReturn = StockItemSearchMaximumRowsToReturn)
         {
-            var cached = await redisCache.StringGetAsync($"StockItemsSearch:{searchText.ToLower()}");
+            string compositeKey = string.Format(StackItemsListSearchCompositeKey, searchText.ToLower());
+
+            var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
                 return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
@@ -156,7 +168,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, maximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
-            await redisCache.StringSetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.Serialize(stockItems));
+            await redisCache.StringSetAsync(compositeKey, JsonSerializer.Serialize(stockItems));
 
             return this.Ok(stockItems);
         }
