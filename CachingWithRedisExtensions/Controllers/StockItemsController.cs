@@ -23,10 +23,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using StackExchange.Redis.Extensions.Core.Abstractions;
+
 using devMobile.Azure.DapperTransient;
 using devMobile.Dapper;
-
-using StackExchange.Redis.Extensions.Core.Abstractions;
 
 
 namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
@@ -39,6 +39,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         private readonly TimeSpan StockItemListAbsoluteExpiration = new TimeSpan(23, 59, 59);
         private readonly TimeSpan StockItemsSearchSlidingExpiration = new TimeSpan(0, 1, 0);
 
+        private const string StackItemsListCompositeKey = "StockItems-Ex";
+        private const string StackItemsListIdCompositeKey = "StockItem-Ex:{0}";
+        private const string StackItemsListSearchCompositeKey = "StockItems-ExSearch:{0}";
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
 
@@ -60,7 +63,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         {
             DateTime requestAtUtc = DateTime.UtcNow;
 
-            var stockItems = await redisClient.GetAsync<IEnumerable<Model.StockItemListDtoV1>>("StockItems-Ex");
+            var stockItems = await redisClient.GetAsync<IEnumerable<Model.StockItemListDtoV1>>(StackItemsListCompositeKey);
             if (stockItems is not null)
             {
                 return this.Ok(stockItems);
@@ -68,7 +71,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
 
             stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-            await redisClient.AddAsync("StockItems-Ex", stockItems, requestAtUtc.Add(StockItemListAbsoluteExpiration));
+            await redisClient.AddAsync(StackItemsListCompositeKey, stockItems, requestAtUtc.Add(StockItemListAbsoluteExpiration));
 
             return this.Ok(stockItems);
         }
@@ -76,7 +79,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpGet("NoLoad")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetNoLoad()
         {
-            var stockItems = await redisClient.GetAsync<IEnumerable<Model.StockItemListDtoV1>>("StockItems-Ex");
+            var stockItems = await redisClient.GetAsync<IEnumerable<Model.StockItemListDtoV1>>(StackItemsListCompositeKey);
             if (stockItems is null)
             {
                 return this.NoContent();
@@ -90,7 +93,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         {
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: sqlCommandText, commandType: CommandType.Text);
 
-            await redisClient.AddAsync("StockItems-Ex", stockItems);
+            await redisClient.AddAsync(StackItemsListCompositeKey, stockItems);
 
             return this.Ok();
         }
@@ -98,7 +101,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpDelete()]
         public async Task<ActionResult> ListCacheDelete()
         {
-            await redisClient.RemoveAsync("StockItems-Ex");
+            await redisClient.RemoveAsync(StackItemsListCompositeKey);
 
             logger.LogInformation("StockItems list removed");
 
@@ -108,7 +111,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Model.StockItemGetDtoV1>> Get(int id)
         {
-            var cached = await redisClient.GetAsync<Model.StockItemGetDtoV1>($"StockItem-Ex:{id}", StockItemsSearchSlidingExpiration);
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            var cached = await redisClient.GetAsync<Model.StockItemGetDtoV1>(compositeKey, StockItemsSearchSlidingExpiration);
             if (cached is not null)
             {
                 return this.Ok(cached);
@@ -122,7 +127,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
                 return this.NotFound($"StockItem:{id} not found");
             }
 
-            await redisClient.AddAsync<Model.StockItemGetDtoV1>($"StockItem-Ex:{id}", stockItem, StockItemsSearchSlidingExpiration);
+            await redisClient.AddAsync<Model.StockItemGetDtoV1>(compositeKey, stockItem, StockItemsSearchSlidingExpiration);
 
             return this.Ok(stockItem);
         }
@@ -130,7 +135,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpDelete("{id}")]
         public ActionResult ItemCacheDelete(int id)
         {
-            redisClient.RemoveAsync($"StockItem-Ex:{id}");
+            string compositeKey = string.Format(StackItemsListIdCompositeKey, id);
+
+            redisClient.RemoveAsync(compositeKey);
 
             logger.LogInformation("StockItem:{id} removed", id);
 
@@ -140,7 +147,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText)
         {
-            string compositeKey = $"StockItemsSearch-Ex:{searchText.ToLower()}";
+            string compositeKey = string.Format(StackItemsListSearchCompositeKey, searchText.ToLower());
 
             var cached = await redisClient.GetAsync<IList<Model.StockItemListDtoV1>>(compositeKey);
             if (cached is not null)
