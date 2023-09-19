@@ -39,6 +39,8 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         private const int StockItemSearchMaximumRowsToReturn = 15;
         private readonly TimeSpan StockItemListExpiration = new TimeSpan(0, 5, 0);
 
+        private const string StackItemsListCompositeKey = "StockItems";
+
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
 
@@ -58,7 +60,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get()
         {
-            var cached = await redisCache.StringGetAsync("StockItems");
+            var cached = await redisCache.StringGetAsync(StackItemsListCompositeKey);
             if (cached.HasValue)
             {
                 return Content(cached, "application/json");
@@ -72,7 +74,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             string json = JsonSerializer.Serialize(stockItems);
 #endif
 
-            await redisCache.StringSetAsync("StockItems", json, expiry: StockItemListExpiration);
+            await redisCache.StringSetAsync(StackItemsListCompositeKey, json, expiry: StockItemListExpiration);
 
             return Content(json, "application/json");
         }
@@ -80,7 +82,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("NoLoad")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> GetNoLoad()
         {
-            var cached = await redisCache.StringGetAsync("StockItems");
+            var cached = await redisCache.StringGetAsync(StackItemsListCompositeKey);
             if (!cached.HasValue)
             {
                 return this.NoContent();
@@ -106,7 +108,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpDelete()]
         public async Task<ActionResult> ListCacheDelete()
         {
-            await redisCache.KeyDeleteAsync("StockItems");
+            await redisCache.KeyDeleteAsync(StackItemsListCompositeKey);
 
             logger.LogInformation("StockItems list removed");
 
