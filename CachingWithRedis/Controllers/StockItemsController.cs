@@ -41,7 +41,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
         private const string StackItemsListCompositeKey = "StockItems";
         private const string StackItemsListIdCompositeKey = "StockItem:{0}";
-        private const string StackItemsListSearchCompositeKey = "StockItemsSearch:{0}";
+        private const string StackItemsListSearchCompositeKey = "StockItemsSearch:{0}-{1}";
 
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
@@ -158,7 +158,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText, [Range(1, StockItemSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be between {1} and {2}")] int maximumRowsToReturn = StockItemSearchMaximumRowsToReturn)
         {
-            string compositeKey = string.Format(StackItemsListSearchCompositeKey, searchText.ToLower());
+            string compositeKey = string.Format(StackItemsListSearchCompositeKey, maximumRowsToReturn, searchText.ToLower());
 
             var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
