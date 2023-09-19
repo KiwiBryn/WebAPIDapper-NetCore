@@ -104,6 +104,8 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             string json = JsonSerializer.Serialize(stockItems);
 #endif
 
+            await redisCache.StringSetAsync(StackItemsListCompositeKey, json, expiry: StockItemListExpiration);
+
             return this.Ok();
         }
 
