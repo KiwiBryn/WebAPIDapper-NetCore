@@ -140,7 +140,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText)
         {
-            var cached = await redisClient.GetAsync<IList<Model.StockItemListDtoV1>>($"StockItemsSearch-Ex:{searchText.ToLower()}");
+            string compositeKey = $"StockItemsSearch-Ex:{searchText.ToLower()}";
+
+            var cached = await redisClient.GetAsync<IList<Model.StockItemListDtoV1>>(compositeKey);
             if (cached is not null)
             {
                 return this.Ok(cached);
@@ -148,7 +150,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
-            await redisClient.AddAsync($"StockItemsSearch-Ex:{searchText.ToLower()}", stockItems);
+            await redisClient.AddAsync(compositeKey, stockItems);
 
             return this.Ok(stockItems);
         }
