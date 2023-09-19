@@ -7,9 +7,9 @@
     <UserSecretsId>ae06dbf7-5885-4f69-91bd-0b1006da29d4</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);SERIALISATION_JSON</DefineConstants>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" />
 
   <ItemGroup>
     <Compile Include="..\SharedFiles\DapperContext.cs" Link="DapperContext.cs" />
