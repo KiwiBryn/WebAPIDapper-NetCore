@@ -138,7 +138,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText)
+        public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText, [Range(1, StockItemSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be between {1} and {2}")] int maximumRowsToReturn = StockItemSearchMaximumRowsToReturn)
         {
             var cached = await redisClient.GetAsync<IList<Model.StockItemListDtoV1>>($"StockItemsSearch-Ex:{searchText.ToLower()}");
             if (cached is not null)
@@ -146,7 +146,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Controllers
                 return this.Ok(cached);
             }
 
-            var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, MaximumRowsToReturn = StockItemSearchMaximumRowsToReturn }, commandType: CommandType.StoredProcedure);
+            var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, maximumRowsToReturn}, commandType: CommandType.StoredProcedure);
 
             await redisClient.AddAsync($"StockItemsSearch-Ex:{searchText.ToLower()}", stockItems);
 
