@@ -41,6 +41,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
         private const string StackItemsListCompositeKey = "StockItems";
         private const string StackItemsListIdCompositeKey = "StockItem:{0}";
+        private const string StackItemsListSearchCompositeKey = "StockItemsSearch:{0}";
 
         private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]";
         //private const string sqlCommandText = @"SELECT [StockItemID] as ""ID"", [StockItemName] as ""Name"", [RecommendedRetailPrice], [TaxRate] FROM [Warehouse].[StockItems]; WAITFOR DELAY '00:00:02'";
@@ -155,7 +156,9 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Model.StockItemListDtoV1>>> Get([Required][MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")] string searchText, [Range(1, StockItemSearchMaximumRowsToReturn, ErrorMessage = "The maximum number of rows to return must be between {1} and {2}")] int maximumRowsToReturn = StockItemSearchMaximumRowsToReturn)
         {
-            var cached = await redisCache.StringGetAsync($"StockItemsSearch:{searchText.ToLower()}");
+            string compositeKey = string.Format(StackItemsListSearchCompositeKey, searchText.ToLower());
+
+            var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
                 return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
@@ -163,7 +166,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, maximumRowsToReturn }, commandType: CommandType.StoredProcedure);
 
-            await redisCache.StringSetAsync($"StockItemsSearch:{searchText.ToLower()}", JsonSerializer.Serialize(stockItems));
+            await redisCache.StringSetAsync(compositeKey, JsonSerializer.Serialize(stockItems));
 
             return this.Ok(stockItems);
         }
