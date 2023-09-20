@@ -53,15 +53,4 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions.Model
 
         public string SupplierName { get; set; }
     }
-
-    public class StockItemNameSearchDtoV1
-    {
-        [Required]
-        [MinLength(3, ErrorMessage = "The name search text must be at least 3 characters long")]
-        public string SearchText { get; set; }
-
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "MaximumRowsToReturn must be present and greater than 0")]
-        public int MaximumRowsToReturn { get; set; }
-    }
 }
