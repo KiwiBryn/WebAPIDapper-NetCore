@@ -44,46 +44,41 @@ namespace devMobile.WebAPIDapper.CachingWithRedisExtensions
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+public static void Main(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
+    builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
 
-            // Add services to the container.
-            builder.Services.AddControllers();
+    // Add services to the container.
+    builder.Services.AddControllers();
 
-            builder.Services.AddSingleton<IRedisClient, RedisClient>();
-            builder.Services.AddSingleton<IRedisConnectionPoolManager, RedisConnectionPoolManager>();
+    builder.Services.AddSingleton<IRedisClient, RedisClient>();
+    builder.Services.AddSingleton<IRedisConnectionPoolManager, RedisConnectionPoolManager>();
 #if SERIALISER_MESSAGE_PACK
-            builder.Services.AddSingleton<ISerializer, MsgPackObjectSerializer>();
+    builder.Services.AddSingleton<ISerializer, MsgPackObjectSerializer>();
 #endif
 #if SERIALISE_NEWTONSOFT
-            builder.Services.AddSingleton<ISerializer, NewtonsoftSerializer>();
+    builder.Services.AddSingleton<ISerializer, NewtonsoftSerializer>();
 #endif
 
-            //var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+    var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
 
-            var redisConfiguration = new RedisConfiguration()
-            { 
-                ConnectionString = builder.Configuration.GetConnectionString("Redis") 
-            };
+    builder.Services.AddSingleton(redisConfiguration);
 
-            builder.Services.AddSingleton(redisConfiguration);
+    var app = builder.Build();
 
-            var app = builder.Build();
+    // Configure the HTTP request pipeline.
 
-            // Configure the HTTP request pipeline.
+    app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
+    app.UseAuthorization();
 
 
-            app.MapControllers();
+    app.MapControllers();
 
-            app.Run();
-        }
+    app.Run();
+}
     }
 }
