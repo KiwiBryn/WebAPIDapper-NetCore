@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <UserSecretsId>89d9b7c1-aa41-415c-bf72-fa461589ed7d</UserSecretsId>
@@ -17,14 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.151" />
-    <PackageReference Include="Polly" Version="7.2.4" />
-    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="9.1.0" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="9.1.0" />
-    <PackageReference Include="StackExchange.Redis.Extensions.MsgPack" Version="9.1.0" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="9.1.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Polly" Version="8.3.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.27" />
+    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="10.2.0" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="10.2.0" />
+    <PackageReference Include="StackExchange.Redis.Extensions.MsgPack" Version="10.2.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
 </Project>
