@@ -16,12 +16,13 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
-    <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="5.1.3" />
-    <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="5.1.3" />
-    <PackageReference Include="Dapper.Extensions.MSSQL" Version="5.1.3" />
+    <PackageReference Include="Dapper.Extensions.Caching.Memory" Version="5.1.4" />
+    <PackageReference Include="Dapper.Extensions.Caching.Redis" Version="5.1.4" />
+    <PackageReference Include="Dapper.Extensions.MSSQL" Version="5.1.4" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-    <PackageReference Include="Polly" Version="8.3.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="Polly" Version="8.4.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
