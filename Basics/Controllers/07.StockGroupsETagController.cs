@@ -18,12 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -107,7 +107,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 					{
 						byte[] rowVersion = parameters.Get<byte[]>("RowVersion");
 
-						this.HttpContext.Response.Headers.Add("ETag", Convert.ToBase64String(rowVersion));
+						this.HttpContext.Response.Headers.TryAdd("ETag", Convert.ToBase64String(rowVersion));
 					}
 				}
 			}
@@ -193,7 +193,7 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
 						return this.NotFound($"StockItem:{id} not found");
 					}
 
-					this.HttpContext.Response.Headers.Add("ETag", Convert.ToBase64String(response.Version));
+					this.HttpContext.Response.Headers.TryAdd("ETag", Convert.ToBase64String(response.Version));
 				}
 			}
 			catch (SqlException ex)

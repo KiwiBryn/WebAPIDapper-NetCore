@@ -19,12 +19,12 @@ namespace devMobile.WebAPIDapper.Basics.Controllers
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Data.SqlClient;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
 
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Data.SqlClient;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
