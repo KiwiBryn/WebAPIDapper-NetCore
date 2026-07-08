@@ -33,23 +33,16 @@ namespace devMobile.WebAPIDapper.HttpPatch
             // Add services to the container.
             builder.Services.AddSingleton<IDapperContext>(s => new DapperContext(builder.Configuration));
 
-            builder.Services.AddAutoMapper(typeof(Program));
-
-            // Auto Mapper Configurations
-            var mapperConfig = new MapperConfiguration(mc =>
+            builder.Services.AddAutoMapper(cfg =>
             {
-                mc.AddProfile(new MappingProfile());
+                cfg.AddProfile<MappingProfile>();
             });
-
-            IMapper mapper = mapperConfig.CreateMapper();
-            builder.Services.AddSingleton(mapper);
 
             builder.Services.AddControllers().AddNewtonsoftJson();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -63,7 +56,6 @@ namespace devMobile.WebAPIDapper.HttpPatch
         {
             public MappingProfile()
             {
-                // Add as many of these lines as you need to map your objects
                 CreateMap<StockItemGetDtoV1, StockItemPatchDtoV1>();
                 CreateMap<StockItemPatchDtoV1, StockItemGetDtoV1>();
             }
