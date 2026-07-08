@@ -28,7 +28,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
-    using Microsoft.OpenApi.Models;
+    using Microsoft.OpenApi;
 
     using Swashbuckle.AspNetCore.Filters;
 
@@ -70,26 +70,19 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
                         }
                     });
 
-                swagger.AddSecurityDefinition("Bearer", //Name the security scheme
-                                     new OpenApiSecurityScheme
-                                     {
-                                         Description = "JWT Authorization header using the Bearer scheme.",
-                                         Type = SecuritySchemeType.Http, //We set the scheme type to http since we're using bearer authentication
-                                         Scheme = "bearer", //The name of the HTTP Authorization scheme to be used in the Authorization header. In this case "bearer"
-                                         BearerFormat = "JWT",
-                                     });
+                swagger.AddSecurityDefinition("Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        Description = "JWT Authorization header using the Bearer scheme.",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",
+                    });
 
-                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                swagger.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
+                        new OpenApiSecuritySchemeReference("Bearer", document),
                         new List<string>()
                     }
                 });
@@ -129,7 +122,7 @@ namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase
                     {
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                         {
-                            context.Response.Headers.Add("Token-Expired", "true");
+                            context.Response.Headers.TryAdd("Token-Expired", "true");
                         }
                         return Task.CompletedTask;
                     }
