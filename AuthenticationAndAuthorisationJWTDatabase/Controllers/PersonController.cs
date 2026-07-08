@@ -17,12 +17,12 @@
 namespace devMobile.WebAPIDapper.AuthenticationAndAuthorisationJwtDatabase.Controllers
 {
     using System.ComponentModel.DataAnnotations;
-    using System.Data.SqlClient;
     using System.Data;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Data.SqlClient;
     using Microsoft.Extensions.Configuration;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
