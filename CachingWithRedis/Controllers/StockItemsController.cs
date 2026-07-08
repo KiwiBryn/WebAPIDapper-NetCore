@@ -127,7 +127,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
-                return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>(cached));
+                return this.Ok(JsonSerializer.Deserialize<Model.StockItemGetDtoV1>((ReadOnlySpan<byte>)cached));
             }
 
             var stockItem = await dbConnection.QuerySingleOrDefaultWithRetryAsync<Model.StockItemGetDtoV1>(sql: "[Warehouse].[StockItemsStockItemLookupV1]", param: new { stockItemId = id }, commandType: CommandType.StoredProcedure);
@@ -163,7 +163,7 @@ namespace devMobile.WebAPIDapper.CachingWithRedis.Controllers
             var cached = await redisCache.StringGetAsync(compositeKey);
             if (cached.HasValue)
             {
-                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>(cached));
+                return this.Ok(JsonSerializer.Deserialize<List<Model.StockItemListDtoV1>>((ReadOnlySpan<byte>)cached));
             }
 
             var stockItems = await dbConnection.QueryWithRetryAsync<Model.StockItemListDtoV1>(sql: "[Warehouse].[StockItemsNameSearchV1]", param: new { searchText, maximumRowsToReturn }, commandType: CommandType.StoredProcedure);
